@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zelazobeton.cognitiveexercises.exception.ExceptionHandling;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(path = {"/", "/user"})
 public class UserController extends ExceptionHandling {
 
     @GetMapping
