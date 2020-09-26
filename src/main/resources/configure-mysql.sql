@@ -17,3 +17,4 @@
 -- GRANT EXECUTE ON cognitive_exercises_dev.* to 'cognitive_exercises_dev_admin'@'localhost';
 -- GRANT CREATE VIEW ON cognitive_exercises_dev.* to 'cognitive_exercises_dev_admin'@'localhost';
 -- GRANT DROP ON cognitive_exercises_dev.* to 'cognitive_exercises_dev_admin'@'localhost';
+-- GRANT REFERENCES ON cognitive_exercises_dev.* to 'cognitive_exercises_dev_admin'@'localhost';
