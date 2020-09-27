@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import com.zelazobeton.cognitiveexercises.domain.BaseEntity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,15 +22,16 @@ import lombok.Singular;
 @Entity
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends BaseEntity {
     private String username;
     private String password;
     private String email;
-    private Date lastLoginDate;
-    private Date lastLoginDateDisplay;
-    private Date joinDate;
+    @Builder.Default private Date lastLoginDate = null;
+    @Builder.Default private Date lastLoginDateDisplay = null;
+    @Builder.Default private Date joinDate = new Date();
 
     @Singular
     @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.EAGER)
@@ -37,6 +39,6 @@ public class User extends BaseEntity {
             joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") },
             inverseJoinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") })
     private Set<Role> roles;
-    private boolean isActive;
-    private boolean isNotLocked;
+    @Builder.Default private boolean isActive = true;
+    @Builder.Default private boolean isNotLocked = true;
 }

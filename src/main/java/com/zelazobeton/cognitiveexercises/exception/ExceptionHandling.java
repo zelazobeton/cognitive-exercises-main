@@ -28,6 +28,8 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.zelazobeton.cognitiveexercises.domain.HttpResponse;
 import com.zelazobeton.cognitiveexercises.exception.domain.EmailAlreadyExistsException;
 import com.zelazobeton.cognitiveexercises.exception.domain.EmailNotFoundException;
+import com.zelazobeton.cognitiveexercises.exception.domain.EntityNotFoundException;
+import com.zelazobeton.cognitiveexercises.exception.domain.RoleNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.domain.UserNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.domain.UsernameAlreadyExistException;
 
@@ -80,13 +82,8 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
 
-    @ExceptionHandler(EmailNotFoundException.class)
-    public ResponseEntity<HttpResponse> emailNotFoundException(EmailNotFoundException exception) {
-        return createHttpResponse(BAD_REQUEST, exception.getMessage());
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<HttpResponse> entityNotFoundException(EntityNotFoundException exception) {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
 

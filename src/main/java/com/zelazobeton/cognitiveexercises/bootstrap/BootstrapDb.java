@@ -1,11 +1,12 @@
 package com.zelazobeton.cognitiveexercises.bootstrap;
 
+import static com.zelazobeton.cognitiveexercises.constant.RolesConstant.*;
+
 import java.util.Arrays;
 import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.zelazobeton.cognitiveexercises.domain.security.Authority;
@@ -24,7 +25,6 @@ public class BootstrapDb implements CommandLineRunner {
 
     public static final String DUNEDIN_USER = "dunedin";
 
-//    private final PasswordEncoder passwordEncoder;
     private final AuthorityRepository authorityRepository;
     private final RoleRepository roleRepository;
 
@@ -39,8 +39,8 @@ public class BootstrapDb implements CommandLineRunner {
         Authority readUser = authorityRepository.save(Authority.builder().permission("user.read").build());
         Authority deleteUser = authorityRepository.save(Authority.builder().permission("user.delete").build());
 
-        Role adminRole = Role.builder().name("ROLE_ADMIN").build();
-        Role userRole = Role.builder().name("ROLE_USER").build();
+        Role adminRole = Role.builder().name(ADMIN).build();
+        Role userRole = Role.builder().name(USER).build();
 
         adminRole.setAuthorities(Set.of(createUser, updateUser, readUser, deleteUser));
         userRole.setAuthorities(Set.of(readUser));
