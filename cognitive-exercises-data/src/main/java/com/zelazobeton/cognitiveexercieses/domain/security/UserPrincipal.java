@@ -1,7 +1,5 @@
 package com.zelazobeton.cognitiveexercieses.domain.security;
 
-import static java.util.Arrays.stream;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;

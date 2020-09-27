@@ -27,6 +27,7 @@ import lombok.Singular;
 public class Role extends BaseEntity {
     private String name;
 
+    @Singular
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
@@ -36,4 +37,8 @@ public class Role extends BaseEntity {
             joinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
     private Set<Authority> authorities;
+
+    public void addUser(User user) {
+        users.add(user);
+    }
 }

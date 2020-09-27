@@ -1,7 +1,9 @@
 package com.zelazobeton.cognitiveexercieses.domain.security;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,10 +33,10 @@ public class User extends BaseEntity {
     private String email;
     @Builder.Default private Date lastLoginDate = null;
     @Builder.Default private Date lastLoginDateDisplay = null;
-    @Builder.Default private Date joinDate = new Date();
+    @Builder.Default private Date joinDate = Calendar.getInstance(TimeZone.getTimeZone("Europe/Warsaw")).getTime();
 
     @Singular
-    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") },
             inverseJoinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") })
