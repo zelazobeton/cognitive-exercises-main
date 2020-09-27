@@ -29,3 +29,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Generated files ###
+**/database_create.sql
