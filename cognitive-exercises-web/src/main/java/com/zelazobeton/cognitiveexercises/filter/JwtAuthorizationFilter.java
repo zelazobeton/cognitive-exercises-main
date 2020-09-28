@@ -6,7 +6,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,12 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.zelazobeton.cognitiveexercises.utility.JWTTokenProvider;
 
 @Component
@@ -62,8 +59,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String token = authorizationHeader.substring(TOKEN_PREFIX.length());
         String username = jwtTokenProvider.getSubject(token);
         if (jwtTokenProvider.isTokenValid(username, token)) {
-            List<GrantedAuthority> authorities = jwtTokenProvider.getAuthoritiesFromToken(token);
-            Authentication authentication = jwtTokenProvider.getAuthentication(username, authorities, request);
+            Authentication authentication = jwtTokenProvider.getAuthentication(username, request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
             SecurityContextHolder.clearContext();

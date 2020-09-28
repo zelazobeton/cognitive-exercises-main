@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         String password = generatePassword();
         Role userRole = roleRepository.findByName(USER).orElseThrow(RoleNotFoundException::new);
         User newUser = User.builder().username(username).email(email).password(encodePassword(password)).role(userRole).build();
-        log.debug("password: " + password);
+        log.debug(username + " password: " + password);
         return userRepository.save(newUser);
     }
 
@@ -68,6 +68,11 @@ public class UserServiceImpl implements UserService {
         currentUser.setEmail(newEmail);
         currentUser.setUsername(newUsername);
         return userRepository.save(currentUser);
+    }
+
+    @Override
+    public User findUserByUsername(String username) throws UserNotFoundException {
+        return userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
     private void validateNewUsernameAndEmail(String username, String email) {

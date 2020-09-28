@@ -15,4 +15,6 @@ public interface UserService extends UserDetailsService {
 
     User updateUser(String currentUsername, String newUsername, String newEmail, boolean isNonLocked, boolean isActive)
             throws UserNotFoundException, UsernameAlreadyExistsException, EmailAlreadyExistsException, IOException;
+
+    User findUserByUsername(String username) throws UserNotFoundException;
 }

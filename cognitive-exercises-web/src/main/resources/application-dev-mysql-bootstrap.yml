@@ -19,3 +19,6 @@ spring:
             scripts:
               action: create
               create-target: database_create.sql
+logging:
+  level:
+    com.zelazobeton.cognitiveexercieses: DEBUG
