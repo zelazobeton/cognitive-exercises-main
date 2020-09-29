@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final LoginAttemptService loginAttemptService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -42,11 +43,25 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findUserByUsername(username).orElseThrow(() ->
                 new UsernameNotFoundException("Username: " + username + " not found"));
+        lockUserIfHasExceededMaxFailedLoginAttempts(user);
         user.setLastLoginDateDisplay(user.getLastLoginDate());
         user.setLastLoginDate(new Date());
         userRepository.save(user);
 
         return new UserPrincipal(user);
+    }
+
+    private void lockUserIfHasExceededMaxFailedLoginAttempts(User user) {
+        if(user.isNotLocked()) {
+            if(loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
+                log.debug(user.getUsername() + " has exceeded max number of login attempts");
+                user.setNotLocked(false);
+            } else {
+                user.setNotLocked(true);
+            }
+        } else {
+            loginAttemptService.removeUserFromLoginAttemptCache(user.getUsername());
+        }
     }
 
     @Override
