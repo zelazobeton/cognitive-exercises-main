@@ -1,6 +1,8 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.JWT_TOKEN_HEADER;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.JWT_TOKEN_HEADER;
+
+import javax.mail.MessagingException;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,7 +35,8 @@ public class UserController extends ExceptionHandling {
     private final JWTTokenProvider jwtTokenProvider;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto) throws EntityAlreadyExistsException {
+    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto) throws EntityAlreadyExistsException,
+            MessagingException {
         User newUser = userService.register(userDto.getUsername(), userDto.getEmail());
         return new ResponseEntity<>(new UserDto(newUser), HttpStatus.OK);
     }

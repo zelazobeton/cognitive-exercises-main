@@ -1,7 +1,7 @@
 package com.zelazobeton.cognitiveexercises.constant;
 
-public class SecurityConstant {
-    private SecurityConstant(){};
+public class SecurityConstants {
+    private SecurityConstants(){};
 
     public static final long EXPIRATION_TIME = 432_000_000; // milliseconds
     public static final String TOKEN_PREFIX = "Bearer ";

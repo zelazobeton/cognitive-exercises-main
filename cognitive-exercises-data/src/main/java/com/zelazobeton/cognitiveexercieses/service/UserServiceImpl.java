@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final LoginAttemptService loginAttemptService;
+    private final EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -65,11 +68,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(String username, String email) throws UsernameAlreadyExistsException, EmailAlreadyExistsException {
+    public User register(String username, String email) throws UsernameAlreadyExistsException, EmailAlreadyExistsException,
+            MessagingException {
         validateNewUsernameAndEmail(username, email);
         String password = generatePassword();
         Role userRole = roleRepository.findByName(USER).orElseThrow(RoleNotFoundException::new);
         User newUser = User.builder().username(username).email(email).password(encodePassword(password)).role(userRole).build();
+        emailService.sendNewPasswordEmail(username, password, email);
         log.debug(username + " password: " + password);
         return userRepository.save(newUser);
     }

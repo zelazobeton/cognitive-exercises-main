@@ -1,9 +1,9 @@
 package com.zelazobeton.cognitiveexercises.utility;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.EXPIRATION_TIME;
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.TOKEN_CANNOT_BE_VERIFIED_MSG;
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.TOKEN_ISSUER;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.EXPIRATION_TIME;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.TOKEN_CANNOT_BE_VERIFIED_MSG;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.TOKEN_ISSUER;
 
 import java.util.Date;
 

@@ -1,7 +1,7 @@
 package com.zelazobeton.cognitiveexercises.filter;
 
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.OPTIONS_HTTP_METHOD;
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.TOKEN_PREFIX;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.OPTIONS_HTTP_METHOD;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.TOKEN_PREFIX;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
 

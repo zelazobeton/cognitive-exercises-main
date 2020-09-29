@@ -1,6 +1,6 @@
 package com.zelazobeton.cognitiveexercises.configuration;
 
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.PUBLIC_URLS;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.PUBLIC_URLS;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 import org.springframework.context.annotation.Bean;

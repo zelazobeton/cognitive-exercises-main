@@ -1,6 +1,6 @@
 package com.zelazobeton.cognitiveexercises.filter;
 
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.ACCESS_DENIED_MSG;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.ACCESS_DENIED_MSG;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 

@@ -1,6 +1,6 @@
 package com.zelazobeton.cognitiveexercises.filter;
 
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstant.FORBIDDEN_MSG;
+import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.FORBIDDEN_MSG;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
