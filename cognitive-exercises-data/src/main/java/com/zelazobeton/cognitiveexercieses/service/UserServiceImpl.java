@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final LoginAttemptService loginAttemptService;
-    private final EmailService emailService;
+    private final LoginAttemptServiceImpl loginAttemptService;
+    private final EmailServiceImpl emailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -106,11 +106,11 @@ public class UserServiceImpl implements UserService {
 
     private void validateUpdatedUsernameAndEmail(String username, String email, Long currentUserId) {
         Optional<User> userByNewUsername = userRepository.findUserByUsername(username);
-        if (userByNewUsername.isPresent() && userByNewUsername.get().getId().equals(currentUserId)) {
+        if (userByNewUsername.isPresent() && !userByNewUsername.get().getId().equals(currentUserId)) {
             throw new UsernameAlreadyExistsException(username);
         }
         Optional<User> userByNewEmail = userRepository.findUserByEmail(email);
-        if (userByNewEmail.isPresent() && userByNewEmail.get().getId().equals(currentUserId)) {
+        if (userByNewEmail.isPresent() && !userByNewEmail.get().getId().equals(currentUserId)) {
             throw new EmailAlreadyExistsException(email);
         }
     }

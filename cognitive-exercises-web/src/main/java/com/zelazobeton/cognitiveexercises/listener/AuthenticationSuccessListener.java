@@ -5,13 +5,13 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.stereotype.Component;
 
 import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
-import com.zelazobeton.cognitiveexercieses.service.LoginAttemptService;
+import com.zelazobeton.cognitiveexercieses.service.LoginAttemptServiceImpl;
 
 @Component
 public class AuthenticationSuccessListener {
-    private LoginAttemptService loginAttemptService;
+    private LoginAttemptServiceImpl loginAttemptService;
 
-    public AuthenticationSuccessListener(LoginAttemptService loginAttemptService) {
+    public AuthenticationSuccessListener(LoginAttemptServiceImpl loginAttemptService) {
         this.loginAttemptService = loginAttemptService;
     }
 
