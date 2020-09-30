@@ -12,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,17 +60,6 @@ public class UserController extends ExceptionHandling {
         User updatedUser = userService.updateUser(user.getUsername(), userDto.getUsername(), userDto.getEmail(),
                 userDto.getPassword());
         return new ResponseEntity<>(new UserDto(updatedUser), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/rolesCheckRead", produces = { "application/json" })
-    public ResponseEntity<String> rolesCheckRead() {
-        return new ResponseEntity<>("rolesCheckRead endpoint accessed", HttpStatus.OK);
-    }
-
-    @GetMapping("/rolesCheckCreate")
-    @PreAuthorize("hasAuthority('user.create')")
-    public ResponseEntity<String> rolesCheckCreate(@AuthenticationPrincipal User user) {
-        return new ResponseEntity<>("rolesCheckCreate endpoint accessed", HttpStatus.OK);
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
