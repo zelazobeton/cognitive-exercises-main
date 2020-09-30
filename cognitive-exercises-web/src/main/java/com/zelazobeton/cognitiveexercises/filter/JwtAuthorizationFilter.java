@@ -19,6 +19,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.zelazobeton.cognitiveexercises.utility.JWTTokenProvider;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private JWTTokenProvider jwtTokenProvider;
@@ -30,29 +33,30 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (request.getMethod().equalsIgnoreCase(OPTIONS_HTTP_METHOD)) {
-            response.setStatus(OK.value());
-            filterChain.doFilter(request, response);
-            return;
-        }
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            SecurityContextHolder.clearContext();
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         try {
-            authenticateRequest(request, authorizationHeader);
+            tryAuthenticateRequest(request, response);
         }
         finally {
             filterChain.doFilter(request, response);
         }
+    }
+
+    private void tryAuthenticateRequest(HttpServletRequest request, HttpServletResponse response) {
+        if (request.getMethod().equalsIgnoreCase(OPTIONS_HTTP_METHOD)) {
+            response.setStatus(OK.value());
+            return;
+        }
+
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX)) {
+            return;
+        }
+
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            SecurityContextHolder.clearContext();
+            return;
+        }
+        authenticateRequest(request, authorizationHeader);
     }
 
     private void authenticateRequest(HttpServletRequest request, String authorizationHeader) {

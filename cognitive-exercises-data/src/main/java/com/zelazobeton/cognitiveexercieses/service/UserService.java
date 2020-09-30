@@ -1,7 +1,5 @@
 package com.zelazobeton.cognitiveexercieses.service;
 
-import java.io.IOException;
-
 import javax.mail.MessagingException;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,8 +13,8 @@ public interface UserService extends UserDetailsService {
     User register(String username, String email)
             throws UsernameAlreadyExistsException, EmailAlreadyExistsException, MessagingException;
 
-    User updateUser(String currentUsername, String newUsername, String newEmail, boolean isNonLocked, boolean isActive)
-            throws UserNotFoundException, UsernameAlreadyExistsException, EmailAlreadyExistsException, IOException;
+    User updateUser(String currentUsername, String newUsername, String newEmail, String newPassword)
+            throws UserNotFoundException, UsernameAlreadyExistsException, EmailAlreadyExistsException;
 
     User findUserByUsername(String username) throws UserNotFoundException;
 }

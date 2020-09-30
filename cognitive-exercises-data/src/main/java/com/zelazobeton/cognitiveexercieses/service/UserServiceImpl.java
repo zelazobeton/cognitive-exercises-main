@@ -2,7 +2,6 @@ package com.zelazobeton.cognitiveexercieses.service;
 
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -80,13 +79,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(String currentUsername, String newUsername, String newEmail, boolean isNonLocked,
-            boolean isActive)
-            throws UserNotFoundException, UsernameAlreadyExistsException, EmailAlreadyExistsException, IOException {
+    public User updateUser(String currentUsername, String newUsername, String newEmail, String newPassword)
+            throws UserNotFoundException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
         User currentUser = userRepository.findUserByUsername(currentUsername).orElseThrow(UserNotFoundException::new);
         validateUpdatedUsernameAndEmail(newUsername, newEmail, currentUser.getId());
-        currentUser.setEmail(newEmail);
-        currentUser.setUsername(newUsername);
+        if (newEmail != null) { currentUser.setEmail(newEmail); }
+        if (newUsername != null) { currentUser.setUsername(newUsername); }
+        if (newPassword != null) { currentUser.setPassword(newPassword); }
         return userRepository.save(currentUser);
     }
 

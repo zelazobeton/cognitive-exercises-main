@@ -7,9 +7,12 @@ import javax.mail.MessagingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,14 +37,14 @@ public class UserController extends ExceptionHandling {
     private final UserService userService;
     private final JWTTokenProvider jwtTokenProvider;
 
-    @PostMapping("/register")
+    @PostMapping(path = "/register", produces = { "application/json" })
     public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto) throws EntityAlreadyExistsException,
             MessagingException {
         User newUser = userService.register(userDto.getUsername(), userDto.getEmail());
         return new ResponseEntity<>(new UserDto(newUser), HttpStatus.OK);
     }
 
-    @PostMapping("/login")
+    @PostMapping(path = "/login", produces = { "application/json" })
     public ResponseEntity<UserDto> login(@RequestBody UserDto userDto) throws AuthenticationException,
             UserNotFoundException {
         authenticate(userDto.getUsername(), userDto.getPassword());
@@ -49,6 +52,26 @@ public class UserController extends ExceptionHandling {
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         return new ResponseEntity<>(new UserDto(loginUser), jwtHeader, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/updateUser", produces = { "application/json" })
+    @PreAuthorize("hasAuthority('user.update')")
+    public ResponseEntity<UserDto> updateUser(@AuthenticationPrincipal User user, @RequestBody UserDto userDto)
+            throws UserNotFoundException, EntityAlreadyExistsException {
+        User updatedUser = userService.updateUser(user.getUsername(), userDto.getUsername(), userDto.getEmail(),
+                userDto.getPassword());
+        return new ResponseEntity<>(new UserDto(updatedUser), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/rolesCheckRead", produces = { "application/json" })
+    public ResponseEntity<String> rolesCheckRead() {
+        return new ResponseEntity<>("rolesCheckRead endpoint accessed", HttpStatus.OK);
+    }
+
+    @GetMapping("/rolesCheckCreate")
+    @PreAuthorize("hasAuthority('user.create')")
+    public ResponseEntity<String> rolesCheckCreate(@AuthenticationPrincipal User user) {
+        return new ResponseEntity<>("rolesCheckCreate endpoint accessed", HttpStatus.OK);
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
