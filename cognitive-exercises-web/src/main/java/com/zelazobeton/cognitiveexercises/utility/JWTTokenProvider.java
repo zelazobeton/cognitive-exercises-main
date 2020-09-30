@@ -5,6 +5,7 @@ import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.EXPI
 import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.TOKEN_CANNOT_BE_VERIFIED_MSG;
 import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.TOKEN_ISSUER;
 
+import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 
@@ -36,9 +38,10 @@ public class JWTTokenProvider {
                 .sign(HMAC512(secret.getBytes()));
     }
 
-    public Authentication getAuthentication(String username, HttpServletRequest request) {
+    public Authentication getAuthentication(String username, HttpServletRequest request,
+            Collection<? extends GrantedAuthority> authorities) {
         UsernamePasswordAuthenticationToken userPasswordAuthToken =
-                new UsernamePasswordAuthenticationToken(username, null);
+                new UsernamePasswordAuthenticationToken(username, null, authorities);
         userPasswordAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return userPasswordAuthToken;
     }

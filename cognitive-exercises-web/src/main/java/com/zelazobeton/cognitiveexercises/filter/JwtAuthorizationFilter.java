@@ -6,6 +6,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -13,10 +15,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.zelazobeton.cognitiveexercieses.domain.security.Role;
+import com.zelazobeton.cognitiveexercieses.domain.security.User;
+import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
+import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
 import com.zelazobeton.cognitiveexercises.utility.JWTTokenProvider;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private JWTTokenProvider jwtTokenProvider;
+    private final JWTTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
-    public JwtAuthorizationFilter(JWTTokenProvider jwtTokenProvider) {
+    public JwtAuthorizationFilter(JWTTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -63,11 +73,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String token = authorizationHeader.substring(TOKEN_PREFIX.length());
         String username = jwtTokenProvider.getSubject(token);
         if (jwtTokenProvider.isTokenValid(username, token)) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(username, request);
+            Set<? extends GrantedAuthority> authorities = getUserAuthorities(username);
+            Authentication authentication = jwtTokenProvider.getAuthentication(username, request, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
             SecurityContextHolder.clearContext();
         }
+    }
+
+    private Set<? extends GrantedAuthority> getUserAuthorities(String username) {
+        User user = userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        return user.getRoles().stream()
+                .map(Role::getAuthorities)
+                .flatMap(Set::stream)
+                .map(auth -> new SimpleGrantedAuthority(auth.getPermission()))
+                .collect(Collectors.toSet());
     }
 
 }
