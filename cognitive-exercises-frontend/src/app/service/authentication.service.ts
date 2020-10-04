@@ -6,10 +6,10 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 import {isDefined} from '@angular/compiler/src/util';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class AuthenticationService {
-  private readonly host = environment.apiUrl;
   private readonly tokenKey = environment.storageTokenKey;
+  readonly host = environment.apiUrl;
   private token: string;
   private loggedInUsername: string;
   private jwtHelperService = new JwtHelperService();
@@ -48,11 +48,12 @@ export class AuthenticationService {
     return JSON.parse(localStorage.getItem('user'));
   }
 
-  public loadToken(): void {
+  private loadToken(): void {
     this.token = localStorage.getItem(this.tokenKey);
   }
 
   public getToken(): string {
+    this.loadToken();
     return this.token;
   }
 

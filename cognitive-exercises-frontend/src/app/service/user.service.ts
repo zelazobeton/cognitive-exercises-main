@@ -6,7 +6,7 @@ import { UserDto } from '../model/user-dto';
 import {CustomHttpResponse} from '../model/custom-http-response';
 import {UserScoringDto} from "../model/user-scoring-dto";
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class UserService {
   private host = environment.apiUrl;
 
