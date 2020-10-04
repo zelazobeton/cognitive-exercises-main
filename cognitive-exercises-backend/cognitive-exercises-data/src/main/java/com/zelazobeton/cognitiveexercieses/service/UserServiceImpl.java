@@ -2,6 +2,7 @@ package com.zelazobeton.cognitiveexercieses.service;
 
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -123,6 +124,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         log.debug("New user password: " + password);
         emailService.sendNewPasswordEmail(user.getUsername(), password, user.getEmail());
+    }
+
+    @Override
+    public void deleteUser(User user) throws IOException {
+        userRepository.deleteById(user.getId());
     }
 
     private void setNewEmail(User currentUser, String newEmail)

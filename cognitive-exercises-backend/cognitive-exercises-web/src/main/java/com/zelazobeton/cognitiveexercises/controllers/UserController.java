@@ -3,6 +3,7 @@ package com.zelazobeton.cognitiveexercises.controllers;
 import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.OK;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +43,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(path = "/user")
 public class UserController extends ExceptionHandling {
     public static final String EMAIL_WITH_PASSWORD_SENT = "Email with new password was sent to: ";
+    public static final String USER_DELETED_SUCCESSFULLY = "User deleted successfully";
+
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JWTTokenProvider jwtTokenProvider;
@@ -77,11 +81,18 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(usersScoringList, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/reset-password")
+    @PostMapping(path = "/reset-password")
     public ResponseEntity<HttpResponse> resetPassword(@RequestBody String email) throws MessagingException,
             EmailNotFoundException {
         userService.resetPassword(email);
         return new ResponseEntity<>(new HttpResponse(OK, EMAIL_WITH_PASSWORD_SENT + email), OK);
+    }
+
+    @DeleteMapping("/delete/{username}")
+    @PreAuthorize("hasAuthority('user.delete')")
+    public ResponseEntity<HttpResponse> deleteUser(@AuthenticationPrincipal User user) throws IOException {
+        userService.deleteUser(user);
+        return new ResponseEntity<>(new HttpResponse(OK, USER_DELETED_SUCCESSFULLY), OK);
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {

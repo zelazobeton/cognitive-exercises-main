@@ -43,7 +43,7 @@ public class BootstrapDb implements CommandLineRunner {
         Role userRole = Role.builder().name(USER).build();
 
         adminRole.setAuthorities(Set.of(createUser, updateUser, readUser, deleteUser));
-        userRole.setAuthorities(Set.of(readUser, updateUser));
+        userRole.setAuthorities(Set.of(readUser, updateUser, deleteUser));
         roleRepository.saveAll(Arrays.asList(adminRole, userRole));
 
         log.debug("Authorities Loaded: " + authorityRepository.count());

@@ -1,5 +1,6 @@
 package com.zelazobeton.cognitiveexercieses.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -24,4 +25,6 @@ public interface UserService extends UserDetailsService {
     List<UserScoringDto> getUsersScoringList();
 
     void resetPassword(String email) throws MessagingException;
+
+    void deleteUser(User user) throws IOException;
 }
