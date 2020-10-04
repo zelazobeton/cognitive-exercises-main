@@ -1,6 +1,7 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
 import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.JWT_TOKEN_HEADER;
+import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 
@@ -23,12 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
+import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.UserDto;
 import com.zelazobeton.cognitiveexercieses.model.UserScoringDto;
 import com.zelazobeton.cognitiveexercieses.service.UserService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
+import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.utility.JWTTokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping(path = "/user")
 public class UserController extends ExceptionHandling {
+    public static final String EMAIL_WITH_PASSWORD_SENT = "Email with new password was sent to: ";
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JWTTokenProvider jwtTokenProvider;
@@ -71,6 +75,13 @@ public class UserController extends ExceptionHandling {
     public ResponseEntity<List<UserScoringDto>> getAllUsersScorings() {
         List<UserScoringDto> usersScoringList = userService.getUsersScoringList();
         return new ResponseEntity<>(usersScoringList, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/reset-password")
+    public ResponseEntity<HttpResponse> resetPassword(@RequestBody String email) throws MessagingException,
+            EmailNotFoundException {
+        userService.resetPassword(email);
+        return new ResponseEntity<>(new HttpResponse(OK, EMAIL_WITH_PASSWORD_SENT + email), OK);
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {

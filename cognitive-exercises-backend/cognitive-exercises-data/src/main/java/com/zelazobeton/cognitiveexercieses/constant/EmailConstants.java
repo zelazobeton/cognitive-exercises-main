@@ -1,6 +1,7 @@
 package com.zelazobeton.cognitiveexercieses.constant;
 
 public class EmailConstants {
+    public static final String NO_USER_FOUND_BY_EMAIL = "There is no registered user with email: ";
     public static final String SIMPLE_MAIL_TRANSFER_PROTOCOL = "smtps";
     public static final String USERNAME = "cognitive.ex@gmail.com";
     public static final String PASSWORD = "cognitive.ex123";

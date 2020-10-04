@@ -20,6 +20,7 @@ import com.zelazobeton.cognitiveexercieses.domain.security.Role;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
 import com.zelazobeton.cognitiveexercieses.exception.EmailAlreadyExistsException;
+import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.RoleNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UsernameAlreadyExistsException;
@@ -112,6 +113,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserScoringDto> getUsersScoringList() {
         return userRepository.findAll().stream().map(user -> new UserScoringDto(user)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
+        User user = userRepository.findUserByEmail(email).orElseThrow(EmailNotFoundException::new);
+        String password = generatePassword();
+        user.setPassword(encodePassword(password));
+        userRepository.save(user);
+        log.debug("New user password: " + password);
+        emailService.sendNewPasswordEmail(user.getUsername(), password, user.getEmail());
     }
 
     private void setNewEmail(User currentUser, String newEmail)
