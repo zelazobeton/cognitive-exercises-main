@@ -2,6 +2,8 @@ package com.zelazobeton.cognitiveexercises.controllers;
 
 import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.JWT_TOKEN_HEADER;
 
+import java.util.List;
+
 import javax.mail.MessagingException;
 
 import org.springframework.http.HttpHeaders;
@@ -12,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +26,7 @@ import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
 import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.UserDto;
+import com.zelazobeton.cognitiveexercieses.model.UserScoringDto;
 import com.zelazobeton.cognitiveexercieses.service.UserService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.utility.JWTTokenProvider;
@@ -59,9 +63,14 @@ public class UserController extends ExceptionHandling {
     public ResponseEntity<UserDto> updateUser(@AuthenticationPrincipal User user,
             @RequestParam("username") String username, @RequestParam("email") String email)
             throws UserNotFoundException, EntityAlreadyExistsException {
-        System.out.println("@@@ LoggedInUser: " + user.getUsername());
         User updatedUser = userService.updateUser(user.getUsername(), username, email);
         return new ResponseEntity<>(new UserDto(updatedUser), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/scoring-list", produces = { "application/json" })
+    public ResponseEntity<List<UserScoringDto>> getAllUsersScorings() {
+        List<UserScoringDto> usersScoringList = userService.getUsersScoringList();
+        return new ResponseEntity<>(usersScoringList, HttpStatus.OK);
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {

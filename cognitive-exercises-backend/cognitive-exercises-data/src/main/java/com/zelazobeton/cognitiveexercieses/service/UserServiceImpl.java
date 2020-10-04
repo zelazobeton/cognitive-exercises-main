@@ -3,7 +3,9 @@ package com.zelazobeton.cognitiveexercieses.service;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 
@@ -21,6 +23,7 @@ import com.zelazobeton.cognitiveexercieses.exception.EmailAlreadyExistsException
 import com.zelazobeton.cognitiveexercieses.exception.RoleNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UsernameAlreadyExistsException;
+import com.zelazobeton.cognitiveexercieses.model.UserScoringDto;
 import com.zelazobeton.cognitiveexercieses.repository.RoleRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
 
@@ -104,6 +107,11 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(email)) {
             throw new EmailAlreadyExistsException(email);
         }
+    }
+
+    @Override
+    public List<UserScoringDto> getUsersScoringList() {
+        return userRepository.findAll().stream().map(user -> new UserScoringDto(user)).collect(Collectors.toList());
     }
 
     private void setNewEmail(User currentUser, String newEmail)
