@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
-import {User} from '../model/user';
+import {UserDto} from '../model/user-dto';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {isDefined} from "@angular/compiler/src/util";
+import {isDefined} from '@angular/compiler/src/util';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class AuthenticationService {
   private readonly host = environment.apiUrl;
   private readonly tokenKey = environment.storageTokenKey;
@@ -19,13 +17,13 @@ export class AuthenticationService {
   constructor(private http: HttpClient) {
   }
 
-  public login(user: User): Observable<HttpResponse<any> | HttpErrorResponse> {
+  public login(user: UserDto): Observable<HttpResponse<any> | HttpErrorResponse> {
     return this.http.post<HttpResponse<any> | HttpErrorResponse>(
       `${this.host}/user/login`, user, {observe: `response`});
   }
 
-  public register(user: User): Observable<User | HttpErrorResponse> {
-    return this.http.post<User | HttpErrorResponse>(
+  public register(user: UserDto): Observable<UserDto | HttpErrorResponse> {
+    return this.http.post<UserDto | HttpErrorResponse>(
       `${this.host}/user/register`, user, {observe: 'body'});
   }
 
@@ -42,11 +40,11 @@ export class AuthenticationService {
     localStorage.setItem(this.tokenKey, token);
   }
 
-  public addUserToLocalStorage(user: User): void {
+  public addUserToLocalStorage(user: UserDto): void {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  public getUserFromLocalStorage(user: User): User {
+  public getUserFromLocalStorage(user: UserDto): UserDto {
     return JSON.parse(localStorage.getItem('user'));
   }
 

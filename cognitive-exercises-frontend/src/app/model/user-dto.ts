@@ -1,4 +1,4 @@
-export class User {
+export class UserDto {
   public username: string;
   public email: string;
   public lastLoginDate: Date;
