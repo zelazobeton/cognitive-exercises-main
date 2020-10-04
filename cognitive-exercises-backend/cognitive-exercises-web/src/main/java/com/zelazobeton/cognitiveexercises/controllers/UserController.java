@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
@@ -30,22 +31,22 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/")
+@RequestMapping(path = "/user")
 public class UserController extends ExceptionHandling {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JWTTokenProvider jwtTokenProvider;
 
     @PostMapping(path = "/register", produces = { "application/json" })
-    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto) throws EntityAlreadyExistsException,
-            MessagingException {
+    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto)
+            throws EntityAlreadyExistsException, MessagingException {
         User newUser = userService.register(userDto.getUsername(), userDto.getEmail());
         return new ResponseEntity<>(new UserDto(newUser), HttpStatus.OK);
     }
 
     @PostMapping(path = "/login", produces = { "application/json" })
-    public ResponseEntity<UserDto> login(@RequestBody UserDto userDto) throws AuthenticationException,
-            UserNotFoundException {
+    public ResponseEntity<UserDto> login(@RequestBody UserDto userDto)
+            throws AuthenticationException, UserNotFoundException {
         authenticate(userDto.getUsername(), userDto.getPassword());
         User loginUser = userService.findUserByUsername(userDto.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
@@ -53,12 +54,13 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(new UserDto(loginUser), jwtHeader, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/updateUser", produces = { "application/json" })
+    @PostMapping(path = "/update", produces = { "application/json" })
     @PreAuthorize("hasAuthority('user.update')")
-    public ResponseEntity<UserDto> updateUser(@AuthenticationPrincipal User user, @RequestBody UserDto userDto)
+    public ResponseEntity<UserDto> updateUser(@AuthenticationPrincipal User user,
+            @RequestParam("username") String username, @RequestParam("email") String email)
             throws UserNotFoundException, EntityAlreadyExistsException {
-        User updatedUser = userService.updateUser(user.getUsername(), userDto.getUsername(), userDto.getEmail(),
-                userDto.getPassword());
+        System.out.println("@@@ LoggedInUser: " + user.getUsername());
+        User updatedUser = userService.updateUser(user.getUsername(), username, email);
         return new ResponseEntity<>(new UserDto(updatedUser), HttpStatus.OK);
     }
 

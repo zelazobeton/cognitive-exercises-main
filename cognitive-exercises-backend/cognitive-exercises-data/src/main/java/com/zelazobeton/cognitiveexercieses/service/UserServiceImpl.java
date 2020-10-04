@@ -37,14 +37,14 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final LoginAttemptServiceImpl loginAttemptService;
-    private final EmailServiceImpl emailService;
+    private final EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Getting User info via JPA");
 
-        User user = userRepository.findUserByUsername(username).orElseThrow(() ->
-                new UsernameNotFoundException("Username: " + username + " not found"));
+        User user = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
         lockUserIfHasExceededMaxFailedLoginAttempts(user);
         user.setLastLoginDateDisplay(user.getLastLoginDate());
         user.setLastLoginDate(new Date());
@@ -54,8 +54,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void lockUserIfHasExceededMaxFailedLoginAttempts(User user) {
-        if(user.isNotLocked()) {
-            if(loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
+        if (user.isNotLocked()) {
+            if (loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
                 log.debug(user.getUsername() + " has exceeded max number of login attempts");
                 user.setNotLocked(false);
             } else {
@@ -67,25 +67,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(String username, String email) throws UsernameAlreadyExistsException, EmailAlreadyExistsException,
-            MessagingException {
+    public User register(String username, String email)
+            throws UsernameAlreadyExistsException, EmailAlreadyExistsException, MessagingException {
         validateNewUsernameAndEmail(username, email);
         String password = generatePassword();
         Role userRole = roleRepository.findByName(USER).orElseThrow(RoleNotFoundException::new);
-        User newUser = User.builder().username(username).email(email).password(encodePassword(password)).role(userRole).build();
+        User newUser = User.builder()
+                .username(username)
+                .email(email)
+                .password(encodePassword(password))
+                .role(userRole)
+                .build();
         emailService.sendNewPasswordEmail(username, password, email);
         log.debug(username + " password: " + password);
         return userRepository.save(newUser);
     }
 
     @Override
-    public User updateUser(String currentUsername, String newUsername, String newEmail, String newPassword)
+    public User updateUser(String currentUsername, String newUsername, String newEmail)
             throws UserNotFoundException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
         User currentUser = userRepository.findUserByUsername(currentUsername).orElseThrow(UserNotFoundException::new);
-        validateUpdatedUsernameAndEmail(newUsername, newEmail, currentUser.getId());
-        if (newEmail != null) { currentUser.setEmail(newEmail); }
-        if (newUsername != null) { currentUser.setUsername(newUsername); }
-        if (newPassword != null) { currentUser.setPassword(newPassword); }
+        setNewUsername(currentUser, newUsername);
+        setNewEmail(currentUser, newEmail);
         return userRepository.save(currentUser);
     }
 
@@ -103,15 +106,30 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void validateUpdatedUsernameAndEmail(String username, String email, Long currentUserId) {
-        Optional<User> userByNewUsername = userRepository.findUserByUsername(username);
-        if (userByNewUsername.isPresent() && !userByNewUsername.get().getId().equals(currentUserId)) {
-            throw new UsernameAlreadyExistsException(username);
+    private void setNewEmail(User currentUser, String newEmail)
+            throws UsernameAlreadyExistsException, IllegalArgumentException {
+        if (newEmail == null || newEmail.equals("")) {
+            return;
         }
-        Optional<User> userByNewEmail = userRepository.findUserByEmail(email);
-        if (userByNewEmail.isPresent() && !userByNewEmail.get().getId().equals(currentUserId)) {
-            throw new EmailAlreadyExistsException(email);
+        if (!emailService.validateEmail(newEmail)) {
+            throw new IllegalArgumentException(newEmail + " is not a valid email address.");
         }
+        Optional<User> userByNewEmail = userRepository.findUserByEmail(newEmail);
+        if (userByNewEmail.isPresent() && !userByNewEmail.get().getId().equals(currentUser.getId())) {
+            throw new EmailAlreadyExistsException(newEmail);
+        }
+        currentUser.setEmail(newEmail);
+    }
+
+    private void setNewUsername(User currentUser, String newUsername) throws UsernameAlreadyExistsException {
+        if (newUsername == null || newUsername.equals("")) {
+            return;
+        }
+        Optional<User> userByNewUsername = userRepository.findUserByUsername(newUsername);
+        if (userByNewUsername.isPresent() && !userByNewUsername.get().getId().equals(currentUser.getId())) {
+            throw new UsernameAlreadyExistsException(newUsername);
+        }
+        currentUser.setUsername(newUsername);
     }
 
     private String encodePassword(String password) {

@@ -8,7 +8,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 
 import com.sun.mail.smtp.SMTPTransport;
@@ -44,5 +44,10 @@ public class EmailServiceImpl implements EmailService{
         properties.put(EmailConstants.SMTP_STARTTLS_ENABLE, true);
         properties.put(EmailConstants.SMTP_STARTTLS_REQUIRED, true);
         return Session.getInstance(properties, null);
+    }
+
+    public boolean validateEmail(String email) {
+        EmailValidator validator = EmailValidator.getInstance();
+        return validator.isValid(email);
     }
 }

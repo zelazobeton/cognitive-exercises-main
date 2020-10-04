@@ -11,14 +11,7 @@ spring:
       ddl-auto: create
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     database: mysql
-    properties:
-      javax:
-        persistence:
-          schema-generation:
-            create-source: metadata
-            scripts:
-              action: create
-              create-target: database_create.sql
+
 logging:
   level:
     com.zelazobeton.cognitiveexercieses: DEBUG

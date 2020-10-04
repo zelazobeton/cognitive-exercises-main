@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.zelazobeton.cognitiveexercieses.domain.security.Role;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
@@ -42,9 +43,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+            throws ServletException, IOException, JWTVerificationException {
         try {
             tryAuthenticateRequest(request, response);
+        }
+        catch (JWTVerificationException ex) {
+            log.debug(ex.toString());
         }
         finally {
             filterChain.doFilter(request, response);
@@ -69,7 +73,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         authenticateRequest(request, authorizationHeader);
     }
 
-    private void authenticateRequest(HttpServletRequest request, String authorizationHeader) {
+    private void authenticateRequest(HttpServletRequest request, String authorizationHeader) throws
+            JWTVerificationException {
         String token = authorizationHeader.substring(TOKEN_PREFIX.length());
         String username = jwtTokenProvider.getSubject(token);
         if (jwtTokenProvider.isTokenValid(username, token)) {

@@ -22,13 +22,21 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
+import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
+import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JWTTokenProvider {
 
     @Value("${jwt.secret}")
     private String secret;
+
+    private final UserRepository userRepository;
 
     public String generateJwtToken(UserPrincipal userPrincipal) {
         return JWT.create().withIssuer(TOKEN_ISSUER)
@@ -40,23 +48,24 @@ public class JWTTokenProvider {
 
     public Authentication getAuthentication(String username, HttpServletRequest request,
             Collection<? extends GrantedAuthority> authorities) {
+        User user = userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
         UsernamePasswordAuthenticationToken userPasswordAuthToken =
-                new UsernamePasswordAuthenticationToken(username, null, authorities);
+                new UsernamePasswordAuthenticationToken(user, null, authorities);
         userPasswordAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return userPasswordAuthToken;
     }
 
-    public boolean isTokenValid(String username, String token) {
+    public boolean isTokenValid(String username, String token) throws JWTVerificationException{
         JWTVerifier verifier = getJWTVerifier();
         return StringUtils.isNotEmpty(username) && !isTokenExpired(verifier, token);
     }
 
-    public String getSubject(String token) {
+    public String getSubject(String token) throws JWTVerificationException{
         JWTVerifier verifier = getJWTVerifier();
         return verifier.verify(token).getSubject();
     }
 
-    private boolean isTokenExpired(JWTVerifier verifier, String token) {
+    private boolean isTokenExpired(JWTVerifier verifier, String token) throws JWTVerificationException{
         Date expiration = verifier.verify(token).getExpiresAt();
         return expiration.before(new Date());
     }
