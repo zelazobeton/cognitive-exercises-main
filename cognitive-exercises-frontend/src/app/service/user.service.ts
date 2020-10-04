@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { UserDto } from '../model/user-dto';
 import {CustomHttpResponse} from '../model/custom-http-response';
+import {UserScoringDto} from "../model/user-scoring-dto";
 
 @Injectable({providedIn: 'root'})
 export class UserService {
@@ -11,8 +12,8 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  public getUsers(): Observable<UserDto[] | HttpErrorResponse> {
-    return this.http.get<UserDto[]>(`${this.host}/user/list`);
+  public getUsers(): Observable<UserScoringDto[] | HttpErrorResponse> {
+    return this.http.get<UserScoringDto[]>(`${this.host}/user/list`);
   }
 
   public updateUser(userForm: FormData): Observable<UserDto> {
@@ -20,11 +21,11 @@ export class UserService {
   }
 
   public resetPassword(email: string): Observable<CustomHttpResponse> {
-    return this.http.get<CustomHttpResponse>(`${this.host}/user/resetpassword/${email}`);
+    return this.http.post<CustomHttpResponse>(`${this.host}/user/reset-password`, email);
   }
 
-  public deleteUser(username: string): Observable<CustomHttpResponse> {
-    return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete/${username}`);
+  public deleteUser(): Observable<CustomHttpResponse> {
+    return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete`);
   }
 
   public addUsersToLocalCache(users: UserDto[]): void {

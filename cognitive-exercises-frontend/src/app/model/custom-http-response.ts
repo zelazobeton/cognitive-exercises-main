@@ -1,4 +1,6 @@
+import {HttpStatus} from './http-status';
+
 export interface CustomHttpResponse {
-  httpStatus: string;
+  httpStatus: HttpStatus;
   message: string;
 }
