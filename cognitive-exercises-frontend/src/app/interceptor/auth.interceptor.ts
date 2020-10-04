@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {AuthenticationService} from '../service/authentication.service';
-import {NonAuthenticatedUrlService} from './non-authenticated-url.service';
+import {NonAuthenticatedUrlService} from '../service/non-authenticated-url.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

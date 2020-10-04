@@ -66,6 +66,12 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(new UserDto(loginUser), jwtHeader, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/scoring-list", produces = { "application/json" })
+    public ResponseEntity<List<UserScoringDto>> getAllUsersScorings() {
+        List<UserScoringDto> usersScoringList = userService.getUsersScoringList();
+        return new ResponseEntity<>(usersScoringList, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/update", produces = { "application/json" })
     @PreAuthorize("hasAuthority('user.update')")
     public ResponseEntity<UserDto> updateUser(@AuthenticationPrincipal User user,
@@ -73,12 +79,6 @@ public class UserController extends ExceptionHandling {
             throws UserNotFoundException, EntityAlreadyExistsException {
         User updatedUser = userService.updateUser(user.getUsername(), username, email);
         return new ResponseEntity<>(new UserDto(updatedUser), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/scoring-list", produces = { "application/json" })
-    public ResponseEntity<List<UserScoringDto>> getAllUsersScorings() {
-        List<UserScoringDto> usersScoringList = userService.getUsersScoringList();
-        return new ResponseEntity<>(usersScoringList, HttpStatus.OK);
     }
 
     @PostMapping(path = "/reset-password")
