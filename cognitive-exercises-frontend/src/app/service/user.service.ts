@@ -28,13 +28,13 @@ export class UserService {
     return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete`);
   }
 
-  public addUsersToLocalCache(users: UserDto[]): void {
-    localStorage.setItem('users', JSON.stringify(users));
+  public addUserScoringsToLocalCache(userScorings: UserScoringDto[]): void {
+    localStorage.setItem('userScorings', JSON.stringify(userScorings));
   }
 
-  public getUsersFromLocalCache(): UserDto[] {
-    if (localStorage.getItem('users')) {
-      return JSON.parse(localStorage.getItem('users'));
+  public getUserScoringsFromLocalCache(): UserScoringDto[] {
+    if (localStorage.getItem('userScorings')) {
+      return JSON.parse(localStorage.getItem('userScorings'));
     }
     return null;
   }
