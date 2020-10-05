@@ -8,12 +8,18 @@ import {UserService} from './service/user.service';
 import {NonAuthenticatedUrlService} from './service/non-authenticated-url.service';
 import {AuthInterceptor} from './interceptor/auth.interceptor';
 import {AuthenticationGuard} from './guard/authentication.guard';
-import {NotificationService} from './service/notification.service';
-import {NotificationModule} from './notification.module';
+import {NotificationService} from '../notification/notification.service';
+import {NotificationModule} from '../notification/notification.module';
+import { HomeComponent } from './home/home.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import {LoginDropdownComponent} from './navbar/login-dropdown/login-dropdown.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    NavbarComponent,
+    LoginDropdownComponent
   ],
   imports: [
     AppRoutingModule,
