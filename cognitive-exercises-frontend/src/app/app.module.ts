@@ -13,19 +13,23 @@ import {NotificationModule} from '../notification/notification.module';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import {LoginDropdownComponent} from './navbar/login-dropdown/login-dropdown.component';
+import { RegisterComponent } from './register/register.component';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     NavbarComponent,
-    LoginDropdownComponent
+    LoginDropdownComponent,
+    RegisterComponent
   ],
   imports: [
     AppRoutingModule,
     BrowserModule,
     HttpClientModule,
-    NotificationModule
+    ReactiveFormsModule,
+    NotificationModule,
   ],
   providers: [AuthenticationGuard, AuthenticationService, NonAuthenticatedUrlService, UserService, NotificationService,
     {

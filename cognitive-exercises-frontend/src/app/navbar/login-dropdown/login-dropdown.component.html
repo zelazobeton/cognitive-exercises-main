@@ -3,12 +3,19 @@
     Login
   </a>
   <div class="dropdown-menu dropdown-menu-right">
-    <form class="form-horizontal">
-      <input class="form-control login" type="text" name="username" placeholder="Username"><br>
-      <input class="form-control login" type="password" name="password" placeholder="Password"><br>
-      <input class="btn btn-primary" type="submit" name="submit" value="Login">
+    <form class="form-horizontal" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input class="form-control login" type="text" name="username" formControlName="username" placeholder="Username"><br>
+      <input class="form-control login" type="password" name="password" formControlName="password" placeholder="Password"><br>
+<!--      <input class="btn btn-primary" [disabled]="!loginForm.valid || showLoading" type="submit" name="submit" value="Login">-->
+
+      <button type="submit" [disabled]="!loginForm.valid || showLoading" name="button" class="btn btn-primary">
+        <i *ngIf="showLoading" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
+        <span *ngIf="showLoading">Loading...</span>
+        <span *ngIf="!showLoading">Login</span>
+      </button>
+
     </form>
-    <a>Forgot password</a>
-  </div>
+    <a [routerLink]="['forgot']">Forgot password</a>
+</div>
 </li>
 

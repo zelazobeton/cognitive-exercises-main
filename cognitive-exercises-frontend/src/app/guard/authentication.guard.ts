@@ -18,5 +18,4 @@ export class AuthenticationGuard implements CanActivate {
     this.notificationService.notify(NotificationType.ERROR, `You need to log in to access this page`);
     return false;
   }
-
 }

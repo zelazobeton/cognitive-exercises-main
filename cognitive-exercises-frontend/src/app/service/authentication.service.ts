@@ -1,10 +1,13 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {UserDto} from '../model/user-dto';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {isDefined} from '@angular/compiler/src/util';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {LoginForm} from '../model/login-form';
+import {catchError, tap} from 'rxjs/operators';
+import {HeaderType} from '../enum/header-type.enum';
 
 @Injectable()
 export class AuthenticationService {
@@ -17,9 +20,21 @@ export class AuthenticationService {
   constructor(private http: HttpClient) {
   }
 
-  public login(user: UserDto): Observable<HttpResponse<any> | HttpErrorResponse> {
-    return this.http.post<HttpResponse<any> | HttpErrorResponse>(
-      `${this.host}/user/login`, user, {observe: `response`});
+  public login(loginForm: LoginForm): Observable<HttpResponse<any> | HttpErrorResponse> {
+    return this.http.post<HttpResponse<UserDto> | HttpErrorResponse>(
+      `${this.host}/user/login`, loginForm, {observe: `response`})
+      .pipe(
+        catchError(errorRes => {
+          return throwError(errorRes);
+        }),
+        tap(response => {
+          const token = response.headers.get(HeaderType.JWT_TOKEN);
+          this.saveToken(token);
+          if (response instanceof HttpResponse) {
+            this.addUserToLocalStorage(response.body.body);
+          }
+        })
+      );
   }
 
   public register(user: UserDto): Observable<UserDto | HttpErrorResponse> {
@@ -44,7 +59,7 @@ export class AuthenticationService {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  public getUserFromLocalStorage(user: UserDto): UserDto {
+  public getUserFromLocalStorage(): UserDto {
     return JSON.parse(localStorage.getItem('user'));
   }
 
