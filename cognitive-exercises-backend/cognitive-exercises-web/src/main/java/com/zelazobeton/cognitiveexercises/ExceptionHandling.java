@@ -18,6 +18,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,11 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<HttpResponse> badCredentialsException() {
+        return createHttpResponse(BAD_REQUEST, INCORRECT_CREDENTIALS);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<HttpResponse> authenticationException(AuthenticationException e) {
         return createHttpResponse(BAD_REQUEST, INCORRECT_CREDENTIALS);
     }
 
