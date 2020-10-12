@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import {Observable, Subject, throwError} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {UserDto} from '../model/user-dto';
 import {JwtHelperService} from '@auth0/angular-jwt';
@@ -8,16 +8,18 @@ import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http'
 import {LoginForm} from '../model/login-form';
 import {catchError, tap} from 'rxjs/operators';
 import {HeaderType} from '../enum/header-type.enum';
+import {NotificationType} from '../../notification/notification-type.enum';
+import {NotificationService} from '../../notification/notification.service';
 
 @Injectable()
 export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
   readonly host = environment.apiUrl;
   private token: string;
-  private loggedInUsername: string;
+  public loggedInUser: Subject<UserDto> = new Subject<UserDto>();
   private jwtHelperService = new JwtHelperService();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private notificationService: NotificationService) {
   }
 
   public login(loginForm: LoginForm): Observable<HttpResponse<any> | HttpErrorResponse> {
@@ -25,16 +27,28 @@ export class AuthenticationService {
       `${this.host}/user/login`, loginForm, {observe: `response`})
       .pipe(
         catchError(errorRes => {
+          console.log('login pipe-catchError');
+          console.log(errorRes);
+          this.sendErrorNotification(NotificationType.ERROR, errorRes.error.message);
           return throwError(errorRes);
         }),
         tap(response => {
           const token = response.headers.get(HeaderType.JWT_TOKEN);
           this.saveToken(token);
           if (response instanceof HttpResponse) {
-            this.addUserToLocalStorage(response.body.body);
+            this.loggedInUser.next(response.body);
+            this.addUserToLocalStorage(response.body);
           }
         })
       );
+  }
+
+  private sendErrorNotification(notificationType: NotificationType, message: string): void {
+    if (message) {
+      this.notificationService.notify(notificationType, message);
+    } else {
+      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
+    }
   }
 
   public register(user: UserDto): Observable<UserDto | HttpErrorResponse> {
@@ -44,7 +58,7 @@ export class AuthenticationService {
 
   public logout(): void {
     this.token = null;
-    this.loggedInUsername = null;
+    this.loggedInUser.next(null);
     localStorage.removeItem('user');
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem('users');
@@ -81,7 +95,7 @@ export class AuthenticationService {
     if (this.jwtHelperService.isTokenExpired(this.token)) {
       return false;
     }
-    this.loggedInUsername = this.jwtHelperService.decodeToken(this.token).sub;
+    this.loggedInUser.next(this.jwtHelperService.decodeToken(this.token).sub);
     return true;
   }
 

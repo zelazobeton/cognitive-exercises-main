@@ -8,13 +8,20 @@
   </ul>
 
   <ul class="navbar-nav ml-auto">
+    <li class="nav-item" *ngIf="usernameLogged != null">
+      <p class="nav-link">Logged in as {{usernameLogged}}</p>
+    </li>
     <li class="nav-item">
       <a class="nav-link" href="#">About us</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="usernameLogged == null">
       <a class="nav-link" href="#">Sign up</a>
     </li>
-    <app-login-dropdown></app-login-dropdown>
+    <app-login-dropdown *ngIf="usernameLogged == null"></app-login-dropdown>
+    <li class="nav-item" *ngIf="usernameLogged != null">
+      <a class="nav-link" href="" (click)="onLogout()">Logout</a>
+<!--      <button type="button" class="btn btn-link" (click)="onLogout()">Logout</button>-->
+    </li>
   </ul>
 </nav>
 

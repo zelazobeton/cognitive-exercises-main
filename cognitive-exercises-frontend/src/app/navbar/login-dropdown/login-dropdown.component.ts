@@ -1,14 +1,10 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Observable, Subscription} from 'rxjs';
 import {LoginForm} from '../../model/login-form';
 import {AuthenticationService} from '../../service/authentication.service';
 import {Router} from '@angular/router';
-import {NotificationService} from '../../../notification/notification.service';
-import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {UserDto} from '../../model/user-dto';
-import {NotificationType} from '../../../notification/notification-type.enum';
-import {HeaderType} from '../../enum/header-type.enum';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-login-dropdown',
@@ -39,14 +35,11 @@ export class LoginDropdownComponent implements OnInit, OnDestroy {
     this.loginForm.reset();
     this.subscriptions.push(
       this.authenticationService.login(loginFormData).subscribe(
-        () => {
-          this.showLoading = false;
-        }
-      )
+        () => this.showLoading = false,
+        (error: HttpErrorResponse) => this.showLoading = false
+        )
     );
   }
-
-
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
