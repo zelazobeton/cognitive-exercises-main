@@ -5,7 +5,7 @@ import {UserDto} from '../model/user-dto';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {isDefined} from '@angular/compiler/src/util';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {LoginForm} from '../model/login-form';
+import {AuthForm, RegisterForm} from '../model/auth-form';
 import {catchError, tap} from 'rxjs/operators';
 import {HeaderType} from '../enum/header-type.enum';
 import {NotificationType} from '../../notification/notification-type.enum';
@@ -22,13 +22,11 @@ export class AuthenticationService {
   constructor(private http: HttpClient, private notificationService: NotificationService) {
   }
 
-  public login(loginForm: LoginForm): Observable<HttpResponse<any> | HttpErrorResponse> {
+  public login(loginForm: AuthForm): Observable<HttpResponse<any> | HttpErrorResponse> {
     return this.http.post<HttpResponse<UserDto> | HttpErrorResponse>(
       `${this.host}/user/login`, loginForm, {observe: `response`})
       .pipe(
         catchError(errorRes => {
-          console.log('login pipe-catchError');
-          console.log(errorRes);
           this.sendErrorNotification(NotificationType.ERROR, errorRes.error.message);
           return throwError(errorRes);
         }),
@@ -51,9 +49,18 @@ export class AuthenticationService {
     }
   }
 
-  public register(user: UserDto): Observable<UserDto | HttpErrorResponse> {
+  public register(registerForm: RegisterForm): Observable<UserDto | HttpErrorResponse> {
     return this.http.post<UserDto | HttpErrorResponse>(
-      `${this.host}/user/register`, user, {observe: 'body'});
+      `${this.host}/user/register`, registerForm, {observe: 'body'})
+      .pipe(
+        catchError(errorRes => {
+          return throwError(errorRes);
+        }),
+        tap((response: UserDto) => {
+          this.notificationService.notify(NotificationType.SUCCESS, `A new account was created for ${response.username}.
+          Please check your email for password to log in.`);
+        })
+      );
   }
 
   public logout(): void {

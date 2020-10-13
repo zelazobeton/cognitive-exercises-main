@@ -15,11 +15,13 @@ import { NavbarComponent } from './navbar/navbar.component';
 import {LoginDropdownComponent} from './navbar/login-dropdown/login-dropdown.component';
 import { RegisterComponent } from './register/register.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import {LoginPageComponent} from './login-page/login-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    LoginPageComponent,
     NavbarComponent,
     LoginDropdownComponent,
     RegisterComponent
