@@ -2,9 +2,9 @@ import {Component, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Observable, Subscription} from 'rxjs';
 import {AuthForm} from '../../model/auth-form';
-import {AuthenticationService} from '../../service/authentication.service';
 import {Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
+import {AuthenticationService} from '../../auth/service/authentication.service';
 
 @Component({
   selector: 'app-login-dropdown',

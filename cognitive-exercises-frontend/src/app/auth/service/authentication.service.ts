@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject, throwError} from 'rxjs';
-import {environment} from '../../environments/environment';
-import {UserDto} from '../model/user-dto';
+import {environment} from '../../../environments/environment';
+import {UserDto} from '../../model/user-dto';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {isDefined} from '@angular/compiler/src/util';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {AuthForm, RegisterForm} from '../model/auth-form';
+import {AuthForm, RegisterForm} from '../../model/auth-form';
 import {catchError, tap} from 'rxjs/operators';
 import {HeaderType} from '../enum/header-type.enum';
-import {NotificationType} from '../../notification/notification-type.enum';
-import {NotificationService} from '../../notification/notification.service';
+import {NotificationType} from '../../shared/notification/notification-type.enum';
+import {NotificationService} from '../../shared/notification/notification.service';
 
 @Injectable()
 export class AuthenticationService {

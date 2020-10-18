@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import {AuthenticationService} from '../service/authentication.service';
+import {AuthenticationService} from '../auth/service/authentication.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {UserDto} from '../model/user-dto';
 import {FormControl, FormGroup, Validators} from '@angular/forms';

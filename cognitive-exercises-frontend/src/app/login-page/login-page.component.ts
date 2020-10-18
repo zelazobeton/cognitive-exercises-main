@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import {AuthenticationService} from '../service/authentication.service';
+import {AuthenticationService} from '../auth/service/authentication.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AuthForm, RegisterForm} from '../model/auth-form';
+import {AuthForm} from '../model/auth-form';
 
 @Component({
   selector: 'app-login-page',

@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { UserDto } from '../model/user-dto';
 import {CustomHttpResponse} from '../model/custom-http-response';
-import {UserScoringDto} from "../model/user-scoring-dto";
+import {UserScoringDto} from '../model/user-scoring-dto';
 
 @Injectable()
 export class UserService {
