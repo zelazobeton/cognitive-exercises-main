@@ -12,6 +12,9 @@ import { RegisterComponent } from './register/register.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {LoginPageComponent} from './login-page/login-page.component';
 import {AuthModule} from './auth/auth.module';
+import { ProfileComponent } from './profile/profile.component';
+import { ChangePasswordComponent } from './profile/change-password/change-password.component';
+import { PersonalDataComponent } from './profile/personal-data/personal-data.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,10 @@ import {AuthModule} from './auth/auth.module';
     LoginPageComponent,
     NavbarComponent,
     LoginDropdownComponent,
-    RegisterComponent
+    RegisterComponent,
+    ProfileComponent,
+    ChangePasswordComponent,
+    PersonalDataComponent
   ],
   imports: [
     AppRoutingModule,

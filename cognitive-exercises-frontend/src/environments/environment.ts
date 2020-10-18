@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:8081',
-  storageTokenKey: Math.random().toString(36).substring(10)
+  //storageTokenKey: Math.random().toString(36).substring(10)
+  storageTokenKey: 'storageTokenKey'
 };
 
 /*

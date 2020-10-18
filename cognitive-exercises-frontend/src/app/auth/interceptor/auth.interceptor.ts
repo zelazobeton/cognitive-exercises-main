@@ -17,7 +17,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(httpRequest: HttpRequest<any>, httpHandler: HttpHandler): Observable<HttpEvent<any>> {
     const url = httpRequest.url.substr(this.authenticationService.host.length);
-    console.log('url: ' + url);
     if (this.nonAuthenticatedUrls.contain(url)) {
       return httpHandler.handle(httpRequest);
     }

@@ -5,24 +5,27 @@ import {UserDto} from '../../model/user-dto';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {isDefined} from '@angular/compiler/src/util';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {AuthForm, RegisterForm} from '../../model/auth-form';
+import {AuthForm, ChangePasswordForm, RegisterForm} from '../../model/auth-form';
 import {catchError, tap} from 'rxjs/operators';
 import {HeaderType} from '../enum/header-type.enum';
 import {NotificationType} from '../../shared/notification/notification-type.enum';
 import {NotificationService} from '../../shared/notification/notification.service';
+import {Router} from '@angular/router';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
   readonly host = environment.apiUrl;
   private token: string;
-  public loggedInUser: Subject<UserDto> = new Subject<UserDto>();
+  public loggedInUser: Subject<string>;
   private jwtHelperService = new JwtHelperService();
 
-  constructor(private http: HttpClient, private notificationService: NotificationService) {
+  constructor(private http: HttpClient, private notificationService: NotificationService, private router: Router) {
+    this.loggedInUser = new Subject<string>();
   }
 
   public login(loginForm: AuthForm): Observable<HttpResponse<any> | HttpErrorResponse> {
+    //TODO get rid of 'if (response instanceof HttpResponse)'
     return this.http.post<HttpResponse<UserDto> | HttpErrorResponse>(
       `${this.host}/user/login`, loginForm, {observe: `response`})
       .pipe(
@@ -34,8 +37,8 @@ export class AuthenticationService {
           const token = response.headers.get(HeaderType.JWT_TOKEN);
           this.saveToken(token);
           if (response instanceof HttpResponse) {
-            this.loggedInUser.next(response.body);
             this.addUserToLocalStorage(response.body);
+            this.loggedInUser.next(response.body.username);
           }
         })
       );
@@ -63,12 +66,29 @@ export class AuthenticationService {
       );
   }
 
+  public changePassword(changePasswordForm: ChangePasswordForm) {
+    return this.http.post<UserDto | HttpErrorResponse>(
+      `${this.host}/user/change-password`, changePasswordForm, {observe: 'body'})
+      .pipe(
+        catchError(errorRes => {
+          return throwError(errorRes);
+        }),
+        tap((response: UserDto) => {
+          this.notificationService.notify(NotificationType.SUCCESS, `Password successfully changed.`);
+        })
+      );
+  }
+
   public logout(): void {
+    this.removeUserDataFromApp();
+    this.router.navigateByUrl('/');
+  }
+
+  private removeUserDataFromApp() {
     this.token = null;
     this.loggedInUser.next(null);
     localStorage.removeItem('user');
     localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem('users');
   }
 
   public saveToken(token: string): void {
@@ -96,7 +116,7 @@ export class AuthenticationService {
   public isUserLoggedIn(): boolean {
     this.loadToken();
     if (!this.isTokenValid()) {
-      this.logout();
+      this.removeUserDataFromApp();
       return false;
     }
     if (this.jwtHelperService.isTokenExpired(this.token)) {

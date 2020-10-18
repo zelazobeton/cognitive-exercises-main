@@ -7,3 +7,8 @@ export interface RegisterForm {
   username: string;
   email: string;
 }
+
+export interface ChangePasswordForm {
+  oldPassword: string;
+  password: string;
+}

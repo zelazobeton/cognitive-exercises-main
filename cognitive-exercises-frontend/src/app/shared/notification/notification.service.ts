@@ -9,6 +9,5 @@ export class NotificationService {
 
   public notify(type: NotificationType, message: string) {
     this.notifier.notify(type, message);
-    console.log('notify');
   }
 }

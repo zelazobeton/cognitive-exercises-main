@@ -13,8 +13,7 @@ import {AuthInterceptor} from './interceptor/auth.interceptor';
       multi: true
     }
   ],
-  exports: [
-  ]
+  exports: []
 })
 export class AuthModule {
 }

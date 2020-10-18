@@ -10,14 +10,17 @@ import {Subscription} from 'rxjs';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   private userSub: Subscription;
-  public usernameLogged: string = null;
+  public usernameLogged: string;
 
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(private authenticationService: AuthenticationService) {
+    this.usernameLogged = null;
+  }
 
   ngOnInit() {
-    this.userSub = this.authenticationService.loggedInUser.subscribe((userDto: UserDto) => {
-      this.usernameLogged = userDto == null ? null : userDto.username;
+    this.userSub = this.authenticationService.loggedInUser.subscribe((username: string) => {
+      this.usernameLogged = username == null ? null : username;
     });
+    this.authenticationService.isUserLoggedIn();
   }
 
   ngOnDestroy(): void {
@@ -25,7 +28,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   public onLogout() {
-    console.log('onLogout');
-      this.authenticationService.logout();
+    this.authenticationService.logout();
   }
 }
