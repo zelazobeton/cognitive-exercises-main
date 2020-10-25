@@ -22,6 +22,8 @@ public interface UserService extends UserDetailsService {
 
     User findUserByUsername(String username) throws UserNotFoundException;
 
+    void changePassword(String username, String newPassword) throws UserNotFoundException;
+
     List<UserScoringDto> getUsersScoringList();
 
     void resetPassword(String email) throws MessagingException;

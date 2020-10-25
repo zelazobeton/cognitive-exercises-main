@@ -120,6 +120,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void changePassword(String username, String newPassword) throws UserNotFoundException {
+        User user = userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        user.setPassword(encodePassword(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
     public List<UserScoringDto> getUsersScoringList() {
         return userRepository.findAll().stream().map(user -> new UserScoringDto(user)).collect(Collectors.toList());
     }

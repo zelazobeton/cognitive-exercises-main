@@ -29,6 +29,7 @@ import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
 import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
+import com.zelazobeton.cognitiveexercieses.model.PasswordFormDto;
 import com.zelazobeton.cognitiveexercieses.model.UserDto;
 import com.zelazobeton.cognitiveexercieses.model.UserScoringDto;
 import com.zelazobeton.cognitiveexercieses.service.UserService;
@@ -44,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController extends ExceptionHandling {
     public static final String EMAIL_WITH_PASSWORD_SENT = "Email with new password was sent to: ";
     public static final String USER_DELETED_SUCCESSFULLY = "User deleted successfully";
+    public static final String PASSWORD_CHANGED_SUCCESSFULLY = "Password changed successfully";
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
@@ -66,6 +68,15 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(new UserDto(loginUser), jwtHeader, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/change-password", produces = { "application/json" })
+    @PreAuthorize("hasAuthority('user.update')")
+    public ResponseEntity<HttpResponse> changePassword(@AuthenticationPrincipal User user,
+            @RequestBody PasswordFormDto passwordFormDto) {
+        authenticate(user.getUsername(), passwordFormDto.getOldPassword());
+        userService.changePassword(user.getUsername(), passwordFormDto.getNewPassword());
+        return new ResponseEntity<>(new HttpResponse(OK, PASSWORD_CHANGED_SUCCESSFULLY), OK);
+    }
+
     @GetMapping(path = "/scoring-list", produces = { "application/json" })
     public ResponseEntity<List<UserScoringDto>> getAllUsersScorings() {
         List<UserScoringDto> usersScoringList = userService.getUsersScoringList();
@@ -82,8 +93,8 @@ public class UserController extends ExceptionHandling {
     }
 
     @PostMapping(path = "/reset-password")
-    public ResponseEntity<HttpResponse> resetPassword(@RequestBody String email) throws MessagingException,
-            EmailNotFoundException {
+    public ResponseEntity<HttpResponse> resetPassword(@RequestBody String email)
+            throws MessagingException, EmailNotFoundException {
         userService.resetPassword(email);
         return new ResponseEntity<>(new HttpResponse(OK, EMAIL_WITH_PASSWORD_SENT + email), OK);
     }
