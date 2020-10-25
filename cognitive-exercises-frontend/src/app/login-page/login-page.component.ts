@@ -16,7 +16,11 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public showLoading: boolean;
 
-  constructor(private router: Router, private authenticationService: AuthenticationService) {}
+  constructor(private router: Router, private authenticationService: AuthenticationService) {
+    if (authenticationService.isUserLoggedIn()) {
+      this.router.navigateByUrl('/');
+    }
+  }
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../../auth/service/authentication.service';
-import {AuthForm, ChangePasswordForm} from '../../model/auth-form';
+import {ChangePasswordForm} from '../../model/auth-form';
 import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
@@ -35,14 +35,13 @@ export class ChangePasswordComponent implements OnInit {
       return passwordConfirmationInput.setErrors(null);
     }
     passwordConfirmationInput.setErrors({notEquivalent: true});
-    console.log(this.changePasswordForm.controls.passwordConfirmation.errors);
   }
 
   onSubmit(): void {
     this.loading = true;
     const changePasswordForm: ChangePasswordForm = {
       oldPassword: this.changePasswordForm.value.oldPassword,
-      password: this.changePasswordForm.value.password,
+      newPassword: this.changePasswordForm.value.password,
     };
     this.changePasswordForm.reset();
     this.authenticationService.changePassword(changePasswordForm).subscribe(

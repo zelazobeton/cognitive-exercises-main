@@ -10,5 +10,5 @@ export interface RegisterForm {
 
 export interface ChangePasswordForm {
   oldPassword: string;
-  password: string;
+  newPassword: string;
 }

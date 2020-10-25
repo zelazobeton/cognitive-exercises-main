@@ -67,13 +67,15 @@ export class AuthenticationService {
   }
 
   public changePassword(changePasswordForm: ChangePasswordForm) {
-    return this.http.post<UserDto | HttpErrorResponse>(
+    return this.http.post<HttpResponse<string> | HttpErrorResponse>(
       `${this.host}/user/change-password`, changePasswordForm, {observe: 'body'})
       .pipe(
         catchError(errorRes => {
           return throwError(errorRes);
         }),
-        tap((response: UserDto) => {
+        tap((response: HttpResponse<string>) => {
+          console.log('HttpResponse');
+          console.log(response);
           this.notificationService.notify(NotificationType.SUCCESS, `Password successfully changed.`);
         })
       );
