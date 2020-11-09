@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {AuthenticationService} from '../../auth/service/authentication.service';
 import {ChangePasswordForm} from '../../model/input-forms';
 import {HttpErrorResponse} from '@angular/common/http';
+import {UserService} from '../../service/user.service';
 
 @Component({
   selector: 'app-change-password',
@@ -14,7 +14,7 @@ export class ChangePasswordComponent implements OnInit {
   private changePasswordForm: FormGroup;
   loading: boolean;
 
-  constructor(private router: Router, private authenticationService: AuthenticationService,
+  constructor(private router: Router, private userService: UserService,
               private formBuilder: FormBuilder) {
     this.loading = false;
   }
@@ -35,7 +35,7 @@ export class ChangePasswordComponent implements OnInit {
       return passwordConfirmationInput.setErrors(null);
     }
     passwordConfirmationInput.setErrors({notEquivalent: true});
-  }
+  };
 
   onSubmit(): void {
     this.loading = true;
@@ -44,7 +44,7 @@ export class ChangePasswordComponent implements OnInit {
       newPassword: this.changePasswordForm.value.password,
     };
     this.changePasswordForm.reset();
-    this.authenticationService.changePassword(changePasswordForm).subscribe(
+    this.userService.changePassword(changePasswordForm).subscribe(
       () => {
         this.loading = false;
         this.router.navigateByUrl('/login');

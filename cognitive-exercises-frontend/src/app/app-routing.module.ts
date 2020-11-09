@@ -5,6 +5,7 @@ import {RegisterComponent} from './register/register.component';
 import {LoginPageComponent} from './login-page/login-page.component';
 import {ProfileComponent} from './profile/profile.component';
 import {AuthenticationGuard} from './auth/guard/authentication.guard';
+import {ResetPasswordComponent} from './reset-password/reset-password.component';
 
 
 const routes: Routes = [
@@ -21,6 +22,11 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginPageComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent,
     pathMatch: 'full'
   },
   {

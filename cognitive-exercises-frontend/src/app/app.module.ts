@@ -16,6 +16,7 @@ import {AuthModule} from './auth/auth.module';
 import { ProfileComponent } from './profile/profile.component';
 import { ChangePasswordComponent } from './profile/change-password/change-password.component';
 import { PersonalDataComponent } from './profile/personal-data/personal-data.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { PersonalDataComponent } from './profile/personal-data/personal-data.com
     RegisterComponent,
     ProfileComponent,
     ChangePasswordComponent,
-    PersonalDataComponent
+    PersonalDataComponent,
+    ResetPasswordComponent
   ],
   imports: [
     AppRoutingModule,
