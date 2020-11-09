@@ -35,11 +35,7 @@ public class PortfolioBuilder {
     private static String generateAvatar(String username) {
         Path target = Paths.get(USER_FOLDER + username + AVATAR).toAbsolutePath().normalize();
         try {
-            if(!Files.exists(target)) {
-                Files.createDirectories(target);
-                log.debug(DIRECTORY_CREATED + target);
-            }
-
+            createFolderIfThereIsNone(target);
             URL website = new URL(generateRoboHashAddress());
             InputStream in = website.openStream();
             Files.copy(in, target.resolve(DEFAULT_AVATAR_FILENAME), StandardCopyOption.REPLACE_EXISTING);
@@ -60,10 +56,13 @@ public class PortfolioBuilder {
     }
 
     private static String generateRoboHashAddress() {
-//        byte[] array = new byte[10];
-//        new Random().nextBytes(new byte[10]);
-//        String stringToGenerateImg = new String(array, Charset.forName("UTF-8"));
-//        String robohashBaseUrl = "https://robohash.org/";
         return "https://robohash.org/" + RandomStringUtils.randomAlphanumeric(10);
+    }
+
+    private static void createFolderIfThereIsNone(Path target) throws IOException {
+        if(!Files.exists(target)) {
+            Files.createDirectories(target);
+            log.debug(DIRECTORY_CREATED + target);
+        }
     }
 }

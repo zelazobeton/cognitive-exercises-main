@@ -111,21 +111,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByUsername(String username) throws UserNotFoundException {
-        User user = userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
-        if (user.getPortfolio() == null) {
-            user.setPortfolio(PortfolioBuilder.createPortfolioWithGeneratedAvatar(user));
-            user = userRepository.save(user);
-        }
-        return user;
+        return userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
     private void validateNewUsernameAndEmail(String username, String email) {
         if (userRepository.existsByUsername(username)) {
             throw new UsernameAlreadyExistsException(username);
         }
-//        if (userRepository.existsByEmail(email)) {
-//            throw new EmailAlreadyExistsException(email);
-//        }
+        if (userRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(email);
+        }
     }
 
     @Override
@@ -146,7 +141,7 @@ public class UserServiceImpl implements UserService {
         String password = generatePassword();
         user.setPassword(encodePassword(password));
         userRepository.save(user);
-        log.debug("New user password: " + password);
+        log.debug("New password: " + password);
         emailService.sendNewPasswordEmail(user.getUsername(), password, user.getEmail());
     }
 

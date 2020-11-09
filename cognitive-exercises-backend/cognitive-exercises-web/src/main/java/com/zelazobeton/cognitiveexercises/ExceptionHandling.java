@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
@@ -42,7 +43,13 @@ public class ExceptionHandling implements ErrorController {
     private static final String ACCOUNT_DISABLED = "Your account has been disabled. If this is an error, please contact administration";
     private static final String ERROR_PROCESSING_FILE = "Error occurred while processing file";
     private static final String NOT_ENOUGH_PERMISSION = "You do not have the right permission";
+    private static final String EMAIL_NOT_FOUND = "There is no registered user with that email";
     public static final String ERROR_PATH = "/error";
+
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ResponseEntity<HttpResponse> emailNotFoundException() {
+        return createHttpResponse(BAD_REQUEST, EMAIL_NOT_FOUND);
+    }
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<HttpResponse> accountDisabledException() {
