@@ -36,6 +36,11 @@ const routes: Routes = [
     canActivate: [AuthenticationGuard]
   },
   {
+    path: 'g',
+    loadChildren: () => import('./games/games.module').then(m => m.GamesModule),
+    canActivate: [AuthenticationGuard]
+  },
+  {
     path: '**',
     redirectTo: ''
   }

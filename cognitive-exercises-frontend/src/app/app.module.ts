@@ -17,6 +17,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ChangePasswordComponent } from './profile/change-password/change-password.component';
 import { PersonalDataComponent } from './profile/personal-data/personal-data.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import {GamesModule} from './games/games.module';
 
 @NgModule({
   declarations: [
@@ -29,13 +30,14 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     ProfileComponent,
     ChangePasswordComponent,
     PersonalDataComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
   ],
   imports: [
     AppRoutingModule,
     AuthModule,
     BrowserModule,
     FormsModule,
+    GamesModule,
     HttpClientModule,
     ReactiveFormsModule,
     NotificationModule

@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenticationService} from '../auth/service/authentication.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
@@ -15,8 +15,9 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   private loginForm: FormGroup;
   private subscriptions: Subscription[] = [];
   public showLoading: boolean;
+  private returnUrl: string;
 
-  constructor(private router: Router, private authenticationService: AuthenticationService) {
+  constructor(private router: Router, private authenticationService: AuthenticationService, private route: ActivatedRoute) {
     if (authenticationService.isUserLoggedIn()) {
       this.router.navigateByUrl('/');
     }
@@ -28,6 +29,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       password: new FormControl(null, [Validators.required])
     });
     this.showLoading = false;
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
   }
 
   onSubmit(): void {
@@ -40,7 +42,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.authenticationService.login(loginFormData).subscribe(
         () => {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl(this.returnUrl);
           this.showLoading = false;
         },
         (error: HttpErrorResponse) => this.showLoading = false
