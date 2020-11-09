@@ -5,7 +5,7 @@ import {UserDto} from '../../model/user-dto';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {isDefined} from '@angular/compiler/src/util';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {AuthForm, ChangePasswordForm, RegisterForm} from '../../model/auth-form';
+import {AuthForm, ChangePasswordForm, RegisterForm} from '../../model/input-forms';
 import {catchError, tap} from 'rxjs/operators';
 import {HeaderType} from '../enum/header-type.enum';
 import {NotificationType} from '../../shared/notification/notification-type.enum';
@@ -17,11 +17,12 @@ export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
   readonly host = environment.apiUrl;
   private token: string;
-  public loggedInUser: Subject<string>;
+  public loggedInUser: Subject<UserDto>;
   private jwtHelperService = new JwtHelperService();
 
   constructor(private http: HttpClient, private notificationService: NotificationService, private router: Router) {
-    this.loggedInUser = new Subject<string>();
+    this.loggedInUser = new Subject<UserDto>();
+    this.loggedInUser.next(this.getUserFromLocalStorage());
   }
 
   public login(loginForm: AuthForm): Observable<HttpResponse<any> | HttpErrorResponse> {
@@ -38,7 +39,7 @@ export class AuthenticationService {
           this.saveToken(token);
           if (response instanceof HttpResponse) {
             this.addUserToLocalStorage(response.body);
-            this.loggedInUser.next(response.body.username);
+            this.loggedInUser.next(response.body);
           }
         })
       );
@@ -74,8 +75,6 @@ export class AuthenticationService {
           return throwError(errorRes);
         }),
         tap((response: HttpResponse<string>) => {
-          console.log('HttpResponse');
-          console.log(response);
           this.notificationService.notify(NotificationType.SUCCESS, `Password successfully changed.`);
         })
       );
@@ -106,6 +105,11 @@ export class AuthenticationService {
     return JSON.parse(localStorage.getItem('user'));
   }
 
+  public getLoggedUsernameFromLocalStorage(): string {
+    const user = this.getUserFromLocalStorage();
+    return user == null ? null : user.username;
+  }
+
   private loadToken(): void {
     this.token = localStorage.getItem(this.tokenKey);
   }
@@ -124,7 +128,6 @@ export class AuthenticationService {
     if (this.jwtHelperService.isTokenExpired(this.token)) {
       return false;
     }
-    this.loggedInUser.next(this.jwtHelperService.decodeToken(this.token).sub);
     return true;
   }
 

@@ -1,1 +1,23 @@
-<p>personal-data works!</p>
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="form-group mb-2">
+            <img *ngIf="userLogged.portfolio.avatar != null"
+                 height="60" width="60" [src]="userLogged.portfolio.avatar"
+                 class="rounded-circle" alt=""/>
+            <form #changePersonalDataForm="ngForm" (ngSubmit)="onSubmit(changePersonalDataForm)">
+
+                <div class="form-group">
+                    <label class="control-label"><span [hidden]="!fileName">{{ fileName }}</span>
+                        <span [hidden]="fileName">Choose File</span>
+                    </label>
+                    <input type="file" accept=".jpg,.jpeg,.png,.tiff" name="imagefile"
+                           (change)="onImageChange($event.target.files[0].name, $event.target.files[0])">
+                </div>
+
+                <button [disabled]="loading" type="submit" name="button" class="btn btn-primary">
+                    Update data
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

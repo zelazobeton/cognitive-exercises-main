@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {AuthenticationService} from '../auth/service/authentication.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AuthForm} from '../model/auth-form';
+import {AuthForm} from '../model/input-forms';
 
 @Component({
   selector: 'app-login-page',

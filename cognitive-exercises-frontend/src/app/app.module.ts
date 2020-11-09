@@ -4,12 +4,13 @@ import {HttpClientModule} from '@angular/common/http';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {UserService} from './service/user.service';
+import {PortfolioService} from './service/portfolio.service';
 import {NotificationModule} from './shared/notification/notification.module';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import {LoginDropdownComponent} from './navbar/login-dropdown/login-dropdown.component';
 import { RegisterComponent } from './register/register.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoginPageComponent} from './login-page/login-page.component';
 import {AuthModule} from './auth/auth.module';
 import { ProfileComponent } from './profile/profile.component';
@@ -32,11 +33,12 @@ import { PersonalDataComponent } from './profile/personal-data/personal-data.com
     AppRoutingModule,
     AuthModule,
     BrowserModule,
+    FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
     NotificationModule
   ],
-  providers: [UserService],
+  providers: [UserService, PortfolioService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

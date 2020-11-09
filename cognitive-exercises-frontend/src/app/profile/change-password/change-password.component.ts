@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../../auth/service/authentication.service';
-import {ChangePasswordForm} from '../../model/auth-form';
+import {ChangePasswordForm} from '../../model/input-forms';
 import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
@@ -50,7 +50,7 @@ export class ChangePasswordComponent implements OnInit {
         this.router.navigateByUrl('/login');
       },
       (error: HttpErrorResponse) => {
-        console.log(error);
+        console.error(error);
         this.loading = false;
       }
     );

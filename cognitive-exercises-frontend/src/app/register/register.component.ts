@@ -5,7 +5,7 @@ import {AuthenticationService} from '../auth/service/authentication.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {UserDto} from '../model/user-dto';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import { RegisterForm} from '../model/auth-form';
+import { RegisterForm} from '../model/input-forms';
 
 @Component({
   selector: 'app-register',
@@ -50,7 +50,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.error = null;
         },
         (errorResponse: HttpErrorResponse) => {
-          console.log(errorResponse);
+          console.error(errorResponse);
           this.error = errorResponse.error.message;
           this.showLoading = false;
         }
