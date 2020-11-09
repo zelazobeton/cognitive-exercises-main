@@ -28,6 +28,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
+import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -104,6 +105,12 @@ public class ExceptionHandling implements ErrorController {
     public ResponseEntity<HttpResponse> iOException(IOException exception) {
         log.error(exception.getMessage());
         return createHttpResponse(INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE);
+    }
+
+    @ExceptionHandler(NotAnImageFileException.class)
+    public ResponseEntity<HttpResponse> notAnImageFileException(NotAnImageFileException exception) {
+        log.error(exception.getMessage());
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)

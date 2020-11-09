@@ -24,6 +24,7 @@ public class UserDto {
     private Date joinDate;
     private boolean isActive;
     private boolean isNotLocked;
+    private PortfolioDto portfolio;
 
     public UserDto(User user) {
         this.username = user.getUsername();
@@ -34,5 +35,6 @@ public class UserDto {
         this.joinDate = user.getJoinDate();
         this.isActive = user.isActive();
         this.isNotLocked = user.isNotLocked();
+        this.portfolio = new PortfolioDto(user.getPortfolio());
     }
 }

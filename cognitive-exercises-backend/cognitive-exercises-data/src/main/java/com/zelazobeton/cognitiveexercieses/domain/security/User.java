@@ -9,8 +9,10 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 import com.zelazobeton.cognitiveexercieses.domain.BaseEntity;
+import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +34,9 @@ public class User extends BaseEntity {
     @Builder.Default private Date lastLoginDate = null;
     @Builder.Default private Date lastLoginDateDisplay = null;
     @Builder.Default private Date joinDate = new Date();
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Portfolio portfolio;
 
     @Singular
     @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)

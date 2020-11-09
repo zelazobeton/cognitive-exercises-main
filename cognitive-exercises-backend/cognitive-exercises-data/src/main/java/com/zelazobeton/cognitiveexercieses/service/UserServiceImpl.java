@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zelazobeton.cognitiveexercieses.domain.builder.PortfolioBuilder;
 import com.zelazobeton.cognitiveexercieses.domain.security.Role;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
@@ -41,15 +42,17 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final LoginAttemptServiceImpl loginAttemptService;
     private final EmailService emailService;
+    private final PortfolioService portfolioService;
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
             BCryptPasswordEncoder bCryptPasswordEncoder, LoginAttemptServiceImpl loginAttemptService,
-            EmailService emailService) {
+            PortfolioService portfolioService, EmailService emailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.loginAttemptService = loginAttemptService;
         this.emailService = emailService;
+        this.portfolioService = portfolioService;
     }
 
     @Override
@@ -91,6 +94,7 @@ public class UserServiceImpl implements UserService {
                 .password(encodePassword(password))
                 .role(userRole)
                 .build();
+        newUser.setPortfolio(PortfolioBuilder.createPortfolioWithGeneratedAvatar(newUser));
         emailService.sendNewPasswordEmail(username, password, email);
         log.debug(username + " password: " + password);
         return userRepository.save(newUser);
@@ -107,16 +111,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByUsername(String username) throws UserNotFoundException {
-        return userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        if (user.getPortfolio() == null) {
+            user.setPortfolio(PortfolioBuilder.createPortfolioWithGeneratedAvatar(user));
+            user = userRepository.save(user);
+        }
+        return user;
     }
 
     private void validateNewUsernameAndEmail(String username, String email) {
         if (userRepository.existsByUsername(username)) {
             throw new UsernameAlreadyExistsException(username);
         }
-        if (userRepository.existsByEmail(email)) {
-            throw new EmailAlreadyExistsException(email);
-        }
+//        if (userRepository.existsByEmail(email)) {
+//            throw new EmailAlreadyExistsException(email);
+//        }
     }
 
     @Override

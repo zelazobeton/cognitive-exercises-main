@@ -4,7 +4,6 @@ import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.JWT_
 import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.mail.MessagingException;
 
@@ -17,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +29,6 @@ import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsExceptio
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.PasswordFormDto;
 import com.zelazobeton.cognitiveexercieses.model.UserDto;
-import com.zelazobeton.cognitiveexercieses.model.UserScoringDto;
 import com.zelazobeton.cognitiveexercieses.service.UserService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
@@ -75,12 +72,6 @@ public class UserController extends ExceptionHandling {
         authenticate(user.getUsername(), passwordFormDto.getOldPassword());
         userService.changePassword(user.getUsername(), passwordFormDto.getNewPassword());
         return new ResponseEntity<>(new HttpResponse(OK, PASSWORD_CHANGED_SUCCESSFULLY), OK);
-    }
-
-    @GetMapping(path = "/scoring-list", produces = { "application/json" })
-    public ResponseEntity<List<UserScoringDto>> getAllUsersScorings() {
-        List<UserScoringDto> usersScoringList = userService.getUsersScoringList();
-        return new ResponseEntity<>(usersScoringList, HttpStatus.OK);
     }
 
     @PostMapping(path = "/update", produces = { "application/json" })

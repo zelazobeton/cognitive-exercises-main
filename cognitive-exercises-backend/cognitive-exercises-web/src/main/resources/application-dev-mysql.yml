@@ -17,7 +17,7 @@ spring:
           schema-generation:
             create-source: metadata
             scripts:
-              action: create
+              action: update
               create-target: database_create.sql
 logging:
   level:
