@@ -1,23 +1,30 @@
 <div class="container">
-    <div class="d-flex justify-content-center">
-        <div class="form-group mb-2">
-            <img *ngIf="userLogged.portfolio.avatar != null"
-                 height="60" width="60" [src]="userLogged.portfolio.avatar"
-                 class="rounded-circle" alt=""/>
-            <form #changePersonalDataForm="ngForm" (ngSubmit)="onSubmit(changePersonalDataForm)">
-
-                <div class="form-group">
-                    <label class="control-label"><span [hidden]="!fileName">{{ fileName }}</span>
-                        <span [hidden]="fileName">Choose File</span>
-                    </label>
-                    <input type="file" accept=".jpg,.jpeg,.png,.tiff" name="imagefile"
-                           (change)="onImageChange($event.target.files[0].name, $event.target.files[0])">
-                </div>
-
-                <button [disabled]="loading" type="submit" name="button" class="btn btn-primary">
-                    Update data
-                </button>
-            </form>
-        </div>
+  <form #changePersonalDataForm="ngForm" (ngSubmit)="onSubmit(changePersonalDataForm)">
+    <div class="d-flex flex-row align-items-center">
+      <div class="p-2">
+        <img *ngIf="userLogged.portfolio.avatar != null"
+             height="100" width="100" [src]="userLogged.portfolio.avatar"
+             class="rounded-circle" alt=""/>
+      </div>
+      <div class="p-2">
+        <input type="button" id="loadFileXml" value="Browse file" onclick="document.getElementById('file').click()"/>
+        <input type="file" style="display:none;" id="file" name="file" accept=".jpg,.jpeg,.png,.tiff"
+               (change)="onImageChange($event.target.files[0].name, $event.target.files[0])"/>
+        <label class="control-label"><span [hidden]="!fileName"></span>
+          <span [hidden]="!fileName">{{fileName}} loaded</span>
+        </label>
+      </div>
+      <div class="p-2">
+        <button [disabled]="loading" type="submit" name="button" class="btn btn-primary">
+          Upload
+        </button>
+      </div>
     </div>
+    <div class="d-flex flex-row align-items-centgit statuser">
+      <div class="p-2">
+        <p>Your score: {{userLogged.portfolio.totalScore}}</p>
+      </div>
+    </div>
+  </form>
+
 </div>
