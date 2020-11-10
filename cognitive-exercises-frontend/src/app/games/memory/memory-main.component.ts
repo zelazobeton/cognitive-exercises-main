@@ -6,10 +6,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./memory-main.component.css']
 })
 export class MemoryMainComponent implements OnInit {
+  difficultyLevel: number;
+  gameIsOn: boolean;
 
   constructor() { }
 
   ngOnInit() {
+    this.gameIsOn = false;
+  }
+
+  onStartGame(difficultyLvl: number) {
+    this.difficultyLevel = difficultyLvl;
+    this.gameIsOn = true;
   }
 
 }
