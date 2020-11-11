@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.domain.builder;
+package com.zelazobeton.cognitiveexercieses.domain;
 
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.AVATAR;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.DEFAULT_AVATAR_FILENAME;
@@ -19,7 +19,6 @@ import java.nio.file.StandardCopyOption;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 
 import lombok.extern.slf4j.Slf4j;

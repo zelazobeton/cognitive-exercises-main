@@ -2,6 +2,8 @@ package com.zelazobeton.cognitiveexercieses.constant;
 
 public class FileConstants {
     public static final String USER_FOLDER = System.getProperty("user.dir") + "/cognitive-exercises-data/src/main/resources/users-data/";
+    public static final String MEMORY_IMG_FOLDER = System.getProperty("user.dir") + "/cognitive-exercises-data/src/main/resources/memory-pictures";
+    public static final String MEMORY_IMG_PATH = "/memory/tile/";
     public static final String FORWARD_SLASH = "/";
     public static final String AVATAR = "/avatar";
     public static final String NOT_AN_IMAGE_FILE = " is not an image file. Please upload an image file";

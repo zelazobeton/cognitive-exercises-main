@@ -68,12 +68,12 @@ public class PortfolioServiceImpl implements PortfolioService {
             }
             String filename = avatar.getOriginalFilename() == null ? "avatar.jpg" : avatar.getOriginalFilename();
             Files.copy(avatar.getInputStream(), userAvatarFolder.resolve(filename), REPLACE_EXISTING);
-            currentPortfolio.setAvatar(setProfileImageUrl(currentUser.getUsername(), avatar.getOriginalFilename()));
+            currentPortfolio.setAvatar(createProfileImageUrl(currentUser.getUsername(), avatar.getOriginalFilename()));
         }
         return portfolioRepository.save(currentPortfolio);
     }
 
-    private String setProfileImageUrl(String username, String fileName) {
+    private String createProfileImageUrl(String username, String fileName) {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH
                 + fileName).toUriString();
     }
