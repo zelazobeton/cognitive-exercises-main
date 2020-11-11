@@ -1,2 +1,21 @@
-<p>memory-board works!</p>
-<p>{{difficultyLvl}}</p>
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <p>Number of uncovered pairs: {{numOfUncoveredPairs()}}</p>
+      <div>
+        <a [routerLink]="['../']" class="btn btn-primary" role="button">Play again</a>
+      </div>
+    </div>
+    <div class="col-9">
+      <div *ngFor="let row of board; let rowIdx = index" class="d-flex justify-content-start">
+        <app-memory-tile *ngFor="let tile of row; let elementIdx = index"
+                         [memoryId]="tile.memoryId"
+                         [isGuessed]="tile.uncovered"
+                         [tileId]="rowIdx * 10 + elementIdx"
+                         (clickOnTile)="onTileClick($event)">
+        </app-memory-tile>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -11,7 +11,7 @@ import {AuthenticationService} from '../auth/service/authentication.service';
 
 @Injectable()
 export class PortfolioService {
-  private host = environment.apiUrl;
+  private readonly host = environment.apiUrl;
 
   constructor(private http: HttpClient, private notificationService: NotificationService,
               private authenticationService: AuthenticationService) {}

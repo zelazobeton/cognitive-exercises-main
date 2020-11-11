@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-memory-start',
@@ -7,15 +8,19 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class MemoryStartComponent implements OnInit {
   difficultyLvl: number;
-  @Output() startGame = new EventEmitter<number>();
 
-  constructor() {}
+  constructor(private router: Router,
+              private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.difficultyLvl = 1;
   }
 
   onStart() {
-    this.startGame.emit(this.difficultyLvl);
+    this.router.navigate(['play'], {queryParams: {lvl: this.difficultyLvl}, relativeTo: this.route});
+  }
+
+  onContinue() {
+    this.router.navigate(['play'], {queryParams: {continue: true}, relativeTo: this.route});
   }
 }

@@ -11,7 +11,7 @@ import {NotificationService} from '../shared/notification/notification.service';
 
 @Injectable()
 export class UserService {
-  private host = environment.apiUrl;
+  private readonly host = environment.apiUrl;
 
   constructor(private http: HttpClient, private notificationService: NotificationService) {}
 
