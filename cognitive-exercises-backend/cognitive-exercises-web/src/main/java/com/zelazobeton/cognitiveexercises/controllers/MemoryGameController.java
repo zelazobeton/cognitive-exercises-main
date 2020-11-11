@@ -46,11 +46,11 @@ public class MemoryGameController extends ExceptionHandling {
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/new-game", produces = { "application/json" })
+    @PostMapping(path = "/new-game", produces = { "application/json" })
     @PreAuthorize("hasAuthority('user.read')")
-    public ResponseEntity<MemoryBoardDto> getNewMemoryBoard(@AuthenticationPrincipal User user)
-            throws EntityNotFoundException {
-        MemoryBoardDto board = memoryGameService.getNewMemoryBoardDto(user.getPortfolio().getId());
+    public ResponseEntity<MemoryBoardDto> getNewMemoryBoard(@AuthenticationPrincipal User user,
+            @RequestBody Integer difficultyLvl) throws EntityNotFoundException {
+        MemoryBoardDto board = memoryGameService.getNewMemoryBoardDto(user.getPortfolio().getId(), difficultyLvl);
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
@@ -59,11 +59,19 @@ public class MemoryGameController extends ExceptionHandling {
         return Files.readAllBytes(Paths.get(MEMORY_IMG_FOLDER + FORWARD_SLASH + fileName));
     }
 
-    @PostMapping(path = "/save")
+    @PostMapping(path = "/save-game")
     @PreAuthorize("hasAuthority('user.update')")
     public ResponseEntity<HttpResponse> saveGame(@AuthenticationPrincipal User user,
             @RequestBody MemoryBoardDto memoryBoardDto) throws EntityNotFoundException{
         memoryGameService.saveGame(user.getPortfolio().getId(), memoryBoardDto);
         return new ResponseEntity<>(new HttpResponse(OK, GAME_SAVED), OK);
+    }
+
+    @PostMapping(path = "/save-score")
+    @PreAuthorize("hasAuthority('user.update')")
+    public ResponseEntity<Integer> saveScore(@AuthenticationPrincipal User user,
+            @RequestBody MemoryBoardDto memoryBoardDto) throws EntityNotFoundException{
+        Integer score = memoryGameService.saveScore(user.getPortfolio().getId(), memoryBoardDto);
+        return new ResponseEntity<>(score, HttpStatus.OK);
     }
 }

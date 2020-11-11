@@ -1,7 +1,8 @@
 package com.zelazobeton.cognitiveexercieses.service;
 
-import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.COLUMNS_MEDIUM;
-import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.ROWS_MEDIUM;
+import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.NUM_OF_IMGS_EASY_LVL;
+import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.NUM_OF_IMGS_HARD_LVL;
+import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.NUM_OF_IMGS_MEDIUM_LVL;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,8 +52,19 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     @Override
-    public MemoryBoardDto getNewMemoryBoardDto(Long portfolioId) throws EntityNotFoundException {
-        return new MemoryBoardDto(generateMemoryBoard((ROWS_MEDIUM * COLUMNS_MEDIUM / 2)));
+    public MemoryBoardDto getNewMemoryBoardDto(Long portfolioId, Integer difficultyLvl) throws EntityNotFoundException {
+        int numOfDifferentImgsNeeded;
+        switch (difficultyLvl){
+            case 0:
+                numOfDifferentImgsNeeded = NUM_OF_IMGS_EASY_LVL;
+                break;
+            case 2:
+                numOfDifferentImgsNeeded = NUM_OF_IMGS_HARD_LVL;
+                break;
+            default:
+                numOfDifferentImgsNeeded = NUM_OF_IMGS_MEDIUM_LVL;
+        }
+        return new MemoryBoardDto(generateMemoryBoard(numOfDifferentImgsNeeded));
     }
 
     @Override
@@ -66,6 +78,20 @@ public class MemoryGameServiceImpl implements MemoryGameService {
         portfolio.setMemoryBoard(newMemoryBoard);
         portfolioRepository.save(portfolio);
         memoryBoardRepository.save(savedMemoryBoard);
+    }
+
+    @Override
+    public int saveScore(Long portfolioId, MemoryBoardDto memoryBoardDto) {
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
+        int score = calculateScore(memoryBoardDto);
+        portfolio.setTotalScore(portfolio.getTotalScore() + score);
+        portfolioRepository.save(portfolio);
+        return score;
+    }
+
+    private int calculateScore(MemoryBoardDto memoryBoardDto) {
+        int score = memoryBoardDto.getMemoryTiles().size() * 4 - memoryBoardDto.getNumOfUncoveredTiles() / 2;
+        return Math.max(score, memoryBoardDto.getMemoryTiles().size());
     }
 
     private MemoryBoard createMemoryBoardFromMemoryBoardDto(MemoryBoardDto memoryBoardDto, Portfolio portfolio)
