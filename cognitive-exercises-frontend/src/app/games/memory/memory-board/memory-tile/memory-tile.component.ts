@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {MemoryService} from './memory.service';
 import {Subscription} from 'rxjs';
 import {MemoryTileDto} from '../memory-tile-dto';
+import {TileClick} from '../memory';
 
 @Component({
   selector: 'app-memory-tile',
@@ -12,7 +13,7 @@ export class MemoryTileComponent implements OnInit, OnDestroy {
   @Input() tileData: MemoryTileDto;
   private memoryId: number;
   @Input() tileId: number;
-  @Output() clickOnTile = new EventEmitter<{memoryId: number, tileId: number}>();
+  @Output() clickOnTile = new EventEmitter<TileClick>();
   isVisible: boolean;
   private isNotMatched: boolean;
   private notificationSub: Subscription;
