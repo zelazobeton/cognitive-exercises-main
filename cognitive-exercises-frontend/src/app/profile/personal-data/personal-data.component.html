@@ -2,8 +2,8 @@
   <form #changePersonalDataForm="ngForm" (ngSubmit)="onSubmit(changePersonalDataForm)">
     <div class="d-flex flex-row align-items-center">
       <div class="p-2">
-        <img *ngIf="userLogged.portfolio.avatar != null"
-             height="100" width="100" [src]="userLogged.portfolio.avatar"
+        <img *ngIf="userData.portfolio.avatar != null"
+             height="100" width="100" [src]="userData.portfolio.avatar"
              class="rounded-circle" alt=""/>
       </div>
       <div class="p-2">
@@ -22,7 +22,7 @@
     </div>
     <div class="d-flex flex-row align-items-center">
       <div class="p-2">
-        <p>Your score: {{userLogged.portfolio.totalScore}}</p>
+        <p>Your score: {{userData.portfolio.totalScore}}</p>
       </div>
     </div>
   </form>

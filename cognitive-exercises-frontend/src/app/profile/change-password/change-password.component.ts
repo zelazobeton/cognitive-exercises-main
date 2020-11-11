@@ -35,7 +35,7 @@ export class ChangePasswordComponent implements OnInit {
       return passwordConfirmationInput.setErrors(null);
     }
     passwordConfirmationInput.setErrors({notEquivalent: true});
-  };
+  }
 
   onSubmit(): void {
     this.loading = true;

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
 import {PortfolioService} from '../../service/portfolio.service';
@@ -11,23 +11,17 @@ import {AuthenticationService} from '../../auth/service/authentication.service';
   templateUrl: './personal-data.component.html',
   styleUrls: ['./personal-data.component.css'],
 })
-export class PersonalDataComponent implements OnInit, OnDestroy {
-  private userSub: Subscription;
-  private userLogged: UserDto;
+export class PersonalDataComponent implements OnInit {
+  @Input() private userData: UserDto;
   public fileName: string;
   public profileImage: File;
   loading: boolean;
 
-  constructor(private formBuilder: FormBuilder, private portfolioService: PortfolioService,
-              private authenticationService: AuthenticationService) {
+  constructor(private formBuilder: FormBuilder, private portfolioService: PortfolioService) {
     this.loading = false;
   }
 
   ngOnInit(): void {
-    this.userLogged = this.authenticationService.getUserFromLocalStorage();
-    this.userSub = this.authenticationService.loggedInUser.subscribe((user: UserDto) => {
-      this.userLogged = user == null ? null : user;
-    });
   }
 
   onSubmit(personalDataForm: NgForm): void {
@@ -48,9 +42,5 @@ export class PersonalDataComponent implements OnInit, OnDestroy {
   public onImageChange(fileName: string, profileImage: File): void {
     this.fileName = fileName;
     this.profileImage = profileImage;
-  }
-
-  ngOnDestroy(): void {
-    this.userSub.unsubscribe();
   }
 }

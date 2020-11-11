@@ -11,7 +11,7 @@
       </div>
       <div class="col-8 frame">
         <app-change-password *ngIf="currentCard === 'change-password'"></app-change-password>
-        <app-personal-data *ngIf="currentCard === 'personal-data'"></app-personal-data>
+        <app-personal-data [userData]="userData" *ngIf="currentCard === 'personal-data'"></app-personal-data>
       </div>
     </div>
 </div>
