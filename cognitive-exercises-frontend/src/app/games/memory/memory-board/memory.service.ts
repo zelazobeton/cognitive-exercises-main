@@ -1,19 +1,19 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject, Subscription, throwError} from 'rxjs';
-import {MemoryTileDto} from '../memory-tile-dto';
-import {MemoryBoardDto} from '../memory';
+import {MemoryBoardDto} from './memory';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {environment} from '../../../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 import {catchError, tap} from 'rxjs/operators';
-import {NotificationType} from '../../../../shared/notification/notification-type.enum';
-import {NotificationService} from '../../../../shared/notification/notification.service';
-import {CustomHttpResponse} from '../../../../model/custom-http-response';
+import {NotificationType} from '../../../shared/notification/notification-type.enum';
+import {NotificationService} from '../../../shared/notification/notification.service';
+import {CustomHttpResponse} from '../../../model/custom-http-response';
 
 @Injectable()
 export class MemoryService {
   private static ERROR_MSG = 'Sorry, there was an internal issue. Please try again';
   public tileNotification: Subject<{ id: number, match: boolean }>;
   private readonly host = environment.apiUrl;
+  private board: MemoryBoardDto;
 
   constructor(private http: HttpClient, private notificationService: NotificationService) {
     console.log('MemoryService constr');
@@ -35,11 +35,21 @@ export class MemoryService {
     localStorage.removeItem('memory-tiles-num');
   }
 
-  fetchBoardData(continueLastGame: boolean): Observable<MemoryBoardDto> {
-    if (continueLastGame) {
-      return this.continueLastGame();
+  getMemoryBoard(): MemoryBoardDto {
+    console.log('getMemoryBoard');
+    if (this.board != null) {
+      console.log('getMemoryBoard1');
+      return this.board;
     }
-    return this.startNewGame();
+    console.log('getMemoryBoard2');
+    const memoryTiles = JSON.parse(localStorage.getItem('memory-tiles'));
+    const numOfUncoveredTiles = JSON.parse(localStorage.getItem('memory-tiles-num'));
+    if (memoryTiles != null && numOfUncoveredTiles != null) {
+      console.log('getMemoryBoard3')
+      this.board = {memoryTiles, numOfUncoveredTiles};
+      return this.board;
+    }
+    return null;
   }
 
   saveGame(board: MemoryBoardDto): void {
@@ -52,23 +62,36 @@ export class MemoryService {
       }));
   }
 
-  private startNewGame() {
+  fetchNewBoard(): Observable<MemoryBoardDto> {
     return this.http.get<MemoryBoardDto>(`${this.host}/memory/new-game`)
       .pipe(
         catchError(errorRes => {
           this.notificationService.notify(NotificationType.ERROR, MemoryService.ERROR_MSG);
           return throwError(errorRes);
+        }),
+        tap(response => {
+          this.board = response;
+          localStorage.setItem('memory-tiles', JSON.stringify(this.board.memoryTiles));
+          localStorage.setItem('memory-tiles-num', JSON.stringify(this.board.numOfUncoveredTiles));
         })
       );
   }
 
-  private continueLastGame() {
+  fetchSavedGameBoard(): Observable<MemoryBoardDto> {
     return this.http.get<MemoryBoardDto>(`${this.host}/memory/continue`)
       .pipe(
         catchError(errorRes => {
           this.notificationService.notify(NotificationType.ERROR, MemoryService.ERROR_MSG);
           return throwError(errorRes);
-        })
-      );
+        }),
+        tap(response => {
+          if (response != null) {
+            this.board = response;
+            localStorage.setItem('memory-tiles', JSON.stringify(response.memoryTiles));
+            localStorage.setItem('memory-tiles-num', JSON.stringify(response.numOfUncoveredTiles));
+          }
+        }
+      )
+    );
   }
 }

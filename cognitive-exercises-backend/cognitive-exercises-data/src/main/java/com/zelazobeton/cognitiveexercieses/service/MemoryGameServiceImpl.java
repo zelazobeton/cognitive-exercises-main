@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 public class MemoryGameServiceImpl implements MemoryGameService {
-    static String NO_SAVED_BOARD = "There is no saved board for that user";
     private PortfolioRepository portfolioRepository;
     private MemoryImgRepository memoryImgRepository;
     private MemoryBoardRepository memoryBoardRepository;
@@ -46,23 +45,14 @@ public class MemoryGameServiceImpl implements MemoryGameService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
         MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
         if (savedMemoryBoard == null) {
-            throw new EntityNotFoundException(NO_SAVED_BOARD);
+            return null;
         }
         return new MemoryBoardDto(savedMemoryBoard);
     }
 
     @Override
     public MemoryBoardDto getNewMemoryBoardDto(Long portfolioId) throws EntityNotFoundException {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
-        MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
-        if (savedMemoryBoard != null) {
-            portfolio.setMemoryBoard(null);
-            savedMemoryBoard.setPortfolio(null);
-            portfolioRepository.save(portfolio);
-            memoryBoardRepository.save(savedMemoryBoard);
-        }
-        MemoryBoard newMemoryBoard = memoryBoardRepository.save(generateMemoryBoard((ROWS_MEDIUM * COLUMNS_MEDIUM / 2), portfolio));
-        return new MemoryBoardDto(newMemoryBoard);
+        return new MemoryBoardDto(generateMemoryBoard((ROWS_MEDIUM * COLUMNS_MEDIUM / 2)));
     }
 
     @Override
@@ -76,9 +66,6 @@ public class MemoryGameServiceImpl implements MemoryGameService {
         portfolio.setMemoryBoard(newMemoryBoard);
         portfolioRepository.save(portfolio);
         memoryBoardRepository.save(savedMemoryBoard);
-        MemoryBoard b = memoryBoardRepository.getOne(136L);
-        b.setPortfolio(null);
-        memoryBoardRepository.delete(b);
     }
 
     private MemoryBoard createMemoryBoardFromMemoryBoardDto(MemoryBoardDto memoryBoardDto, Portfolio portfolio)
@@ -94,10 +81,9 @@ public class MemoryGameServiceImpl implements MemoryGameService {
                 .build();
     }
 
-    private MemoryBoard generateMemoryBoard(int numOfDifferentImgsNeeded, Portfolio portfolio) {
+    private MemoryBoard generateMemoryBoard(int numOfDifferentImgsNeeded) {
         List<MemoryTile> tiles = generateTiles(numOfDifferentImgsNeeded);
-        MemoryBoard newMemoryBoard = MemoryBoard.builder().memoryTiles(tiles).numOfUncoveredTiles(0).portfolio(portfolio).build();
-        portfolio.setMemoryBoard(newMemoryBoard);
+        MemoryBoard newMemoryBoard = MemoryBoard.builder().memoryTiles(tiles).numOfUncoveredTiles(0).portfolio(null).build();
         return newMemoryBoard;
     }
 
