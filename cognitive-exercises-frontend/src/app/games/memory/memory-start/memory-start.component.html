@@ -23,6 +23,6 @@
     <button class="btn btn-primary" (click)="onStart()">Start new game</button>
   </div>
   <div class="p-3">
-    <button class="btn btn-primary" (click)="onContinue()">Continue last game</button>
+    <button class="btn btn-primary" *ngIf="savedGameExists" (click)="onContinue()">Continue saved game</button>
   </div>
 </div>

@@ -16,7 +16,6 @@ export class MemoryService {
   private board: MemoryBoardDto;
 
   constructor(private http: HttpClient, private notificationService: NotificationService) {
-    console.log('MemoryService constr');
     this.tileNotification = new Subject<{ id: number, match: boolean }>();
   }
 
@@ -36,16 +35,12 @@ export class MemoryService {
   }
 
   getMemoryBoard(): MemoryBoardDto {
-    console.log('getMemoryBoard');
     if (this.board != null) {
-      console.log('getMemoryBoard1');
       return this.board;
     }
-    console.log('getMemoryBoard2');
     const memoryTiles = JSON.parse(localStorage.getItem('memory-tiles'));
     const numOfUncoveredTiles = JSON.parse(localStorage.getItem('memory-tiles-num'));
     if (memoryTiles != null && numOfUncoveredTiles != null) {
-      console.log('getMemoryBoard3')
       this.board = {memoryTiles, numOfUncoveredTiles};
       return this.board;
     }

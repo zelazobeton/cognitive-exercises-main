@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {MemoryService} from './memory-tile/memory.service';
+import {MemoryService} from './memory.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MemoryBoardDto, TileClick} from './memory';
 import {Subscription} from 'rxjs';
@@ -10,19 +10,15 @@ import {Subscription} from 'rxjs';
   styleUrls: ['./memory-board.component.css']
 })
 export class MemoryBoardComponent implements OnInit, OnDestroy {
-  difficultyLvl: number;
-  continueLastGame: boolean;
   board: MemoryBoardDto;
   private firstTileId: TileClick;
   private secondTileId: TileClick;
   private fetchBoardSub: Subscription;
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    this.difficultyLvl = this.route.snapshot.queryParams.lvl || null;
-    this.continueLastGame = this.route.snapshot.queryParams.continue || false;
-    this.getBoardData();
+    this.board = this.memoryService.getMemoryBoard();
     this.firstTileId = null;
     this.secondTileId = null;
   }
@@ -51,7 +47,9 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.fetchBoardSub.unsubscribe();
+    if (this.fetchBoardSub != null) {
+      this.fetchBoardSub.unsubscribe();
+    }
     this.memoryService.clearCachedBoard();
   }
 
@@ -61,24 +59,6 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
     this.board.memoryTiles[tileClick.tileId].uncovered = true;
     localStorage.setItem('memory-tiles', JSON.stringify(this.board.memoryTiles));
     this.firstTileId = null;
-  }
-
-  private getBoardData(): void {
-    const memoryTiles = JSON.parse(localStorage.getItem('memory-tiles'));
-    const numOfUncoveredTiles = JSON.parse(localStorage.getItem('memory-tiles-num'));
-    if (memoryTiles != null && numOfUncoveredTiles != null) {
-      this.board = {memoryTiles, numOfUncoveredTiles};
-      return;
-    }
-    this.fetchBoardSub = this.memoryService.fetchBoardData(this.continueLastGame)
-      .subscribe((resData: MemoryBoardDto) => {
-        console.log(resData);
-        this.board = resData;
-        localStorage.setItem('memory-tiles', JSON.stringify(this.board.memoryTiles));
-      }, (error => {
-        console.error(error);
-        this.router.navigateByUrl('/');
-      }));
   }
 
   private coverTilesIfTwoWereUncovered(): void {
