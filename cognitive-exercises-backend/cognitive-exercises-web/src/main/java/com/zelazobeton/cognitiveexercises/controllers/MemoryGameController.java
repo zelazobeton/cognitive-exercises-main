@@ -1,8 +1,7 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.AVATAR;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.USER_FOLDER;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_FOLDER;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
@@ -49,10 +48,9 @@ public class MemoryGameController extends ExceptionHandling {
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/tile/{fileName}", produces = IMAGE_JPEG_VALUE)
-    public byte[] getMemoryTileImage(@PathVariable("username") String username, @PathVariable("fileName") String fileName)
-            throws IOException {
-        return Files.readAllBytes(Paths.get(USER_FOLDER + username + AVATAR + FORWARD_SLASH + fileName));
+    @GetMapping(path = "/img/{fileName}", produces = IMAGE_JPEG_VALUE)
+    public byte[] getMemoryTileImage(@PathVariable("fileName") String fileName) throws IOException {
+        return Files.readAllBytes(Paths.get(MEMORY_IMG_FOLDER + FORWARD_SLASH + fileName));
     }
 
 }
