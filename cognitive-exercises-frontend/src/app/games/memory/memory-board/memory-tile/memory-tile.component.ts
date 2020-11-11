@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MemoryService} from './memory.service';
 import {Subscription} from 'rxjs';
-import {delay} from 'rxjs/operators';
+import {MemoryTileDto} from '../memory-tile-dto';
 
 @Component({
   selector: 'app-memory-tile',
@@ -9,9 +9,9 @@ import {delay} from 'rxjs/operators';
   styleUrls: ['./memory-tile.component.css']
 })
 export class MemoryTileComponent implements OnInit, OnDestroy {
-  @Input() memoryId: number;
+  @Input() tileData: MemoryTileDto;
+  private memoryId: number;
   @Input() tileId: number;
-  @Input() isGuessed: boolean;
   @Output() clickOnTile = new EventEmitter<{memoryId: number, tileId: number}>();
   isVisible: boolean;
   private isNotMatched: boolean;
@@ -31,8 +31,9 @@ export class MemoryTileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.isVisible = this.isGuessed;
-    this.isNotMatched = !this.isGuessed;
+    this.memoryId = this.tileData.memoryId;
+    this.isVisible = this.tileData.uncovered;
+    this.isNotMatched = !this.tileData.uncovered;
   }
 
   onClick() {
