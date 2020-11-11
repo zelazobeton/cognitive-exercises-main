@@ -7,7 +7,6 @@ import javax.persistence.ManyToOne;
 
 import com.zelazobeton.cognitiveexercieses.domain.BaseEntity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @Builder
 @Slf4j
 @NoArgsConstructor
-@AllArgsConstructor
 public class MemoryTile extends BaseEntity {
     @ManyToOne
     @JoinColumn
@@ -28,4 +26,10 @@ public class MemoryTile extends BaseEntity {
     @Column(name = "MEMORY_IMG_ID", updatable=false, insertable=false)
     public Long memory_img_id;
     private boolean uncovered;
+
+    public MemoryTile(MemoryImg memoryImg, Long memory_img_id, boolean uncovered) {
+        this.memoryImg = memoryImg;
+        this.memory_img_id = memory_img_id;
+        this.uncovered = uncovered;
+    }
 }

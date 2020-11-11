@@ -27,10 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class MemoryBoard extends BaseEntity {
     private Integer numOfUncoveredTiles;
-    private Integer numOfRows;
-    private Integer numOfCols;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemoryTile> memoryTiles;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Portfolio portfolio;
+
+
 }

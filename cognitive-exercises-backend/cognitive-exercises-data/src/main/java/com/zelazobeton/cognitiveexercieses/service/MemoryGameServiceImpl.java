@@ -6,6 +6,7 @@ import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.ROWS_M
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +42,7 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     @Override
-    public MemoryBoardDto getSavedMemoryBoardDto(Long portfolioId) {
+    public MemoryBoardDto getSavedMemoryBoardDto(Long portfolioId) throws EntityNotFoundException {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
         MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
         if (savedMemoryBoard == null) {
@@ -51,7 +52,7 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     @Override
-    public MemoryBoardDto getNewMemoryBoardDto(Long portfolioId) {
+    public MemoryBoardDto getNewMemoryBoardDto(Long portfolioId) throws EntityNotFoundException {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
         MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
         if (savedMemoryBoard != null) {
@@ -60,15 +61,42 @@ public class MemoryGameServiceImpl implements MemoryGameService {
             portfolioRepository.save(portfolio);
             memoryBoardRepository.save(savedMemoryBoard);
         }
-        MemoryBoard newMemoryBoard = memoryBoardRepository.save(generateMemoryBoard(ROWS_MEDIUM, COLUMNS_MEDIUM, portfolio));
+        MemoryBoard newMemoryBoard = memoryBoardRepository.save(generateMemoryBoard((ROWS_MEDIUM * COLUMNS_MEDIUM / 2), portfolio));
         return new MemoryBoardDto(newMemoryBoard);
     }
 
-    private MemoryBoard generateMemoryBoard(int numOfRows, int numOfColumns, Portfolio portfolio) {
-        int numOfDifferentImgsNeeded = numOfRows * numOfColumns / 2;
+    @Override
+    public void saveGame(Long portfolioId, MemoryBoardDto memoryBoardDto) throws EntityNotFoundException {
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
+        MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
+        if (savedMemoryBoard != null) {
+            savedMemoryBoard.setPortfolio(null);
+        }
+        MemoryBoard newMemoryBoard = createMemoryBoardFromMemoryBoardDto(memoryBoardDto, portfolio);
+        portfolio.setMemoryBoard(newMemoryBoard);
+        portfolioRepository.save(portfolio);
+        memoryBoardRepository.save(savedMemoryBoard);
+        MemoryBoard b = memoryBoardRepository.getOne(136L);
+        b.setPortfolio(null);
+        memoryBoardRepository.delete(b);
+    }
+
+    private MemoryBoard createMemoryBoardFromMemoryBoardDto(MemoryBoardDto memoryBoardDto, Portfolio portfolio)
+            throws EntityNotFoundException{
+        List<MemoryTile> tiles = memoryBoardDto.getMemoryTiles().stream().map(tile -> {
+            MemoryImg img = memoryImgRepository.findByAddress(tile.getImgAddress()).orElseThrow(EntityNotFoundException::new);
+            return new MemoryTile(img, img.getId(), tile.isUncovered());
+        }).collect(Collectors.toList());
+        return MemoryBoard.builder()
+                .portfolio(portfolio)
+                .memoryTiles(tiles)
+                .numOfUncoveredTiles(memoryBoardDto.getNumOfUncoveredTiles())
+                .build();
+    }
+
+    private MemoryBoard generateMemoryBoard(int numOfDifferentImgsNeeded, Portfolio portfolio) {
         List<MemoryTile> tiles = generateTiles(numOfDifferentImgsNeeded);
-        MemoryBoard newMemoryBoard = MemoryBoard.builder().memoryTiles(tiles).numOfUncoveredTiles(0)
-                .numOfCols(numOfColumns).numOfRows(numOfRows).portfolio(portfolio).build();
+        MemoryBoard newMemoryBoard = MemoryBoard.builder().memoryTiles(tiles).numOfUncoveredTiles(0).portfolio(portfolio).build();
         portfolio.setMemoryBoard(newMemoryBoard);
         return newMemoryBoard;
     }
