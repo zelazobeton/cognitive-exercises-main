@@ -27,8 +27,8 @@ export class MemoryStartComponent implements OnInit, OnDestroy {
   }
 
   onStart() {
-    this.newBoardSub = this.memoryService.fetchNewBoard().subscribe(res => {
-      this.router.navigate(['play'], {queryParams: {lvl: this.difficultyLvl}, relativeTo: this.route});
+    this.newBoardSub = this.memoryService.fetchNewBoard(this.difficultyLvl).subscribe(res => {
+      this.router.navigate(['play'], {relativeTo: this.route});
     });
   }
 

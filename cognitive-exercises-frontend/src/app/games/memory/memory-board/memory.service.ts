@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Observable, Subject, Subscription, throwError} from 'rxjs';
 import {MemoryBoardDto} from './memory';
 import {HttpClient, HttpResponse} from '@angular/common/http';
@@ -9,11 +9,12 @@ import {NotificationService} from '../../../shared/notification/notification.ser
 import {CustomHttpResponse} from '../../../model/custom-http-response';
 
 @Injectable()
-export class MemoryService {
-  private static ERROR_MSG = 'Sorry, there was an internal issue. Please try again';
+export class MemoryService implements OnDestroy {
+  private static ERROR_MSG = 'Sorry, there was an internal issue';
   public tileNotification: Subject<{ id: number, match: boolean }>;
   private readonly host = environment.apiUrl;
   private board: MemoryBoardDto;
+  private saveSub: Subscription;
 
   constructor(private http: HttpClient, private notificationService: NotificationService) {
     this.tileNotification = new Subject<{ id: number, match: boolean }>();
@@ -48,7 +49,7 @@ export class MemoryService {
   }
 
   saveGame(board: MemoryBoardDto): void {
-    this.http.post<CustomHttpResponse>(`${this.host}/memory/save`, board)
+    this.saveSub = this.http.post<CustomHttpResponse>(`${this.host}/memory/save-game`, board)
       .subscribe((response: CustomHttpResponse) => {
         this.notificationService.notify(NotificationType.SUCCESS, response.message);
       }, (errorRes => {
@@ -57,8 +58,18 @@ export class MemoryService {
       }));
   }
 
-  fetchNewBoard(): Observable<MemoryBoardDto> {
-    return this.http.get<MemoryBoardDto>(`${this.host}/memory/new-game`)
+  saveScore(board: MemoryBoardDto): Observable<number> {
+    return this.http.post<number>(`${this.host}/memory/save-score`, board)
+      .pipe(
+        catchError(errorRes => {
+          this.notificationService.notify(NotificationType.ERROR, MemoryService.ERROR_MSG);
+          return throwError(errorRes);
+        })
+      );
+  }
+
+  fetchNewBoard(difficultyLvl: number): Observable<MemoryBoardDto> {
+    return this.http.post<MemoryBoardDto>(`${this.host}/memory/new-game`, difficultyLvl)
       .pipe(
         catchError(errorRes => {
           this.notificationService.notify(NotificationType.ERROR, MemoryService.ERROR_MSG);
@@ -88,5 +99,9 @@ export class MemoryService {
         }
       )
     );
+  }
+
+  ngOnDestroy(): void {
+    this.saveSub.unsubscribe();
   }
 }

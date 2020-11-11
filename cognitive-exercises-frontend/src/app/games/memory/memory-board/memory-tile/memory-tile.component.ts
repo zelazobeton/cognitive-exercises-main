@@ -11,10 +11,11 @@ import {TileClick} from '../memory';
 })
 export class MemoryTileComponent implements OnInit, OnDestroy {
   @Input() tileData: MemoryTileDto;
-  private memoryId: number;
   @Input() tileId: number;
+  @Input() size: number;
   @Output() clickOnTile = new EventEmitter<TileClick>();
   isVisible: boolean;
+  private memoryId: number;
   private isNotMatched: boolean;
   private notificationSub: Subscription;
 

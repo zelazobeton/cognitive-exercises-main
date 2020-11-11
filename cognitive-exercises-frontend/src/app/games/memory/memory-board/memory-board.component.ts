@@ -1,6 +1,5 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {MemoryService} from './memory.service';
-import {ActivatedRoute, Router} from '@angular/router';
 import {MemoryBoardDto, TileClick} from './memory';
 import {Subscription} from 'rxjs';
 
@@ -10,17 +9,26 @@ import {Subscription} from 'rxjs';
   styleUrls: ['./memory-board.component.css']
 })
 export class MemoryBoardComponent implements OnInit, OnDestroy {
-  board: MemoryBoardDto;
+  readonly board: MemoryBoardDto;
   private firstTileId: TileClick;
   private secondTileId: TileClick;
-  private fetchBoardSub: Subscription;
+  private gameIsOn: boolean;
+  private matchedPairs: number;
+  private pointsWon: number;
+  private saveScoreSub: Subscription;
+  private tileSize: number;
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private memoryService: MemoryService) {
+    this.board = this.memoryService.getMemoryBoard();
+  }
 
   ngOnInit() {
-    this.board = this.memoryService.getMemoryBoard();
     this.firstTileId = null;
     this.secondTileId = null;
+    this.gameIsOn = true;
+    this.matchedPairs = 0;
+    this.pointsWon = null;
+    this.calcTileSize();
   }
 
   onTileClick(tileClick: TileClick) {
@@ -47,8 +55,8 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.fetchBoardSub != null) {
-      this.fetchBoardSub.unsubscribe();
+    if (this.saveScoreSub != null) {
+      this.saveScoreSub.unsubscribe();
     }
     this.memoryService.clearCachedBoard();
   }
@@ -59,6 +67,14 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
     this.board.memoryTiles[tileClick.tileId].uncovered = true;
     localStorage.setItem('memory-tiles', JSON.stringify(this.board.memoryTiles));
     this.firstTileId = null;
+    this.matchedPairs++;
+    if (this.matchedPairs === this.board.memoryTiles.length / 2) {
+      this.saveScoreSub = this.memoryService.saveScore(this.board)
+        .subscribe(res => {
+          this.pointsWon = res;
+          this.gameIsOn = false;
+        });
+    }
   }
 
   private coverTilesIfTwoWereUncovered(): void {
@@ -66,6 +82,16 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
       this.memoryService.coverTiles(this.firstTileId.tileId, this.secondTileId.tileId);
       this.firstTileId = null;
       this.secondTileId = null;
+    }
+  }
+
+  private calcTileSize() {
+    if (this.board.memoryTiles.length < 20) {
+      this.tileSize = 2;
+    } else if (this.board.memoryTiles.length < 35) {
+      this.tileSize = 1;
+    } else {
+      this.tileSize = 0;
     }
   }
 }
