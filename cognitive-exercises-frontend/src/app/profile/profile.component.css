@@ -3,3 +3,7 @@
     border-style: solid;
     border-color: black;
 }
+
+.btn {
+    margin: 10px 2px 2px 2px;
+}

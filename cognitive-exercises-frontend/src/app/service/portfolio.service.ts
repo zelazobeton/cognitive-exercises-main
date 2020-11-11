@@ -7,7 +7,6 @@ import {catchError, tap} from 'rxjs/operators';
 import {NotificationType} from '../shared/notification/notification-type.enum';
 import {NotificationService} from '../shared/notification/notification.service';
 import {UserDto} from '../model/user-dto';
-import {AuthenticationService} from '../auth/service/authentication.service';
 
 @Injectable()
 export class PortfolioService {
@@ -30,5 +29,4 @@ export class PortfolioService {
         })
       );
   }
-
 }

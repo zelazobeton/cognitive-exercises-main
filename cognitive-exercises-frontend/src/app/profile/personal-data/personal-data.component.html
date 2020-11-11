@@ -1,30 +1,29 @@
-<div class="container">
-  <form #changePersonalDataForm="ngForm" (ngSubmit)="onSubmit(changePersonalDataForm)">
-    <div class="d-flex flex-row align-items-center">
-      <div class="p-2">
-        <img *ngIf="userData.portfolio.avatar != null"
-             height="100" width="100" [src]="userData.portfolio.avatar"
-             class="rounded-circle" alt=""/>
-      </div>
-      <div class="p-2">
-        <input type="button" id="loadFileXml" value="Browse file" onclick="document.getElementById('file').click()"/>
+<div class="container personal-data-container">
+  <div class="row personal-data-row">
+    <div class="d-flex align-items-center">
+      <img *ngIf="userData.portfolio.avatar != null"
+           height="100" width="100" [src]="userData.portfolio.avatar"
+           class="rounded-circle" alt=""/>
+      <h2 class="side-space">{{userData.username}}</h2>
+    </div>
+  </div>
+  <div class="row personal-data-row">
+    <form #changePersonalDataForm="ngForm" (ngSubmit)="onSubmit(changePersonalDataForm)">
+      <div class="d-flex flex-row align-items-center">
+        <button [disabled]="loading || profileImage == null" type="submit" name="button" class="btn btn-primary">
+          Upload
+        </button>
+        <input class="side-space" type="button" id="loadFileXml" value="Browse file" onclick="document.getElementById('file').click()"/>
         <input type="file" style="display:none;" id="file" name="file" accept=".jpg,.jpeg,.png,.tiff"
                (change)="onImageChange($event.target.files[0].name, $event.target.files[0])"/>
         <label class="control-label"><span [hidden]="!fileName"></span>
           <span [hidden]="!fileName">{{fileName}} loaded</span>
         </label>
-      </div>
-      <div class="p-2">
-        <button [disabled]="loading || profileImage == null" type="submit" name="button" class="btn btn-primary">
-          Upload
-        </button>
-      </div>
-    </div>
-    <div class="d-flex flex-row align-items-center">
-      <div class="p-2">
-        <p>Your score: {{userData.portfolio.totalScore}}</p>
-      </div>
-    </div>
-  </form>
 
+      </div>
+    </form>
+  </div>
+  <div class="row personal-data-row">
+    <p>Your score: {{userData.portfolio.totalScore}}</p>
+  </div>
 </div>

@@ -1,17 +1,16 @@
 <div class="container-fluid">
-    <div class="row">
-      <div class="col-4 frame">
-        <div class="row">
-          <button name="button" class="btn btn-primary" (click)="onClick($event)" id="personal-data">Personal data</button>
-        </div>
-        <div class="row">
-          <button name="button" class="btn btn-primary" (click)="onClick($event)" id="change-password">Change password</button>
-        </div>
-
-      </div>
-      <div class="col-8 frame">
-        <app-change-password *ngIf="currentCard === 'change-password'"></app-change-password>
-        <app-personal-data [userData]="userData" *ngIf="currentCard === 'personal-data'"></app-personal-data>
-      </div>
+  <div class="row">
+    <div class="col-4 frame">
+      <button name="button" class="btn btn-primary btn-block" (click)="onClick($event)" id="personal-data">
+        Personal data
+      </button>
+      <button name="button" class="btn btn-primary btn-block" (click)="onClick($event)" id="change-password">
+        Change password
+      </button>
     </div>
+    <div class="col-8 frame">
+      <app-change-password *ngIf="currentCard === 'change-password'"></app-change-password>
+      <app-personal-data [userData]="userData" *ngIf="currentCard === 'personal-data'"></app-personal-data>
+    </div>
+  </div>
 </div>
