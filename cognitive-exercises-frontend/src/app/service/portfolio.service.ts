@@ -13,8 +13,7 @@ import {AuthenticationService} from '../auth/service/authentication.service';
 export class PortfolioService {
   private readonly host = environment.apiUrl;
 
-  constructor(private http: HttpClient, private notificationService: NotificationService,
-              private authenticationService: AuthenticationService) {}
+  constructor(private http: HttpClient, private notificationService: NotificationService) {}
 
   public updateAvatar(portfolioForm: FormData): Observable<PortfolioDto> {
     return this.http.post<PortfolioDto>(`${this.host}/portfolio/update-avatar`, portfolioForm, {observe: 'body'})
@@ -27,7 +26,6 @@ export class PortfolioService {
           const user: UserDto = JSON.parse(localStorage.getItem('user'));
           user.portfolio = response;
           localStorage.setItem('user', JSON.stringify(user));
-          this.authenticationService.loggedInUser.next(user);
           this.notificationService.notify(NotificationType.SUCCESS, `Avatar updated`);
         })
       );

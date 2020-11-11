@@ -15,7 +15,7 @@
         </label>
       </div>
       <div class="p-2">
-        <button [disabled]="loading" type="submit" name="button" class="btn btn-primary">
+        <button [disabled]="loading || profileImage == null" type="submit" name="button" class="btn btn-primary">
           Upload
         </button>
       </div>

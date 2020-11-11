@@ -3,7 +3,7 @@
 
   <ul class="navbar-nav ml-auto">
     <li class="nav-item" *ngIf="usernameLogged != null">
-      <p class="nav-link">Logged in as {{usernameLogged}}</p>
+      <a class="nav-link">Logged in as {{usernameLogged}}</a>
     </li>
     <li class="nav-item" *ngIf="usernameLogged != null">
       <a class="nav-link" [routerLink]="['profile']">Profile</a>
@@ -13,7 +13,7 @@
     </li>
     <app-login-dropdown *ngIf="usernameLogged == null"></app-login-dropdown>
     <li class="nav-item" *ngIf="usernameLogged != null">
-      <a class="nav-link" (click)="onLogout()">Logout</a>
+      <a class="nav-link cursor-pointer" (click)="onLogout()">Logout</a>
     </li>
   </ul>
 </nav>
