@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +64,12 @@ public class UserController extends ExceptionHandling {
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         return new ResponseEntity<>(new UserDto(loginUser), jwtHeader, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/data", produces = { "application/json" })
+    public ResponseEntity<UserDto> getUserData(@AuthenticationPrincipal User user) throws UserNotFoundException {
+        User userData = userService.findUserByUsername(user.getUsername());
+        return new ResponseEntity<>(new UserDto(userData), HttpStatus.OK);
     }
 
     @PostMapping(path = "/change-password", produces = { "application/json" })
