@@ -61,7 +61,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 throw new NotAnImageFileException(avatar.getOriginalFilename() + NOT_AN_IMAGE_FILE);
             }
 
-            Path userAvatarFolder = Paths.get(USER_FOLDER + currentUser.getUsername() + AVATAR).toAbsolutePath().normalize();
+            Path userAvatarFolder = Paths.get(USER_FOLDER + FORWARD_SLASH + currentUser.getUsername() + FORWARD_SLASH + AVATAR).toAbsolutePath().normalize();
             if(!Files.exists(userAvatarFolder)) {
                 Files.createDirectories(userAvatarFolder);
                 log.debug(DIRECTORY_CREATED + userAvatarFolder);

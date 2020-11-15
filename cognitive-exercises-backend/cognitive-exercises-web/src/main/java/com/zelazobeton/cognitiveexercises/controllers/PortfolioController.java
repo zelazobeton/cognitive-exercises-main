@@ -49,7 +49,7 @@ public class PortfolioController extends ExceptionHandling {
     @GetMapping(path = "/avatar/{username}/{fileName}", produces = IMAGE_JPEG_VALUE)
     public byte[] getProfileImage(@PathVariable("username") String username, @PathVariable("fileName") String fileName)
             throws IOException {
-        return Files.readAllBytes(Paths.get(USER_FOLDER + username + AVATAR + FORWARD_SLASH + fileName));
+        return Files.readAllBytes(Paths.get(USER_FOLDER + FORWARD_SLASH + username + FORWARD_SLASH + AVATAR + FORWARD_SLASH + fileName));
     }
 
     @GetMapping(path = "/scoreboard", produces = { "application/json" })

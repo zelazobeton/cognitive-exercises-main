@@ -1,8 +1,6 @@
 package com.zelazobeton.cognitiveexercises.bootstrap;
 
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.EXAMPLE_USERNAMES_FILE;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_FOLDER;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_PATH;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.*;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.ADMIN;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
@@ -28,6 +26,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.zelazobeton.cognitiveexercieses.domain.GameData;
 import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
 import com.zelazobeton.cognitiveexercieses.domain.PortfolioBuilder;
 import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryImg;
@@ -35,6 +34,7 @@ import com.zelazobeton.cognitiveexercieses.domain.security.Authority;
 import com.zelazobeton.cognitiveexercieses.domain.security.Role;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.repository.AuthorityRepository;
+import com.zelazobeton.cognitiveexercieses.repository.GameDataRepository;
 import com.zelazobeton.cognitiveexercieses.repository.MemoryImgRepository;
 import com.zelazobeton.cognitiveexercieses.repository.RoleRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
@@ -47,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Profile({"dev-mysql-bootstrap"})
 public class BootstrapDb implements CommandLineRunner {
+    private final GameDataRepository gameDataRepository;
     private final AuthorityRepository authorityRepository;
     private final RoleRepository roleRepository;
     private final MemoryImgRepository memoryImgRepository;
@@ -60,7 +61,15 @@ public class BootstrapDb implements CommandLineRunner {
     public void run(String... args) {
 //        loadRoles();
 //        loadMemoryImages();
-        loadExampleUsers();
+//        loadExampleUsers();
+        loadGamesData();
+    }
+
+    private void loadGamesData() {
+        gameDataRepository.save(GameData.builder()
+                .title("Memory")
+                .icon(LOCALHOST_ADDRESS + FORWARD_SLASH + "games/icon/memory-icon.png")
+                .build());
     }
 
     void loadExampleUsers() {
@@ -107,7 +116,7 @@ public class BootstrapDb implements CommandLineRunner {
         List<MemoryImg> memoryImgs = new ArrayList<>();
         for(File file: memoryImagesFolder.toFile().listFiles()) {
             if (!file.isDirectory()) {
-                String imgAddress = "http://localhost:8081" + MEMORY_IMG_PATH + file.getName();
+                String imgAddress = LOCALHOST_ADDRESS + MEMORY_IMG_PATH + file.getName();
                 memoryImgs.add(MemoryImg.builder().address(imgAddress).build());
             }
         }

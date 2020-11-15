@@ -19,6 +19,7 @@ public class SecurityConstants {
 //            "/portfolio/avatar/**",
             "/portfolio/**",
             "/memory/**",
+            "/games/**",
 //            "/memory/img/**"
     };
 }

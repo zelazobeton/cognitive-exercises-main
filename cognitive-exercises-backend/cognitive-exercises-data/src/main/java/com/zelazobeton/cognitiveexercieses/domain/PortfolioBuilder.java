@@ -2,7 +2,7 @@ package com.zelazobeton.cognitiveexercieses.domain;
 
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.AVATAR;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.DEFAULT_AVATAR_FILENAME;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.DEFAULT_AVATAR_PATH;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.DEFAULT_AVATAR_FILE;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.DIRECTORY_CREATED;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD_SLASH;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.LOCALHOST_ADDRESS;
@@ -49,7 +49,7 @@ public class PortfolioBuilder {
     }
 
     private static void generateAvatar(String username) throws IOException {
-        Path target = Paths.get(USER_FOLDER + username + AVATAR).toAbsolutePath().normalize();
+        Path target = Paths.get(USER_FOLDER + FORWARD_SLASH + username + FORWARD_SLASH + AVATAR).toAbsolutePath().normalize();
         try {
             createFolderIfThereIsNone(target);
             URL website = new URL(generateRoboHashAddress());
@@ -57,7 +57,7 @@ public class PortfolioBuilder {
             Files.copy(in, target.resolve(DEFAULT_AVATAR_FILENAME), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
             log.info(ex.toString());
-            Path defaultAvatarSrc = Paths.get(DEFAULT_AVATAR_PATH).toAbsolutePath().normalize();
+            Path defaultAvatarSrc = Paths.get(DEFAULT_AVATAR_FILE).toAbsolutePath().normalize();
             Files.copy(defaultAvatarSrc, target, StandardCopyOption.REPLACE_EXISTING);
         }
     }
