@@ -7,7 +7,7 @@ target/
 **/src/main/resources/users-data/**
 **/src/main/resources/memory-pictures/**
 **/src/main/resources/data-generation-files/**
-
+**/src/main/resources/games-data/**
 
 ### STS ###
 .apt_generated

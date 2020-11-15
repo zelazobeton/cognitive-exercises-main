@@ -19,6 +19,7 @@ import { PersonalDataComponent } from './main-page-components/profile/personal-d
 import { ResetPasswordComponent } from './main-page-components/reset-password/reset-password.component';
 import {GamesModule} from './games/games.module';
 import { ScoreboardComponent } from './home/scoreboard/scoreboard.component';
+import {GamesService} from './shared/service/games.service';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,7 @@ import { ScoreboardComponent } from './home/scoreboard/scoreboard.component';
     ReactiveFormsModule,
     NotificationModule
   ],
-  providers: [UserService, PortfolioService],
+  providers: [UserService, PortfolioService, GamesService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
