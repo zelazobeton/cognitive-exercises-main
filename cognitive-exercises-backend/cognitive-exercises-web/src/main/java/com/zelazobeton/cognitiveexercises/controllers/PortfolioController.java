@@ -8,6 +8,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercieses.model.PortfolioDto;
+import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
 import com.zelazobeton.cognitiveexercieses.service.PortfolioService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
@@ -36,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 public class PortfolioController extends ExceptionHandling {
     private final PortfolioService portfolioService;
 
-    @PostMapping(path = "/update-avatar")
+    @PostMapping(path = "/update-avatar", produces = { "application/json" })
     @PreAuthorize("hasAuthority('user.update')")
     public ResponseEntity<PortfolioDto> updatePortfolio(@AuthenticationPrincipal User user,
             @RequestParam("avatar") MultipartFile avatar) throws IOException, NotAnImageFileException {
@@ -50,4 +52,11 @@ public class PortfolioController extends ExceptionHandling {
         return Files.readAllBytes(Paths.get(USER_FOLDER + username + AVATAR + FORWARD_SLASH + fileName));
     }
 
+    @GetMapping(path = "/scoreboard", produces = { "application/json" })
+    public ResponseEntity<List<UserScoreDto>> getScoreboard(@AuthenticationPrincipal User user,
+            @RequestParam("page") String pageNum, @RequestParam("size") String pageSize) throws IOException {
+        List<UserScoreDto> scoreboard = portfolioService.getScoreboardPage(
+                user.getUsername(), Integer.parseInt(pageNum), Integer.parseInt(pageSize));
+        return new ResponseEntity<>(scoreboard, HttpStatus.OK);
+    }
 }

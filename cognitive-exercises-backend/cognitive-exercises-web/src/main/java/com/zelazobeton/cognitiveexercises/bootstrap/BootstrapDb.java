@@ -1,28 +1,43 @@
 package com.zelazobeton.cognitiveexercises.bootstrap;
 
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.EXAMPLE_USERNAMES_FILE;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_FOLDER;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_PATH;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.ADMIN;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
+import com.zelazobeton.cognitiveexercieses.domain.PortfolioBuilder;
 import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryImg;
 import com.zelazobeton.cognitiveexercieses.domain.security.Authority;
 import com.zelazobeton.cognitiveexercieses.domain.security.Role;
+import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.repository.AuthorityRepository;
 import com.zelazobeton.cognitiveexercieses.repository.MemoryImgRepository;
 import com.zelazobeton.cognitiveexercieses.repository.RoleRepository;
+import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +50,56 @@ public class BootstrapDb implements CommandLineRunner {
     private final AuthorityRepository authorityRepository;
     private final RoleRepository roleRepository;
     private final MemoryImgRepository memoryImgRepository;
+    private final UserRepository userRepository;
+    private final Random rand = new Random();
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
 
     @Override
     public void run(String... args) {
 //        loadRoles();
-        loadMemoryImages();
+//        loadMemoryImages();
+        loadExampleUsers();
+    }
+
+    void loadExampleUsers() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        TypedQuery<Role> q = entityManager.createQuery(
+                "SELECT a FROM Role a LEFT JOIN FETCH a.users WHERE a.name=:name", Role.class)
+                .setParameter("name", USER);
+        Role userRole = q.getSingleResult();
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+        List<User> users = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(EXAMPLE_USERNAMES_FILE))) {
+            User newUser;
+            for(String line; (line = br.readLine()) != null; ) {
+                newUser = User.builder()
+                        .username(line)
+                        .email(line + "@domain.com")
+                        .password(bCryptPasswordEncoder.encode(line))
+                        .role(userRole)
+                        .build();
+                userRole.addUser(newUser);
+                generatePortfolio(newUser);
+                users.add(newUser);
+            }
+        } catch (IOException ex) {
+            log.info(ex.toString());
+        }
+        roleRepository.save(userRole);
+        userRepository.saveAll(users);
+    }
+
+    private Portfolio generatePortfolio(User newUser) throws IOException{
+        Portfolio portfolio = PortfolioBuilder.createBootstrapPortfolioWithGeneratedAvatar(newUser);
+        long score = this.rand.nextInt(1000);
+        portfolio.setTotalScore(score);
+        return portfolio;
     }
 
     private void loadMemoryImages() {

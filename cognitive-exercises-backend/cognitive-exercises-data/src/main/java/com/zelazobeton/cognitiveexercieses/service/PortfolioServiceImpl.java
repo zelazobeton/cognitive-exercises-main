@@ -16,8 +16,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +33,7 @@ import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
+import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
 import com.zelazobeton.cognitiveexercieses.repository.PortfolioRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
 
@@ -71,6 +77,19 @@ public class PortfolioServiceImpl implements PortfolioService {
             currentPortfolio.setAvatar(createProfileImageUrl(currentUser.getUsername(), avatar.getOriginalFilename()));
         }
         return portfolioRepository.save(currentPortfolio);
+    }
+
+    @Override
+    public List<UserScoreDto> getScoreboardPage(String username, int pageNumber, int pageSize) {
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("totalScore").descending());
+        List<Portfolio> portfolioList = portfolioRepository.findAll(pageRequest).getContent();
+        List<UserScoreDto> scoreboard = new ArrayList<>();
+        int placeInRanking = pageNumber * pageSize + 1;
+        for (int idx = 0; idx < portfolioList.size(); ++idx) {
+            scoreboard.add(new UserScoreDto(portfolioList.get(idx), placeInRanking));
+            ++placeInRanking;
+        }
+        return scoreboard;
     }
 
     private String createProfileImageUrl(String username, String fileName) {

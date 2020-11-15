@@ -9,7 +9,6 @@ import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryBoard;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 @Entity
 @Getter
 @Setter
-@Builder
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,5 +33,6 @@ public class Portfolio extends BaseEntity {
         this.avatar = avatar;
         this.totalScore = totalScore;
         this.memoryBoard = null;
+        user.setPortfolio(this);
     }
 }

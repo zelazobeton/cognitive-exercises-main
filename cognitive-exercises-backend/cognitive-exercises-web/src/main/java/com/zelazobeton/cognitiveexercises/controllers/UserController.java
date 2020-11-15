@@ -51,7 +51,7 @@ public class UserController extends ExceptionHandling {
 
     @PostMapping(path = "/register", produces = { "application/json" })
     public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto)
-            throws EntityAlreadyExistsException, MessagingException {
+            throws EntityAlreadyExistsException, MessagingException, IOException {
         User newUser = userService.register(userDto.getUsername(), userDto.getEmail());
         return new ResponseEntity<>(new UserDto(newUser), HttpStatus.OK);
     }
@@ -67,6 +67,7 @@ public class UserController extends ExceptionHandling {
     }
 
     @GetMapping(path = "/data", produces = { "application/json" })
+    @PreAuthorize("hasAuthority('user.read')")
     public ResponseEntity<UserDto> getUserData(@AuthenticationPrincipal User user) throws UserNotFoundException {
         User userData = userService.findUserByUsername(user.getUsername());
         return new ResponseEntity<>(new UserDto(userData), HttpStatus.OK);
@@ -99,7 +100,7 @@ public class UserController extends ExceptionHandling {
 
     @DeleteMapping("/delete/{username}")
     @PreAuthorize("hasAuthority('user.delete')")
-    public ResponseEntity<HttpResponse> deleteUser(@AuthenticationPrincipal User user) throws IOException {
+    public ResponseEntity<HttpResponse> deleteUser(@AuthenticationPrincipal User user) {
         userService.deleteUser(user);
         return new ResponseEntity<>(new HttpResponse(OK, USER_DELETED_SUCCESSFULLY), OK);
     }

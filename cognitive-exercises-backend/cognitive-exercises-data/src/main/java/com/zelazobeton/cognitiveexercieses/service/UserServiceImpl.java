@@ -4,9 +4,7 @@ import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 
@@ -26,7 +24,6 @@ import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.RoleNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UsernameAlreadyExistsException;
-import com.zelazobeton.cognitiveexercieses.model.UserScoringDto;
 import com.zelazobeton.cognitiveexercieses.repository.RoleRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
 
@@ -84,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(String username, String email)
-            throws UsernameAlreadyExistsException, EmailAlreadyExistsException, MessagingException {
+            throws UsernameAlreadyExistsException, EmailAlreadyExistsException, MessagingException, IOException {
         validateNewUsernameAndEmail(username, email);
         String password = generatePassword();
         Role userRole = roleRepository.findByName(USER).orElseThrow(RoleNotFoundException::new);
@@ -94,7 +91,7 @@ public class UserServiceImpl implements UserService {
                 .password(encodePassword(password))
                 .role(userRole)
                 .build();
-        newUser.setPortfolio(PortfolioBuilder.createPortfolioWithGeneratedAvatar(newUser));
+        PortfolioBuilder.createPortfolioWithGeneratedAvatar(newUser);
         emailService.sendNewPasswordEmail(username, password, email);
         log.debug(username + " password: " + password);
         return userRepository.save(newUser);
@@ -131,11 +128,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserScoringDto> getUsersScoringList() {
-        return userRepository.findAll().stream().map(user -> new UserScoringDto(user)).collect(Collectors.toList());
-    }
-
-    @Override
     public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
         User user = userRepository.findUserByEmail(email).orElseThrow(EmailNotFoundException::new);
         String password = generatePassword();
@@ -146,7 +138,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(User user) throws IOException {
+    public void deleteUser(User user) {
         userRepository.deleteById(user.getId());
     }
 
