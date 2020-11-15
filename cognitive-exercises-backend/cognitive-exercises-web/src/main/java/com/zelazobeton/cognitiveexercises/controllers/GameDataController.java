@@ -29,7 +29,7 @@ public class GameDataController extends ExceptionHandling {
         this.gamesDataService = gamesDataService;
     }
 
-    @GetMapping(path = "/", produces = { "application/json" })
+    @GetMapping(path = "/data", produces = { "application/json" })
     public ResponseEntity<List<GameDataDto>> getGames() {
         return new ResponseEntity<>(gamesDataService.getGamesData(), HttpStatus.OK);
     }
