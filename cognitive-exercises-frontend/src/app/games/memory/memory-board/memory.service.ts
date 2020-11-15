@@ -6,7 +6,7 @@ import {environment} from '../../../../environments/environment';
 import {catchError, tap} from 'rxjs/operators';
 import {NotificationType} from '../../../shared/notification/notification-type.enum';
 import {NotificationService} from '../../../shared/notification/notification.service';
-import {CustomHttpResponse} from '../../../model/custom-http-response';
+import {CustomHttpResponse} from '../../../shared/model/custom-http-response';
 
 @Injectable()
 export class MemoryService implements OnDestroy {

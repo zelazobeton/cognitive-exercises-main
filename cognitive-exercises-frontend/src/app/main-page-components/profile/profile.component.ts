@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit, NgZone} from '@angular/core';
-import {UserService} from '../service/user.service';
+import {UserService} from '../../shared/service/user.service';
 import {Subscription} from 'rxjs';
 import {Route, Router} from '@angular/router';
-import {UserDto} from '../model/user-dto';
+import {UserDto} from '../../shared/model/user-dto';
 
 @Component({
   selector: 'app-profile',

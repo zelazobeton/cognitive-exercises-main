@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import {Observable, throwError} from 'rxjs';
 import {PortfolioDto} from '../model/portfolio-dto';
 import {catchError, tap} from 'rxjs/operators';
-import {NotificationType} from '../shared/notification/notification-type.enum';
-import {NotificationService} from '../shared/notification/notification.service';
+import {NotificationType} from '../notification/notification-type.enum';
+import {NotificationService} from '../notification/notification.service';
 import {UserDto} from '../model/user-dto';
 
 @Injectable()

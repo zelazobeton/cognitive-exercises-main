@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject, throwError} from 'rxjs';
 import {environment} from '../../../environments/environment';
-import {UserDto} from '../../model/user-dto';
+import {UserDto} from '../../shared/model/user-dto';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {isDefined} from '@angular/compiler/src/util';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {AuthForm, ChangePasswordForm, RegisterForm} from '../../model/input-forms';
+import {AuthForm, ChangePasswordForm, RegisterForm} from '../../shared/model/input-forms';
 import {catchError, tap} from 'rxjs/operators';
 import {HeaderType} from '../enum/header-type.enum';
 import {NotificationType} from '../../shared/notification/notification-type.enum';

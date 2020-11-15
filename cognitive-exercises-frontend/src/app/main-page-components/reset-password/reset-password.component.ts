@@ -1,19 +1,18 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import {AuthenticationService} from '../auth/service/authentication.service';
 import {HttpErrorResponse} from '@angular/common/http';
-import {UserDto} from '../model/user-dto';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import { RegisterForm} from '../model/input-forms';
+import {UserService} from '../../shared/service/user.service';
+import {AuthenticationService} from '../../auth/service/authentication.service';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  selector: 'app-reset-password',
+  templateUrl: './reset-password.component.html',
+  styleUrls: ['./reset-password.component.css']
 })
-export class RegisterComponent implements OnInit, OnDestroy {
-  private registerForm: FormGroup;
+export class ResetPasswordComponent implements OnInit, OnDestroy {
+  private resetPasswordForm: FormGroup;
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
   private error: string | null = null;
@@ -23,29 +22,25 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.emailInputInvalid = this.formControls.email.invalid && this.formControls.email.dirty && this.formControls.email.value !== '';
   }
 
-  constructor(private router: Router, private authenticationService: AuthenticationService) {}
+  constructor(private router: Router, private userService: UserService, private authenticationService: AuthenticationService) {}
 
   ngOnInit(): void {
     if (this.authenticationService.isUserLoggedIn()) {
       this.router.navigateByUrl('/');
     }
-    this.registerForm = new FormGroup({
-      username: new FormControl(null, [Validators.required]),
+    this.resetPasswordForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email])
     });
   }
 
   public onSubmit(): void {
     this.showLoading = true;
-    const registerForm: RegisterForm = {
-      username: this.registerForm.value.username,
-      email: this.registerForm.value.email
-    };
-    this.registerForm.reset();
-
+    const formData = new FormData();
+    formData.append('email', this.resetPasswordForm.value.email);
+    this.resetPasswordForm.reset();
     this.subscriptions.push(
-      this.authenticationService.register(registerForm).subscribe(
-        (response: UserDto) => {
+      this.userService.resetPassword(formData).subscribe(
+        () => {
           this.showLoading = false;
           this.error = null;
         },
@@ -63,6 +58,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   get formControls() {
-    return this.registerForm.controls;
+    return this.resetPasswordForm.controls;
   }
 }

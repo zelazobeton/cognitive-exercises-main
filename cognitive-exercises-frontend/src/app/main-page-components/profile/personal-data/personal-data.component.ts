@@ -1,11 +1,11 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
-import {PortfolioService} from '../../service/portfolio.service';
+import {PortfolioService} from '../../../shared/service/portfolio.service';
 import {Subscription} from 'rxjs';
-import {UserDto} from '../../model/user-dto';
-import {AuthenticationService} from '../../auth/service/authentication.service';
-import {PortfolioDto} from '../../model/portfolio-dto';
+import {UserDto} from '../../../shared/model/user-dto';
+import {AuthenticationService} from '../../../auth/service/authentication.service';
+import {PortfolioDto} from '../../../shared/model/portfolio-dto';
 
 @Component({
   selector: 'app-personal-data',
