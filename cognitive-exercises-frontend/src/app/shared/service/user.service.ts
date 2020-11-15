@@ -53,8 +53,9 @@ export class UserService {
       );
   }
 
-  public fetchScoreboard(): Observable<UserScoreDto[]> {
-    return this.http.get<UserScoreDto[]>(`${this.host}/user/scoreboard`)
+  public fetchScoreboard(pageNum = 0, pageSize = 10): Observable<UserScoreDto[]> {
+    return this.http.get<UserScoreDto[]>(`${this.host}/portfolio/scoreboard`,
+      {params: { page: pageNum.toString(), size: pageSize.toString() }})
       .pipe(
         catchError(errorRes => {
           this.notificationService.notify(NotificationType.ERROR, UserService.SCOREBOARD_ERROR);

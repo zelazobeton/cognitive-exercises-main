@@ -32,6 +32,10 @@ export class MemoryStartComponent implements OnInit, OnDestroy {
     });
   }
 
+  onGoBack() {
+    this.router.navigate(['../../../'], {relativeTo: this.route});
+  }
+
   onContinue() {
     this.router.navigate(['play'], {relativeTo: this.route});
   }

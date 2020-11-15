@@ -1,0 +1,21 @@
+<table class="table">
+  <thead class="table-borderless">
+  <tr>
+    <th>Rank</th>
+    <th>User</th>
+    <th></th>
+    <th>Score</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let score of scoreboard" >
+    <td>{{score.place}}</td>
+    <td>
+      <img *ngIf="score.portfolio.avatar != null" height="30" width="30" [src]="score.portfolio.avatar"
+           class="rounded-circle" alt=""/>
+    </td>
+    <td>{{score.username}}</td>
+    <td>{{score.portfolio.totalScore}}</td>
+  </tr>
+  </tbody>
+</table>
