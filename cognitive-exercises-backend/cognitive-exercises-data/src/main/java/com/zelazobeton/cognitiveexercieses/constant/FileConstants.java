@@ -4,7 +4,7 @@ public class FileConstants {
     public static final String LOCALHOST_ADDRESS = "http://localhost:8081";
     public static final String USER_FOLDER = System.getProperty("user.dir") + "/cognitive-exercises-data/src/main/resources/users-data/";
     public static final String MEMORY_IMG_FOLDER = System.getProperty("user.dir") + "/cognitive-exercises-data/src/main/resources/memory-pictures";
-    public static final String EXAMPLE_USERNAMES_FILE = System.getProperty("user.dir") + "/cognitive-exercises-data/src/main/resources/defaults/example_usernames.txt";
+    public static final String EXAMPLE_USERNAMES_FILE = System.getProperty("user.dir") + "/cognitive-exercises-data/src/main/resources/data-generation-files/example_usernames.txt";
     public static final String MEMORY_IMG_PATH = "/memory/img/";
     public static final String FORWARD_SLASH = "/";
     public static final String AVATAR = "/avatar";

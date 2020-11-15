@@ -5,6 +5,9 @@ target/
 !**/src/main/**
 !**/src/test/**
 **/src/main/resources/users-data/**
+**/src/main/resources/memory-pictures/**
+**/src/main/resources/data-generation-files/**
+
 
 ### STS ###
 .apt_generated
