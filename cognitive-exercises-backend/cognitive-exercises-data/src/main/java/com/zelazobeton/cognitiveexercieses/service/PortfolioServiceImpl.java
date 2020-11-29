@@ -80,7 +80,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<UserScoreDto> getScoreboardPage(String username, int pageNumber, int pageSize) {
+    public List<UserScoreDto> getScoreboardPage(int pageNumber, int pageSize) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("totalScore").descending());
         List<Portfolio> portfolioList = portfolioRepository.findAll(pageRequest).getContent();
         List<UserScoreDto> scoreboard = new ArrayList<>();

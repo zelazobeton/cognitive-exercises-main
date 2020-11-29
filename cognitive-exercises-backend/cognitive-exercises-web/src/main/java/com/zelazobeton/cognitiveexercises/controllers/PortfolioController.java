@@ -56,7 +56,7 @@ public class PortfolioController extends ExceptionHandling {
     public ResponseEntity<List<UserScoreDto>> getScoreboard(@AuthenticationPrincipal User user,
             @RequestParam("page") String pageNum, @RequestParam("size") String pageSize) throws IOException {
         List<UserScoreDto> scoreboard = portfolioService.getScoreboardPage(
-                user.getUsername(), Integer.parseInt(pageNum), Integer.parseInt(pageSize));
+                Integer.parseInt(pageNum), Integer.parseInt(pageSize));
         return new ResponseEntity<>(scoreboard, HttpStatus.OK);
     }
 }

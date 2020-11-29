@@ -15,5 +15,5 @@ public interface PortfolioService {
     Portfolio updateAvatar(String username, MultipartFile avatar)
             throws EntityNotFoundException, IOException, NotAnImageFileException;
 
-    List<UserScoreDto> getScoreboardPage(String username, int pageNumber, int pageSize);
+    List<UserScoreDto> getScoreboardPage(int pageNumber, int pageSize);
 }
