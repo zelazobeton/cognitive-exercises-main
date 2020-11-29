@@ -59,9 +59,9 @@ public class BootstrapDb implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-//        loadRoles();
-//        loadMemoryImages();
-//        loadExampleUsers();
+        loadRoles();
+        loadMemoryImages();
+        loadExampleUsers();
         loadGamesData();
     }
 
