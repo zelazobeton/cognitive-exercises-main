@@ -3,6 +3,10 @@ import {UserService} from '../../shared/service/user.service';
 import {Subscription} from 'rxjs';
 import {Route, Router} from '@angular/router';
 import {UserDto} from '../../shared/model/user-dto';
+import {NotificationType} from '../../shared/notification/notification-type.enum';
+import {NotificationMessages} from '../../shared/notification/notification-messages.enum';
+import {NotificationService} from '../../shared/notification/notification.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
@@ -14,14 +18,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private userSub: Subscription;
   private userData: UserDto;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private notificationService: NotificationService, private router: Router) {
     this.currentCard = null;
   }
 
   ngOnInit() {
-    this.userSub = this.userService.fetchUserData().subscribe(res => {
-      this.userData = res;
-    });
+    this.userSub = this.userService.fetchUserData().subscribe(
+      res => {
+        this.userData = res;
+      },
+      (errorResponse: HttpErrorResponse) => {
+        this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
+        this.router.navigateByUrl('/');
+      });
   }
 
   onClick(event) {

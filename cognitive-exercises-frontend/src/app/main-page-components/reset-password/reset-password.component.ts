@@ -5,6 +5,10 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../shared/service/user.service';
 import {AuthenticationService} from '../../auth/service/authentication.service';
+import {NotificationType} from '../../shared/notification/notification-type.enum';
+import {NotificationMessages} from '../../shared/notification/notification-messages.enum';
+import {NotificationService} from '../../shared/notification/notification.service';
+import {CustomHttpResponse} from '../../shared/model/custom-http-response';
 
 @Component({
   selector: 'app-reset-password',
@@ -22,7 +26,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     this.emailInputInvalid = this.formControls.email.invalid && this.formControls.email.dirty && this.formControls.email.value !== '';
   }
 
-  constructor(private router: Router, private userService: UserService, private authenticationService: AuthenticationService) {}
+  constructor(private router: Router, private userService: UserService, private authenticationService: AuthenticationService,
+              private notificationService: NotificationService) {}
 
   ngOnInit(): void {
     if (this.authenticationService.isUserLoggedIn()) {
@@ -40,12 +45,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     this.resetPasswordForm.reset();
     this.subscriptions.push(
       this.userService.resetPassword(formData).subscribe(
-        () => {
+        (response: CustomHttpResponse) => {
+          this.notificationService.notify(NotificationType.SUCCESS, response.message);
           this.showLoading = false;
           this.error = null;
         },
         (errorResponse: HttpErrorResponse) => {
-          console.error(errorResponse);
           this.error = errorResponse.error.message;
           this.showLoading = false;
         }
