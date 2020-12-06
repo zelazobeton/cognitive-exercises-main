@@ -15,7 +15,7 @@ import {CustomHttpResponse} from '../../shared/model/custom-http-response';
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
-  private readonly refreshTokenKey = environment.storageTokenKey;
+  private readonly refreshTokenKey = environment.storageRefreshTokenKey;
   readonly host = environment.apiUrl;
   private token: string;
   public loggedInUser: Subject<UserDto>;
@@ -76,7 +76,6 @@ export class AuthenticationService {
         console.error(errorResponse);
       });
     this.removeUserDataFromApp();
-    this.router.navigateByUrl('/');
   }
 
   private removeUserDataFromApp() {
@@ -122,11 +121,13 @@ export class AuthenticationService {
 
   public refreshAccessToken(): Observable<string> {
     const refreshToken = localStorage.getItem(this.refreshTokenKey);
+    console.log('refreshAccessToken');
     return this.http.post<CustomHttpResponse | HttpErrorResponse>(
       `${this.host}/token/refresh`, refreshToken, {observe: `response`})
       .pipe(
         map(response => {
           const token = response.headers.get(Headers.JWT_TOKEN);
+          console.log('refreshed token: ' + token);
           this.saveToken(token);
           return this.token;
         })
