@@ -1,13 +1,13 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {Observable, Subject, Subscription, throwError} from 'rxjs';
-import {MemoryBoardDto} from './memory';
+import {MemoryBoardDto} from './memory-board/memory';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {environment} from '../../../../environments/environment';
+import {environment} from '../../../environments/environment';
 import {catchError, tap} from 'rxjs/operators';
-import {NotificationType} from '../../../shared/notification/notification-type.enum';
-import {NotificationService} from '../../../shared/notification/notification.service';
-import {CustomHttpResponse} from '../../../shared/model/custom-http-response';
-import {NotificationMessages} from '../../../shared/notification/notification-messages.enum';
+import {NotificationType} from '../../shared/notification/notification-type.enum';
+import {NotificationService} from '../../shared/notification/notification.service';
+import {CustomHttpResponse} from '../../shared/model/custom-http-response';
+import {NotificationMessages} from '../../shared/notification/notification-messages.enum';
 
 @Injectable()
 export class MemoryService implements OnDestroy {
@@ -54,27 +54,16 @@ export class MemoryService implements OnDestroy {
         this.notificationService.notify(NotificationType.SUCCESS, response.message);
       }, (errorRes => {
         this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
-        console.error(errorRes);
       }));
   }
 
   saveScore(board: MemoryBoardDto): Observable<number> {
-    return this.http.post<number>(`${this.host}/memory/save-score`, board)
-      .pipe(
-        catchError(errorRes => {
-          this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
-          return throwError(errorRes);
-        })
-      );
+    return this.http.post<number>(`${this.host}/memory/save-score`, board);
   }
 
   fetchNewBoard(difficultyLvl: number): Observable<MemoryBoardDto> {
     return this.http.post<MemoryBoardDto>(`${this.host}/memory/new-game`, difficultyLvl)
       .pipe(
-        catchError(errorRes => {
-          this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
-          return throwError(errorRes);
-        }),
         tap(response => {
           this.board = response;
           localStorage.setItem('memory-tiles', JSON.stringify(this.board.memoryTiles));
@@ -86,19 +75,15 @@ export class MemoryService implements OnDestroy {
   fetchSavedGameBoard(): Observable<MemoryBoardDto> {
     return this.http.get<MemoryBoardDto>(`${this.host}/memory/continue`)
       .pipe(
-        catchError(errorRes => {
-          this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
-          return throwError(errorRes);
-        }),
         tap(response => {
-          if (response != null) {
-            this.board = response;
-            localStorage.setItem('memory-tiles', JSON.stringify(response.memoryTiles));
-            localStorage.setItem('memory-tiles-num', JSON.stringify(response.numOfUncoveredTiles));
+            if (response != null) {
+              this.board = response;
+              localStorage.setItem('memory-tiles', JSON.stringify(response.memoryTiles));
+              localStorage.setItem('memory-tiles-num', JSON.stringify(response.numOfUncoveredTiles));
+            }
           }
-        }
-      )
-    );
+        )
+      );
   }
 
   ngOnDestroy(): void {

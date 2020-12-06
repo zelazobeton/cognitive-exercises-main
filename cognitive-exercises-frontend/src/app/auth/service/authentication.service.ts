@@ -99,7 +99,7 @@ export class AuthenticationService {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  public getUserFromLocalStorage(): UserDto {
+  private getUserFromLocalStorage(): UserDto {
     return JSON.parse(localStorage.getItem('user'));
   }
 

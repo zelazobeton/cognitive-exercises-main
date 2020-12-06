@@ -1,7 +1,10 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {MemoryService} from './memory.service';
+import {MemoryService} from '../memory.service';
 import {MemoryBoardDto, TileClick} from './memory';
 import {Subscription} from 'rxjs';
+import {NotificationType} from '../../../shared/notification/notification-type.enum';
+import {NotificationMessages} from '../../../shared/notification/notification-messages.enum';
+import {NotificationService} from '../../../shared/notification/notification.service';
 
 @Component({
   selector: 'app-memory-board',
@@ -18,7 +21,7 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
   private saveScoreSub: Subscription;
   private tileSize: number;
 
-  constructor(private memoryService: MemoryService) {
+  constructor(private memoryService: MemoryService, private notificationService: NotificationService) {
     this.board = this.memoryService.getMemoryBoard();
   }
 
@@ -70,10 +73,12 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
     this.matchedPairs++;
     if (this.matchedPairs === this.board.memoryTiles.length / 2) {
       this.saveScoreSub = this.memoryService.saveScore(this.board)
-        .subscribe(res => {
-          this.pointsWon = res;
-          this.gameIsOn = false;
-        });
+        .subscribe(
+          res => {
+            this.pointsWon = res;
+            this.gameIsOn = false;
+          },
+        );
     }
   }
 

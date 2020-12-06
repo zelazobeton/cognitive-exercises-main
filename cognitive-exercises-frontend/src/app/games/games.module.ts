@@ -6,7 +6,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MemoryStartComponent } from './memory/memory-start/memory-start.component';
 import { MemoryBoardComponent } from './memory/memory-board/memory-board.component';
 import { MemoryTileComponent } from './memory/memory-board/memory-tile/memory-tile.component';
-import {MemoryService} from './memory/memory-board/memory.service';
+import {MemoryService} from './memory/memory.service';
 
 @NgModule({
   declarations: [MemoryMainComponent, MemoryStartComponent, MemoryBoardComponent, MemoryTileComponent],
