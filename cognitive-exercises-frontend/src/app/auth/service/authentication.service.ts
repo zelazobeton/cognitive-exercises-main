@@ -121,13 +121,11 @@ export class AuthenticationService {
 
   public refreshAccessToken(): Observable<string> {
     const refreshToken = localStorage.getItem(this.refreshTokenKey);
-    console.log('refreshAccessToken');
     return this.http.post<CustomHttpResponse | HttpErrorResponse>(
       `${this.host}/token/refresh`, refreshToken, {observe: `response`})
       .pipe(
         map(response => {
           const token = response.headers.get(Headers.JWT_TOKEN);
-          console.log('refreshed token: ' + token);
           this.saveToken(token);
           return this.token;
         })

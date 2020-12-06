@@ -7,10 +7,10 @@ import {catchError, tap} from 'rxjs/operators';
 import {NotificationType} from '../../../shared/notification/notification-type.enum';
 import {NotificationService} from '../../../shared/notification/notification.service';
 import {CustomHttpResponse} from '../../../shared/model/custom-http-response';
+import {NotificationMessages} from '../../../shared/notification/notification-messages.enum';
 
 @Injectable()
 export class MemoryService implements OnDestroy {
-  private static ERROR_MSG = 'Sorry, there was an internal issue';
   public tileNotification: Subject<{ id: number, match: boolean }>;
   private readonly host = environment.apiUrl;
   private board: MemoryBoardDto;
@@ -53,7 +53,7 @@ export class MemoryService implements OnDestroy {
       .subscribe((response: CustomHttpResponse) => {
         this.notificationService.notify(NotificationType.SUCCESS, response.message);
       }, (errorRes => {
-        this.notificationService.notify(NotificationType.ERROR, MemoryService.ERROR_MSG);
+        this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
         console.error(errorRes);
       }));
   }
@@ -62,7 +62,7 @@ export class MemoryService implements OnDestroy {
     return this.http.post<number>(`${this.host}/memory/save-score`, board)
       .pipe(
         catchError(errorRes => {
-          this.notificationService.notify(NotificationType.ERROR, MemoryService.ERROR_MSG);
+          this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
           return throwError(errorRes);
         })
       );
@@ -72,7 +72,7 @@ export class MemoryService implements OnDestroy {
     return this.http.post<MemoryBoardDto>(`${this.host}/memory/new-game`, difficultyLvl)
       .pipe(
         catchError(errorRes => {
-          this.notificationService.notify(NotificationType.ERROR, MemoryService.ERROR_MSG);
+          this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
           return throwError(errorRes);
         }),
         tap(response => {
@@ -87,7 +87,7 @@ export class MemoryService implements OnDestroy {
     return this.http.get<MemoryBoardDto>(`${this.host}/memory/continue`)
       .pipe(
         catchError(errorRes => {
-          this.notificationService.notify(NotificationType.ERROR, MemoryService.ERROR_MSG);
+          this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
           return throwError(errorRes);
         }),
         tap(response => {
