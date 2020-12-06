@@ -31,7 +31,7 @@ import com.zelazobeton.cognitiveexercieses.model.UserDto;
 import com.zelazobeton.cognitiveexercieses.service.UserService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
-import com.zelazobeton.cognitiveexercises.utility.JWTTokenProvider;
+import com.zelazobeton.cognitiveexercieses.service.JwtTokenServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,7 +45,7 @@ public class UserController extends ExceptionHandling {
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private final JWTTokenProvider jwtTokenProvider;
+    private final JwtTokenServiceImpl jwtTokenProvider;
 
     @PostMapping(path = "/register", produces = { "application/json" })
     public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto)

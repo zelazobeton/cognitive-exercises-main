@@ -1,7 +1,7 @@
 package com.zelazobeton.cognitiveexercises.filter;
 
+import static com.zelazobeton.cognitiveexercieses.constant.TokenConstant.TOKEN_PREFIX;
 import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.OPTIONS_HTTP_METHOD;
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.TOKEN_PREFIX;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -26,17 +26,17 @@ import com.zelazobeton.cognitiveexercieses.domain.security.Role;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
-import com.zelazobeton.cognitiveexercises.utility.JWTTokenProvider;
+import com.zelazobeton.cognitiveexercieses.service.JwtTokenServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private final JWTTokenProvider jwtTokenProvider;
+    private final JwtTokenServiceImpl jwtTokenProvider;
     private final UserRepository userRepository;
 
-    public JwtAuthorizationFilter(JWTTokenProvider jwtTokenProvider, UserRepository userRepository) {
+    public JwtAuthorizationFilter(JwtTokenServiceImpl jwtTokenProvider, UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
     }
