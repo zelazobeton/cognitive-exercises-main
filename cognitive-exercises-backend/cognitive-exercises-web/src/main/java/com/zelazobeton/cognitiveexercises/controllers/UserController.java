@@ -1,6 +1,5 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
-import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
 import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
@@ -60,10 +58,9 @@ public class UserController extends ExceptionHandling {
     public ResponseEntity<UserDto> login(@RequestBody UserDto userDto)
             throws AuthenticationException, UserNotFoundException {
         authenticate(userDto.getUsername(), userDto.getPassword());
-        User loginUser = userService.findUserByUsername(userDto.getUsername());
-        UserPrincipal userPrincipal = new UserPrincipal(loginUser);
-        HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        return new ResponseEntity<>(new UserDto(loginUser), jwtHeader, HttpStatus.OK);
+        User authenticatedUser = userService.findUserByUsername(userDto.getUsername());
+        HttpHeaders loginHeaders = jwtTokenProvider.prepareLoginHeaders(authenticatedUser);
+        return new ResponseEntity<>(new UserDto(authenticatedUser), loginHeaders, HttpStatus.OK);
     }
 
     @GetMapping(path = "/data", produces = { "application/json" })
@@ -103,12 +100,6 @@ public class UserController extends ExceptionHandling {
     public ResponseEntity<HttpResponse> deleteUser(@AuthenticationPrincipal User user) {
         userService.deleteUser(user);
         return new ResponseEntity<>(new HttpResponse(OK, USER_DELETED_SUCCESSFULLY), OK);
-    }
-
-    private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(JWT_TOKEN_HEADER, jwtTokenProvider.generateJwtToken(userPrincipal));
-        return headers;
     }
 
     private void authenticate(String username, String password) throws AuthenticationException {

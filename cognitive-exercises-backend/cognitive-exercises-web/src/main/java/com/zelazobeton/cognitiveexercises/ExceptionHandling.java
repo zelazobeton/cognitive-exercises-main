@@ -1,7 +1,6 @@
 package com.zelazobeton.cognitiveexercises;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -68,7 +67,7 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpResponse> accessDeniedException() {
-        return createHttpResponse(FORBIDDEN, NOT_ENOUGH_PERMISSION);
+        return createHttpResponse(UNAUTHORIZED, NOT_ENOUGH_PERMISSION);
     }
 
     @ExceptionHandler(LockedException.class)

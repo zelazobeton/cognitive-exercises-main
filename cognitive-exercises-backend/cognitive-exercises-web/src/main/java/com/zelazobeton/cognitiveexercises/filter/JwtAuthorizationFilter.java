@@ -76,8 +76,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private void authenticateRequest(HttpServletRequest request, String authorizationHeader) throws
             JWTVerificationException {
         String token = authorizationHeader.substring(TOKEN_PREFIX.length());
-        String username = jwtTokenProvider.getSubject(token);
-        if (jwtTokenProvider.isTokenValid(username, token)) {
+        String username = jwtTokenProvider.getSubjectFromAccessToken(token);
+        if (jwtTokenProvider.isAccessTokenValid(username, token)) {
             Set<? extends GrantedAuthority> authorities = getUserAuthorities(username);
             Authentication authentication = jwtTokenProvider.getAuthentication(username, request, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
