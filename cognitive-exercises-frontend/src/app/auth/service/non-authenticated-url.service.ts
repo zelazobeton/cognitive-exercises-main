@@ -10,6 +10,10 @@ export class NonAuthenticatedUrlService {
     this.urlsSet.add(this.USER + '/register');
     this.urlsSet.add(this.USER + '/scoring-list');
     this.urlsSet.add(this.USER + '/reset-password');
+    this.urlsSet.add('/games/data');
+    this.urlsSet.add('/portfolio/scoreboard');
+    this.urlsSet.add('/token/refresh');
+    this.urlsSet.add('/token/delete');
   }
 
   contain(url: string) {
