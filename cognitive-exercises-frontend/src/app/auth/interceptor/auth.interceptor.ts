@@ -23,9 +23,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const url = httpRequest.url.substr(this.authenticationService.host.length);
-    console.log('intercept 0');
     if (this.nonAuthenticatedUrls.contain(url)) {
-      console.log('intercept nonAuthenticatedUrls');
       return next.handle(httpRequest);
     }
     const token = this.authenticationService.getToken();
@@ -42,7 +40,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
     if (!this.isRefreshing) {
-      console.log('handle401Error !this.isRefreshing');
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
 
@@ -60,7 +57,6 @@ export class AuthInterceptor implements HttpInterceptor {
         }),
       );
     } else {
-      console.log('handle401Error this.isRefreshing');
       return this.refreshTokenSubject.pipe(
         filter(token => token != null),
         take(1),

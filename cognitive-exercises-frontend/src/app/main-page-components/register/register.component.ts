@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {AuthenticationService} from '../../auth/service/authentication.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {UserDto} from '../../shared/model/user-dto';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import { RegisterForm} from '../../shared/model/input-forms';
 
 @Component({
@@ -16,11 +16,24 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private registerForm: FormGroup;
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
-  private error: string | null = null;
-  public emailInputInvalid = false;
+  private submitError: string | null = null;
+  public formErrors = [];
 
-  showEmailInvalidError() {
-    this.emailInputInvalid = this.formControls.email.invalid && this.formControls.email.dirty && this.formControls.email.value !== '';
+  onValueChange() {
+    this.formErrors = [];
+    console.log(this.formControls.username.errors);
+    if (this.formControls.username.errors == null) {
+      return;
+    }
+    if ('pattern' in this.formControls.username.errors) {
+      this.formErrors.push('Username can contain only letters, digits and special signs: .@');
+    }
+    if ('maxlength' in this.formControls.username.errors) {
+      this.formErrors.push('Max username length is 50 chars');
+    }
+    if (this.formControls.email.invalid && this.formControls.email.dirty && this.formControls.email.value !== '') {
+      this.formErrors.push('Please enter a valid email address');
+    }
   }
 
   constructor(private router: Router, private authenticationService: AuthenticationService) {}
@@ -30,7 +43,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl('/');
     }
     this.registerForm = new FormGroup({
-      username: new FormControl(null, [Validators.required]),
+      username: new FormControl(null, [
+        Validators.required, Validators.pattern('^[a-zA-Z0-9@.]+'), Validators.maxLength(50)]),
       email: new FormControl(null, [Validators.required, Validators.email])
     });
   }
@@ -47,11 +61,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.authenticationService.register(registerForm).subscribe(
         (response: UserDto) => {
           this.showLoading = false;
-          this.error = null;
+          this.submitError = null;
         },
         (errorResponse: HttpErrorResponse) => {
           console.error(errorResponse);
-          this.error = errorResponse.error.message;
+          this.submitError = errorResponse.error.message;
           this.showLoading = false;
         }
       )

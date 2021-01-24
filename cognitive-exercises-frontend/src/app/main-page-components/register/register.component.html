@@ -1,25 +1,32 @@
 <div class="container">
   <div class="d-flex justify-content-center">
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="col-6">
       <div class="form-group">
         <div class="input-group mb-3">
           <div class="input-group-append">
             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
           </div>
-          <input type="text" class="form-control" placeholder="Username" formControlName="username">
+          <input (blur)="onValueChange()"
+                 type="text"
+                 class="form-control"
+                 placeholder="Username"
+                 formControlName="username">
         </div>
         <div class="input-group mb-2">
           <div class="input-group-append">
             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
           </div>
-          <input (blur)="showEmailInvalidError()"
-                 type="text" class="form-control" placeholder="Email" formControlName="email">
+          <input (blur)="onValueChange()"
+                 type="text"
+                 class="form-control"
+                 placeholder="Email"
+                 formControlName="email">
         </div>
-        <div class="alert alert-danger" role="alert" *ngIf="emailInputInvalid">
-          Please enter a valid email address
+        <div *ngFor="let error of formErrors">
+          <div class="alert alert-danger" role="alert" >{{error}}</div>
         </div>
-        <div class="alert alert-danger" role="alert" *ngIf="error !== null">
-          {{error}}
+        <div class="alert alert-danger" role="alert" *ngIf="submitError !== null">
+          {{submitError}}
         </div>
         <button [disabled]="registerForm.invalid || showLoading" type="submit" name="button" class="btn btn-primary">
           <i *ngIf="showLoading" class="fas fa-spinner fa-spin"></i>
