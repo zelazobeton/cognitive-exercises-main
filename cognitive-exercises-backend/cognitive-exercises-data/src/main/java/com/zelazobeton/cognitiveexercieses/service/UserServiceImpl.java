@@ -5,6 +5,7 @@ import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 
@@ -21,6 +22,7 @@ import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
 import com.zelazobeton.cognitiveexercieses.exception.EmailAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
+import com.zelazobeton.cognitiveexercieses.exception.RegisterFormInvalidException;
 import com.zelazobeton.cognitiveexercieses.exception.RoleNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UsernameAlreadyExistsException;
@@ -102,6 +104,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateNewUsernameAndEmail(String username, String email) {
+        if (username.length() >= 50 || Pattern.matches("^[a-zA-Z0-9@.]+", username)) {
+            throw new RegisterFormInvalidException(username + " " + email);
+        }
         if (userRepository.existsByUsername(username)) {
             throw new UsernameAlreadyExistsException(username);
         }
