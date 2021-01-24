@@ -14,10 +14,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.zelazobeton.cognitiveexercieses.service.UserService;
 import com.zelazobeton.cognitiveexercises.filter.JwtAccessDeniedHandler;
 import com.zelazobeton.cognitiveexercises.filter.JwtAuthenticationEntryPoint;
 import com.zelazobeton.cognitiveexercises.filter.JwtAuthorizationFilter;
-import com.zelazobeton.cognitiveexercieses.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -46,15 +46,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors().and()
-                .sessionManagement().sessionCreationPolicy(STATELESS)
-                .and().authorizeRequests().antMatchers(PUBLIC_URLS).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.csrf().disable()
+            .cors().and()
+            .sessionManagement().sessionCreationPolicy(STATELESS).and()
+            .authorizeRequests().antMatchers(PUBLIC_URLS).permitAll()
+            .anyRequest().authenticated().and()
+            .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
+            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

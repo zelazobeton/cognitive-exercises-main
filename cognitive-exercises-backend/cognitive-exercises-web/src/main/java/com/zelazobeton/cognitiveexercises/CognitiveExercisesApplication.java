@@ -16,8 +16,8 @@ import org.springframework.web.filter.CorsFilter;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.zelazobeton"})
-@EntityScan(basePackages = {"com.zelazobeton"})
-@EnableJpaRepositories(basePackages = {"com.zelazobeton"})
+@EntityScan(basePackages = {"com.zelazobeton.cognitiveexercieses.domain"})
+@EnableJpaRepositories(basePackages = {"com.zelazobeton.cognitiveexercieses.repository"})
 public class CognitiveExercisesApplication {
 
     @Bean

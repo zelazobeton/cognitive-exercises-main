@@ -31,6 +31,4 @@ public class MemoryBoard extends BaseEntity {
     private List<MemoryTile> memoryTiles;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Portfolio portfolio;
-
-
 }

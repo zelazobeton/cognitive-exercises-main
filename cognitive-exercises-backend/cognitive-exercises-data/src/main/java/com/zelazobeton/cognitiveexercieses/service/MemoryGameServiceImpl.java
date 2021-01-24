@@ -1,9 +1,5 @@
 package com.zelazobeton.cognitiveexercieses.service;
 
-import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.NUM_OF_IMGS_EASY_LVL;
-import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.NUM_OF_IMGS_HARD_LVL;
-import static com.zelazobeton.cognitiveexercieses.constant.MemoryConstant.NUM_OF_IMGS_MEDIUM_LVL;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zelazobeton.cognitiveexercieses.constant.MemoryDiffLvl;
 import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
 import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryBoard;
 import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryImg;
@@ -56,13 +53,13 @@ public class MemoryGameServiceImpl implements MemoryGameService {
         int numOfDifferentImgsNeeded;
         switch (difficultyLvl){
             case 0:
-                numOfDifferentImgsNeeded = NUM_OF_IMGS_EASY_LVL;
+                numOfDifferentImgsNeeded = MemoryDiffLvl.EASY.numOfImgs;
                 break;
             case 2:
-                numOfDifferentImgsNeeded = NUM_OF_IMGS_HARD_LVL;
+                numOfDifferentImgsNeeded = MemoryDiffLvl.HARD.numOfImgs;
                 break;
             default:
-                numOfDifferentImgsNeeded = NUM_OF_IMGS_MEDIUM_LVL;
+                numOfDifferentImgsNeeded = MemoryDiffLvl.MEDIUM.numOfImgs;
         }
         return new MemoryBoardDto(generateMemoryBoard(numOfDifferentImgsNeeded));
     }
@@ -109,8 +106,7 @@ public class MemoryGameServiceImpl implements MemoryGameService {
 
     private MemoryBoard generateMemoryBoard(int numOfDifferentImgsNeeded) {
         List<MemoryTile> tiles = generateTiles(numOfDifferentImgsNeeded);
-        MemoryBoard newMemoryBoard = MemoryBoard.builder().memoryTiles(tiles).numOfUncoveredTiles(0).portfolio(null).build();
-        return newMemoryBoard;
+        return MemoryBoard.builder().memoryTiles(tiles).numOfUncoveredTiles(0).portfolio(null).build();
     }
 
     private List<MemoryTile> generateTiles(int numOfImgs) {

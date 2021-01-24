@@ -1,5 +1,6 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
+import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
@@ -34,14 +35,17 @@ import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercieses.service.JwtTokenServiceImpl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping(path = "/user")
 public class UserController extends ExceptionHandling {
     public static final String EMAIL_WITH_PASSWORD_SENT = "Email with new password was sent to: ";
     public static final String USER_DELETED_SUCCESSFULLY = "User deleted successfully";
     public static final String PASSWORD_CHANGED_SUCCESSFULLY = "Password changed successfully";
+    public static final String INCORRECT_PASSWORD = "Password is incorrect";
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
@@ -57,7 +61,8 @@ public class UserController extends ExceptionHandling {
     @PostMapping(path = "/login", produces = { "application/json" })
     public ResponseEntity<UserDto> login(@RequestBody UserDto userDto)
             throws AuthenticationException, UserNotFoundException {
-        authenticate(userDto.getUsername(), userDto.getPassword());
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
         User authenticatedUser = userService.findUserByUsername(userDto.getUsername());
         HttpHeaders loginHeaders = jwtTokenProvider.prepareLoginHeaders(authenticatedUser);
         return new ResponseEntity<>(new UserDto(authenticatedUser), loginHeaders, HttpStatus.OK);
@@ -74,7 +79,14 @@ public class UserController extends ExceptionHandling {
     @PreAuthorize("hasAuthority('user.update')")
     public ResponseEntity<HttpResponse> changePassword(@AuthenticationPrincipal User user,
             @RequestBody PasswordFormDto passwordFormDto) {
-        authenticate(user.getUsername(), passwordFormDto.getOldPassword());
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), passwordFormDto.getOldPassword()));
+        }
+        catch (AuthenticationException ex) {
+            log.debug(ex.toString());
+            return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, INCORRECT_PASSWORD), NOT_ACCEPTABLE);
+        }
         userService.changePassword(user.getUsername(), passwordFormDto.getNewPassword());
         return new ResponseEntity<>(new HttpResponse(OK, PASSWORD_CHANGED_SUCCESSFULLY), OK);
     }
@@ -100,9 +112,5 @@ public class UserController extends ExceptionHandling {
     public ResponseEntity<HttpResponse> deleteUser(@AuthenticationPrincipal User user) {
         userService.deleteUser(user);
         return new ResponseEntity<>(new HttpResponse(OK, USER_DELETED_SUCCESSFULLY), OK);
-    }
-
-    private void authenticate(String username, String password) throws AuthenticationException {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 }

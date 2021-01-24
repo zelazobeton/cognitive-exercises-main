@@ -27,11 +27,13 @@ import com.zelazobeton.cognitiveexercieses.exception.UsernameAlreadyExistsExcept
 import com.zelazobeton.cognitiveexercieses.repository.RoleRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -39,18 +41,6 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final LoginAttemptServiceImpl loginAttemptService;
     private final EmailService emailService;
-    private final PortfolioService portfolioService;
-
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
-            BCryptPasswordEncoder bCryptPasswordEncoder, LoginAttemptServiceImpl loginAttemptService,
-            PortfolioService portfolioService, EmailService emailService) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.loginAttemptService = loginAttemptService;
-        this.emailService = emailService;
-        this.portfolioService = portfolioService;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
