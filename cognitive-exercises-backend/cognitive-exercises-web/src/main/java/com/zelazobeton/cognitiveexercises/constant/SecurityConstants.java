@@ -12,5 +12,11 @@ public class SecurityConstants {
             "/games/**",
             "/token/refresh",
             "/token/delete",
+            "/v2/api-docs",
+            "/configuration/ui",
+            "/swagger-resources/**",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**"
     };
 }
