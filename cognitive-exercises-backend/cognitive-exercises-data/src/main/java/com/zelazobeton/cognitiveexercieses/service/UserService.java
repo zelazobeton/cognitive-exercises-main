@@ -1,7 +1,6 @@
 package com.zelazobeton.cognitiveexercieses.service;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.mail.MessagingException;
 
@@ -11,7 +10,6 @@ import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.EmailAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UsernameAlreadyExistsException;
-import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
 
 public interface UserService extends UserDetailsService {
     User register(String username, String email)

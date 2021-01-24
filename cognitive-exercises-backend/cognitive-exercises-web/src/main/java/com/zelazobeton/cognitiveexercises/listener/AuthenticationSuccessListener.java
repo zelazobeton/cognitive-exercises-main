@@ -19,7 +19,7 @@ public class AuthenticationSuccessListener {
     public void onAuthenticationSuccess(AuthenticationSuccessEvent event) {
         Object principal = event.getAuthentication().getPrincipal();
         if(principal instanceof UserPrincipal) {
-            UserPrincipal user = (UserPrincipal) event.getAuthentication().getPrincipal();
+            UserPrincipal user = (UserPrincipal) principal;
             loginAttemptService.removeUserFromLoginAttemptCache(user.getUsername());
         }
     }

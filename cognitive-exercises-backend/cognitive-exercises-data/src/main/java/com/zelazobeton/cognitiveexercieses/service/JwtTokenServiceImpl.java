@@ -4,9 +4,10 @@ import static com.zelazobeton.cognitiveexercieses.constant.TokenConstant.JWT_REF
 import static com.zelazobeton.cognitiveexercieses.constant.TokenConstant.JWT_TOKEN_HEADER;
 import static com.zelazobeton.cognitiveexercieses.constant.TokenConstant.REFRESH_TOKEN_EXPIRATION_TIME;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.zelazobeton.cognitiveexercieses.constant.TokenConstant;
 import com.zelazobeton.cognitiveexercieses.domain.security.RefreshToken;
+import com.zelazobeton.cognitiveexercieses.domain.security.Role;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.repository.RefreshTokenRepository;
@@ -68,25 +71,32 @@ public class JwtTokenServiceImpl implements JwtTokenService{
     }
 
     @Override
-    public Authentication getAuthentication(String username, HttpServletRequest request,
-            Collection<? extends GrantedAuthority> authorities) {
+    public Authentication getAuthentication(String token, HttpServletRequest request) throws JWTVerificationException,
+            UserNotFoundException {
+        JWTVerifier verifier = getJWTVerifier();
+        String username = verifier.verify(token).getSubject();
+        if (StringUtils.isEmpty(username) || isAccessTokenExpired(verifier, token)) {
+            return null;
+        }
         User user = userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        Set<? extends GrantedAuthority> authorities = getUserAuthorities(user);
         UsernamePasswordAuthenticationToken userPasswordAuthToken =
                 new UsernamePasswordAuthenticationToken(user, null, authorities);
         userPasswordAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return userPasswordAuthToken;
     }
 
-    @Override
-    public boolean isAccessTokenValid(String username, String token) throws JWTVerificationException{
-        JWTVerifier verifier = getJWTVerifier();
-        return StringUtils.isNotEmpty(username) && !isAccessTokenExpired(verifier, token);
+    private Set<? extends GrantedAuthority> getUserAuthorities(User user) {
+        return user.getRoles().stream()
+                .map(Role::getAuthorities)
+                .flatMap(Set::stream)
+                .map(auth -> new SimpleGrantedAuthority(auth.getPermission()))
+                .collect(Collectors.toSet());
     }
 
-    @Override
-    public String getSubjectFromAccessToken(String token) throws JWTVerificationException{
-        JWTVerifier verifier = getJWTVerifier();
-        return verifier.verify(token).getSubject();
+    private boolean isAccessTokenExpired(JWTVerifier verifier, String token) throws JWTVerificationException {
+        Date expiration = verifier.verify(token).getExpiresAt();
+        return expiration.before(new Date());
     }
 
     private String getUsernameFromStoredRefreshToken(String receivedRefreshToken)
@@ -120,11 +130,6 @@ public class JwtTokenServiceImpl implements JwtTokenService{
                 .withJWTId(refreshToken.getId().toString())
                 .withExpiresAt(validUntil)
                 .sign(Algorithm.HMAC512(secret.getBytes()));
-    }
-
-    private boolean isAccessTokenExpired(JWTVerifier verifier, String token) throws JWTVerificationException{
-        Date expiration = verifier.verify(token).getExpiresAt();
-        return expiration.before(new Date());
     }
 
     private JWTVerifier getJWTVerifier() {

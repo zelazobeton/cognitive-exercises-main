@@ -29,6 +29,7 @@ import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
+import com.zelazobeton.cognitiveexercieses.exception.RegisterFormInvalidException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +44,13 @@ public class ExceptionHandling implements ErrorController {
     private static final String ERROR_PROCESSING_FILE = "Error occurred while processing file";
     private static final String NOT_ENOUGH_PERMISSION = "You do not have the right permission";
     private static final String EMAIL_NOT_FOUND = "There is no registered user with that email";
+    private static final String INVALID_REGISTER_FORM = "Submitted username or email were invalid";
     public static final String ERROR_PATH = "/error";
+
+    @ExceptionHandler(RegisterFormInvalidException.class)
+    public ResponseEntity<HttpResponse> registerFormInvalidException() {
+        return createHttpResponse(BAD_REQUEST, INVALID_REGISTER_FORM);
+    }
 
     @ExceptionHandler(EmailNotFoundException.class)
     public ResponseEntity<HttpResponse> emailNotFoundException() {
