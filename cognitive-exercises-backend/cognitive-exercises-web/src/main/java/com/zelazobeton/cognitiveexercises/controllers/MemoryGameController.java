@@ -24,17 +24,17 @@ import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.memory.MemoryBoardDto;
 import com.zelazobeton.cognitiveexercieses.service.MemoryGameService;
+import com.zelazobeton.cognitiveexercieses.service.MessageService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
 
 @RestController
 @RequestMapping(path = "/memory")
 public class MemoryGameController extends ExceptionHandling {
-    public static final String GAME_SAVED = "Game saved";
+    private final MemoryGameService memoryGameService;
 
-    private MemoryGameService memoryGameService;
-
-    public MemoryGameController(MemoryGameService memoryGameService) {
+    public MemoryGameController(MessageService messageService, MemoryGameService memoryGameService) {
+        super(messageService);
         this.memoryGameService = memoryGameService;
     }
 
@@ -64,7 +64,8 @@ public class MemoryGameController extends ExceptionHandling {
     public ResponseEntity<HttpResponse> saveGame(@AuthenticationPrincipal User user,
             @RequestBody MemoryBoardDto memoryBoardDto) throws EntityNotFoundException{
         memoryGameService.saveGame(user.getPortfolio().getId(), memoryBoardDto);
-        return new ResponseEntity<>(new HttpResponse(OK, GAME_SAVED), OK);
+        return new ResponseEntity<>(
+                new HttpResponse(OK, messageService.getMessage("memory_game_controller_game_saved")), OK);
     }
 
     @PostMapping(path = "/save-score")

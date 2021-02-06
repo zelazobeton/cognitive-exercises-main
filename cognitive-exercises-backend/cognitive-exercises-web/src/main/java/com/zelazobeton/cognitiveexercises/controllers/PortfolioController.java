@@ -27,16 +27,19 @@ import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercieses.model.PortfolioDto;
 import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
+import com.zelazobeton.cognitiveexercieses.service.MessageService;
 import com.zelazobeton.cognitiveexercieses.service.PortfolioService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping(path = "/portfolio")
 public class PortfolioController extends ExceptionHandling {
     private final PortfolioService portfolioService;
+
+    public PortfolioController(MessageService messageService, PortfolioService portfolioService) {
+        super(messageService);
+        this.portfolioService = portfolioService;
+    }
 
     @PostMapping(path = "/update-avatar", produces = { "application/json" })
     @PreAuthorize("hasAuthority('user.update')")

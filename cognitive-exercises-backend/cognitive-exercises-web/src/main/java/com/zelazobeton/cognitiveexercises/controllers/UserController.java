@@ -29,27 +29,29 @@ import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsExceptio
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.PasswordFormDto;
 import com.zelazobeton.cognitiveexercieses.model.UserDto;
+import com.zelazobeton.cognitiveexercieses.service.JwtTokenServiceImpl;
+import com.zelazobeton.cognitiveexercieses.service.MessageService;
 import com.zelazobeton.cognitiveexercieses.service.UserService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
-import com.zelazobeton.cognitiveexercieses.service.JwtTokenServiceImpl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequiredArgsConstructor
 @Slf4j
 @RequestMapping(path = "/user")
 public class UserController extends ExceptionHandling {
-    public static final String EMAIL_WITH_PASSWORD_SENT = "Email with new password was sent to: ";
-    public static final String USER_DELETED_SUCCESSFULLY = "User deleted successfully";
-    public static final String PASSWORD_CHANGED_SUCCESSFULLY = "Password changed successfully";
-    public static final String INCORRECT_PASSWORD = "Password is incorrect";
-
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtTokenServiceImpl jwtTokenProvider;
+
+    public UserController(MessageService messageService, AuthenticationManager authenticationManager,
+            UserService userService, JwtTokenServiceImpl jwtTokenProvider) {
+        super(messageService);
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @PostMapping(path = "/register", produces = { "application/json" })
     public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto)
@@ -85,10 +87,12 @@ public class UserController extends ExceptionHandling {
         }
         catch (AuthenticationException ex) {
             log.debug(ex.toString());
-            return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, INCORRECT_PASSWORD), NOT_ACCEPTABLE);
+            String responseMsg = messageService.getMessage("user_controller_password_is_incorrect");
+            return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, responseMsg), NOT_ACCEPTABLE);
         }
         userService.changePassword(user.getUsername(), passwordFormDto.getNewPassword());
-        return new ResponseEntity<>(new HttpResponse(OK, PASSWORD_CHANGED_SUCCESSFULLY), OK);
+        String responseMsg = messageService.getMessage("user_controller_password_changed_successfully");
+        return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
     }
 
     @PostMapping(path = "/update", produces = { "application/json" })
@@ -104,13 +108,15 @@ public class UserController extends ExceptionHandling {
     public ResponseEntity<HttpResponse> resetPassword(@RequestParam("email") String email)
             throws MessagingException, EmailNotFoundException {
         userService.resetPassword(email);
-        return new ResponseEntity<>(new HttpResponse(OK, EMAIL_WITH_PASSWORD_SENT + email), OK);
+        String responseMsg = messageService.getMessage("user_controller_email_with_new_password") + email;
+        return new ResponseEntity<>(new HttpResponse(OK,  responseMsg), OK);
     }
 
     @DeleteMapping("/delete/{username}")
     @PreAuthorize("hasAuthority('user.delete')")
     public ResponseEntity<HttpResponse> deleteUser(@AuthenticationPrincipal User user) {
         userService.deleteUser(user);
-        return new ResponseEntity<>(new HttpResponse(OK, USER_DELETED_SUCCESSFULLY), OK);
+        String responseMsg = messageService.getMessage("user_controller_user_deleted_successfully");
+        return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
     }
 }
