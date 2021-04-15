@@ -1,7 +1,7 @@
 package com.zelazobeton.cognitiveexercieses.constant;
 
 public class TokenConstant {
-    private TokenConstant(){};
+    private TokenConstant(){}
     public static final long ACCESS_TOKEN_EXPIRATION_TIME = 5_000; // milliseconds
     public static final long REFRESH_TOKEN_EXPIRATION_TIME = 432_000_000; // milliseconds
     public static final String JWT_REFRESH_TOKEN_HEADER = "Jwt-Refresh-Token";

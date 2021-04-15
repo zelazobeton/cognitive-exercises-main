@@ -16,6 +16,7 @@ import com.zelazobeton.cognitiveexercieses.service.JwtTokenServiceImpl;
 import com.zelazobeton.cognitiveexercieses.service.MessageService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
+import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 
 @RestController
 @RequestMapping(path = "/token")
@@ -33,7 +34,7 @@ public class TokenController extends ExceptionHandling {
         HttpHeaders headers = new HttpHeaders();
         headers.add(JWT_TOKEN_HEADER, token);
         return new ResponseEntity<>(
-                new HttpResponse(OK, messageService.getMessage("token_controller_token_successfully_refreshed")),
+                new HttpResponse(OK, messageService.getMessage(MessageConstants.TOKEN_CONTROLLER_TOKEN_SUCCESSFULLY_REFRESHED)),
                 headers, HttpStatus.OK);
     }
 
@@ -41,7 +42,7 @@ public class TokenController extends ExceptionHandling {
     public ResponseEntity<HttpResponse> deleteRefreshToken(@RequestBody String refreshToken) throws JWTVerificationException {
         jwtTokenProvider.deleteRefreshToken(refreshToken);
         return new ResponseEntity<>(
-                new HttpResponse(OK, messageService.getMessage("token_controller_refresh_token_successfully_deleted")),
+                new HttpResponse(OK, messageService.getMessage(MessageConstants.TOKEN_CONTROLLER_REFRESH_TOKEN_SUCCESSFULLY_DELETED)),
                 HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package com.zelazobeton.cognitiveexercieses.constant;
 
 public class EmailConstants {
+    private EmailConstants(){}
     public static final String SIMPLE_MAIL_TRANSFER_PROTOCOL = "smtps";
     public static final String USERNAME = "cognitive.ex@gmail.com";
     public static final String PASSWORD = "cognitive.ex123";

@@ -1,6 +1,7 @@
 package com.zelazobeton.cognitiveexercieses.constant;
 
 public class FileConstants {
+    private FileConstants(){}
     public static final String LOCALHOST_ADDRESS = "http://localhost:8081";
     public static final String RESOURCES_FOLDER = System.getProperty("user.dir") + "/cognitive-exercises-data/src/main/resources";
     public static final String FORWARD_SLASH = "/";

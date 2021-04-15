@@ -34,6 +34,7 @@ import com.zelazobeton.cognitiveexercieses.service.MessageService;
 import com.zelazobeton.cognitiveexercieses.service.UserService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
+import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -87,11 +88,11 @@ public class UserController extends ExceptionHandling {
         }
         catch (AuthenticationException ex) {
             log.debug(ex.toString());
-            String responseMsg = messageService.getMessage("user_controller_password_is_incorrect");
+            String responseMsg = messageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_IS_INCORRECT);
             return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, responseMsg), NOT_ACCEPTABLE);
         }
         userService.changePassword(user.getUsername(), passwordFormDto.getNewPassword());
-        String responseMsg = messageService.getMessage("user_controller_password_changed_successfully");
+        String responseMsg = messageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_CHANGED_SUCCESSFULLY);
         return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
     }
 
@@ -108,7 +109,7 @@ public class UserController extends ExceptionHandling {
     public ResponseEntity<HttpResponse> resetPassword(@RequestParam("email") String email)
             throws MessagingException, EmailNotFoundException {
         userService.resetPassword(email);
-        String responseMsg = messageService.getMessage("user_controller_email_with_new_password") + email;
+        String responseMsg = messageService.getMessage(MessageConstants.USER_CONTROLLER_EMAIL_WITH_NEW_PASSWORD) + email;
         return new ResponseEntity<>(new HttpResponse(OK,  responseMsg), OK);
     }
 
@@ -116,7 +117,7 @@ public class UserController extends ExceptionHandling {
     @PreAuthorize("hasAuthority('user.delete')")
     public ResponseEntity<HttpResponse> deleteUser(@AuthenticationPrincipal User user) {
         userService.deleteUser(user);
-        String responseMsg = messageService.getMessage("user_controller_user_deleted_successfully");
+        String responseMsg = messageService.getMessage(MessageConstants.USER_CONTROLLER_USER_DELETED_SUCCESSFULLY);
         return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
     }
 }
