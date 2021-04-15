@@ -30,12 +30,12 @@
         </div>
         <button [disabled]="registerForm.invalid || showLoading" type="submit" name="button" class="btn btn-primary">
           <i *ngIf="showLoading" class="fas fa-spinner fa-spin"></i>
-          <span *ngIf="showLoading">Loading...</span>
-          <span *ngIf="!showLoading">Register</span>
+          <span *ngIf="showLoading">{{ 'page.register.Loading...' | translate }}</span>
+          <span *ngIf="!showLoading">{{ 'page.register.Register' | translate }}</span>
         </button>
       </div>
       <div class="d-flex justify-content-center">
-        Already have an account?<a [routerLink]="['/login']">Log In</a>
+        {{ 'page.register.Already have an account?' | translate }}<a [routerLink]="['/login']">{{ 'page.register.Log in' | translate }}</a>
       </div>
     </form>
   </div>

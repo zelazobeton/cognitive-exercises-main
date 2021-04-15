@@ -27,7 +27,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
       return passwordConfirmationInput.setErrors(null);
     }
     passwordConfirmationInput.setErrors({notEquivalent: true});
-  }
+  };
 
   constructor(private router: Router, private userService: UserService,
               private formBuilder: FormBuilder,

@@ -1,0 +1,36 @@
+{
+  "page": {
+    "navbar": {
+      "Logout": "Logout",
+      "Profile": "Profile",
+      "Logged in as": "Logged in as {{username}}",
+      "Sign up": "Sign up",
+      "Choose game": "Choose game",
+      "Cognitive exercises": "Cognitive exercises",
+      "Login": "Login",
+      "Loading...": "Loading...",
+      "Forgot password": "Forgot password?"
+    },
+    "login": {
+      "Login": "Login",
+      "Loading...": "Loading...",
+      "Forgot password": "Forgot password?"
+    },
+    "register": {
+      "Log in": "Log in",
+      "Register": "Register",
+      "Loading...": "Loading...",
+      "Already have an account?": "Already have an account?"
+    },
+    "reset-password": {
+      "Log in": "Log in",
+      "Please enter a valid email address": "Please enter a valid email address",
+      "Loading...": "Loading...",
+      "Send new password": "Send new password"
+    },
+    "change-password": {
+      "Passwords are not the same.": "Passwords are not the same.",
+      "Change password": "Change password"
+    }
+  }
+}

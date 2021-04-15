@@ -1,0 +1,15 @@
+{
+  "page": {
+    "navbar": {
+      "Logout": "Cerrar sesión",
+      "Profile": "Perfil",
+      "Logged in as": "Conectado como {{username}}",
+      "Sign up": "Inscribirse",
+      "Choose game": "Elige el juego",
+      "Cognitive exercises": "Cognitive exercises",
+      "Login": "Iniciar sesión",
+      "Loading...": "Cargando...",
+      "Forgot password": "¿Has olvidado tu contraseña?"
+    }
+  }
+}

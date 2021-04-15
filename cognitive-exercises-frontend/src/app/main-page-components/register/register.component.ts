@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {AuthenticationService} from '../../auth/service/authentication.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {UserDto} from '../../shared/model/user-dto';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { RegisterForm} from '../../shared/model/input-forms';
 
 @Component({
@@ -21,7 +21,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   onValueChange() {
     this.formErrors = [];
-    console.log(this.formControls.username.errors);
     if (this.formControls.username.errors == null) {
       return;
     }

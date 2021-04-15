@@ -1,22 +1,22 @@
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-  <a class="navbar-brand" href="#">Cognitive exercises</a>
+  <a class="navbar-brand" href="#">{{ 'page.navbar.Cognitive exercises' | translate }}</a>
 
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
-      <a class="nav-link" [routerLink]="['']">Choose game</a>
+      <a class="nav-link" [routerLink]="['']">{{ 'page.navbar.Choose game' | translate }}</a>
     </li>
     <li class="nav-item" *ngIf="usernameLogged != null">
-      <a class="nav-link">Logged in as {{usernameLogged}}</a>
+      <a class="nav-link">{{ 'page.navbar.Logged in as' | translate:{'username': usernameLogged} }}</a>
     </li>
     <li class="nav-item" *ngIf="usernameLogged != null">
-      <a class="nav-link" [routerLink]="['profile']">Profile</a>
+      <a class="nav-link" [routerLink]="['profile']">{{ 'page.navbar.Profile' | translate }}</a>
     </li>
     <li class="nav-item" *ngIf="usernameLogged == null">
-      <a class="nav-link" [routerLink]="['register']">Sign up</a>
+      <a class="nav-link" [routerLink]="['register']">{{ 'page.navbar.Sign up' | translate }}</a>
     </li>
     <app-login-dropdown *ngIf="usernameLogged == null"></app-login-dropdown>
     <li class="nav-item" *ngIf="usernameLogged != null">
-      <a class="nav-link cursor-pointer" (click)="onLogout()">Logout</a>
+      <a class="nav-link cursor-pointer" (click)="onLogout()">{{ 'page.navbar.Logout' | translate }}</a>
     </li>
   </ul>
 </nav>

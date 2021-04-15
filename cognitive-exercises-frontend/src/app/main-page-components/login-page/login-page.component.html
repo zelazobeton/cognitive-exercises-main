@@ -16,12 +16,12 @@
         </div>
         <button [disabled]="loginForm.invalid || showLoading" type="submit" name="button" class="btn btn-primary">
           <i *ngIf="showLoading" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
-          <span *ngIf="showLoading">Loading...</span>
-          <span *ngIf="!showLoading">Log in</span>
+          <span *ngIf="showLoading">{{ 'page.login.Loading...' | translate }}</span>
+          <span *ngIf="!showLoading">{{ 'page.login.Log in' | translate }}</span>
         </button>
       </div>
       <div class="d-flex justify-content-center">
-        <a [routerLink]="['/reset-password']">Forgot password?</a>
+        <a [routerLink]="['/reset-password']">{{ 'page.login.Forgot password' | translate }}</a>
       </div>
     </form>
   </div>
