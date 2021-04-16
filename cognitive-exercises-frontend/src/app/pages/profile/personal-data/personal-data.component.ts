@@ -1,14 +1,13 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, NgForm} from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
 import {PortfolioService} from '../../../shared/service/portfolio.service';
 import {Subscription} from 'rxjs';
 import {UserDto} from '../../../shared/model/user-dto';
-import {AuthenticationService} from '../../../auth/service/authentication.service';
 import {PortfolioDto} from '../../../shared/model/portfolio-dto';
 import {NotificationType} from '../../../shared/notification/notification-type.enum';
 import {NotificationService} from '../../../shared/notification/notification.service';
-import {NotificationMessages} from '../../../shared/notification/notification-messages.enum';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-personal-data',
@@ -23,7 +22,8 @@ export class PersonalDataComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(private formBuilder: FormBuilder, private portfolioService: PortfolioService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private translate: TranslateService) {
     this.loading = false;
   }
 
@@ -38,13 +38,10 @@ export class PersonalDataComponent implements OnInit, OnDestroy {
       (response: PortfolioDto) => {
         this.loading = false;
         this.userData.portfolio = response;
-        this.notificationService.notify(NotificationType.SUCCESS, `Avatar updated`);
+        this.notificationService.notify(NotificationType.SUCCESS, this.translate.instant('notifications.Avatar updated'));
       },
-      (error: HttpErrorResponse) => {
-        this.loading = false;
-        this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
-      }
-    ));
+      (error: HttpErrorResponse) => this.loading = false)
+    );
   }
 
   public onImageChange(fileName: string, profileImage: File): void {

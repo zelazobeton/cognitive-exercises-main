@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
-import {Observable, Subject, throwError, of} from 'rxjs';
+import {Observable, Subject, throwError} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {UserDto} from '../../shared/model/user-dto';
-import {JwtHelperService} from '@auth0/angular-jwt';
 import {HttpClient, HttpErrorResponse, HttpEvent, HttpResponse} from '@angular/common/http';
 import {AuthForm, RegisterForm} from '../../shared/model/input-forms';
 import {catchError, map, tap} from 'rxjs/operators';
@@ -11,6 +10,7 @@ import {NotificationType} from '../../shared/notification/notification-type.enum
 import {NotificationService} from '../../shared/notification/notification.service';
 import {Router} from '@angular/router';
 import {CustomHttpResponse} from '../../shared/model/custom-http-response';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
@@ -20,7 +20,10 @@ export class AuthenticationService {
   private token: string;
   public loggedInUser: Subject<UserDto>;
 
-  constructor(private http: HttpClient, private notificationService: NotificationService, private router: Router) {
+  constructor(private http: HttpClient,
+              private notificationService: NotificationService,
+              private router: Router,
+              private translate: TranslateService) {
     this.loggedInUser = new Subject<UserDto>();
     this.loggedInUser.next(this.getUserFromLocalStorage());
   }
@@ -48,7 +51,7 @@ export class AuthenticationService {
     if (message) {
       this.notificationService.notify(notificationType, message);
     } else {
-      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
+      this.notificationService.notify(notificationType, this.translate.instant('notifications.server error try again'));
     }
   }
 
@@ -60,18 +63,31 @@ export class AuthenticationService {
           return throwError(errorRes);
         }),
         tap((response: UserDto) => {
-          this.notificationService.notify(NotificationType.SUCCESS, `A new account was created for ${response.username}.
-          Please check your email for password to log in.`);
-        })
-      );
+            this.notificationService.notify(NotificationType.SUCCESS,
+              this.translate.instant('notifications.A new account was created for', {username: response.username})
+            )
+          }
+        ));
   }
 
-  public logout(): void {
+  public logout(): Observable<CustomHttpResponse> {
+    return this.http.get<CustomHttpResponse>(`${this.host}/user/logout`).pipe(
+      catchError(errorRes => {
+        this.notificationService.notify(NotificationType.ERROR,
+          this.translate.instant('notifications.server error try again'));
+        return throwError(errorRes);
+      }),
+      tap(() => {
+        this.removeUserDataFromApp();
+      })
+    );
+  }
+
+  public deleteRefreshToken(): void {
     const refreshToken = localStorage.getItem(this.refreshTokenKey);
     this.http.post<HttpResponse<any>>(
       `${this.host}/token/delete`, refreshToken).subscribe(
-      () => {
-      },
+      () => {},
       (errorResponse: HttpErrorResponse) => {
         console.error(errorResponse);
       });

@@ -1,4 +1,12 @@
 {
+  "notifications": {
+    "server error try again": "Sorry, something went wrong on our side. Please try again",
+    "something went wrong on our side": "Sorry, something went wrong on our side.",
+    "A new account was created for": "A new account was created for {{username}}.\nPlease check your email for password to log in.",
+    "Password successfully changed.": "Password successfully changed.",
+    "Avatar updated": "Avatar updated",
+    "You need to log in to access this page": "You need to log in to access this page"
+  },
   "page": {
     "navbar": {
       "Logout": "Logout",
@@ -12,7 +20,7 @@
       "Forgot password": "Forgot password?"
     },
     "login": {
-      "Login": "Login",
+      "Log in": "Log in",
       "Loading...": "Loading...",
       "Forgot password": "Forgot password?"
     },

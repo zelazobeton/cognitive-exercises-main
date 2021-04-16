@@ -2,9 +2,6 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {MemoryService} from '../memory.service';
 import {MemoryBoardDto, TileClick} from './memory';
 import {Subscription} from 'rxjs';
-import {NotificationType} from '../../../shared/notification/notification-type.enum';
-import {NotificationMessages} from '../../../shared/notification/notification-messages.enum';
-import {NotificationService} from '../../../shared/notification/notification.service';
 
 @Component({
   selector: 'app-memory-board',
@@ -21,7 +18,7 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
   private saveScoreSub: Subscription;
   private tileSize: number;
 
-  constructor(private memoryService: MemoryService, private notificationService: NotificationService) {
+  constructor(private memoryService: MemoryService) {
     this.board = this.memoryService.getMemoryBoard();
   }
 

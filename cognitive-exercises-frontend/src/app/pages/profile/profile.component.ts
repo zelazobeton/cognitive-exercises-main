@@ -1,10 +1,8 @@
 import {Component, OnDestroy, OnInit, NgZone} from '@angular/core';
 import {UserService} from '../../shared/service/user.service';
 import {Subscription} from 'rxjs';
-import {Route, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {UserDto} from '../../shared/model/user-dto';
-import {NotificationType} from '../../shared/notification/notification-type.enum';
-import {NotificationMessages} from '../../shared/notification/notification-messages.enum';
 import {NotificationService} from '../../shared/notification/notification.service';
 import {HttpErrorResponse} from '@angular/common/http';
 
@@ -18,7 +16,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private userSub: Subscription;
   private userData: UserDto;
 
-  constructor(private userService: UserService, private notificationService: NotificationService, private router: Router) {
+  constructor(private userService: UserService, private notificationService: NotificationService,
+              private router: Router) {
     this.currentCard = null;
   }
 
@@ -27,10 +26,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       res => {
         this.userData = res;
       },
-      (errorResponse: HttpErrorResponse) => {
-        this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
-        this.router.navigateByUrl('/');
-      });
+      (errorResponse: HttpErrorResponse) => this.router.navigateByUrl('/'));
   }
 
   onClick(event) {

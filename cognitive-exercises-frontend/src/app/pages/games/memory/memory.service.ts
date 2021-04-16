@@ -2,12 +2,12 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {Observable, Subject, Subscription, throwError} from 'rxjs';
 import {MemoryBoardDto} from './memory-board/memory';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 import {catchError, tap} from 'rxjs/operators';
-import {NotificationType} from '../../shared/notification/notification-type.enum';
-import {NotificationService} from '../../shared/notification/notification.service';
-import {CustomHttpResponse} from '../../shared/model/custom-http-response';
-import {NotificationMessages} from '../../shared/notification/notification-messages.enum';
+import {NotificationType} from '../../../shared/notification/notification-type.enum';
+import {NotificationService} from '../../../shared/notification/notification.service';
+import {CustomHttpResponse} from '../../../shared/model/custom-http-response';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class MemoryService implements OnDestroy {
@@ -16,7 +16,8 @@ export class MemoryService implements OnDestroy {
   private board: MemoryBoardDto;
   private saveSub: Subscription;
 
-  constructor(private http: HttpClient, private notificationService: NotificationService) {
+  constructor(private http: HttpClient, private notificationService: NotificationService,
+              private translate: TranslateService) {
     this.tileNotification = new Subject<{ id: number, match: boolean }>();
   }
 
@@ -53,7 +54,8 @@ export class MemoryService implements OnDestroy {
       .subscribe((response: CustomHttpResponse) => {
         this.notificationService.notify(NotificationType.SUCCESS, response.message);
       }, (errorRes => {
-        this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
+        this.notificationService.notify(NotificationType.ERROR,
+          this.translate.instant('notifications.something went wrong on our side'));
       }));
   }
 
@@ -68,6 +70,11 @@ export class MemoryService implements OnDestroy {
           this.board = response;
           localStorage.setItem('memory-tiles', JSON.stringify(this.board.memoryTiles));
           localStorage.setItem('memory-tiles-num', JSON.stringify(this.board.numOfUncoveredTiles));
+        }),
+        catchError((error) => {
+          this.notificationService.notify(NotificationType.ERROR,
+            this.translate.instant('notifications.something went wrong on our side'));
+          return throwError(error);
         })
       );
   }
@@ -82,7 +89,12 @@ export class MemoryService implements OnDestroy {
               localStorage.setItem('memory-tiles-num', JSON.stringify(response.numOfUncoveredTiles));
             }
           }
-        )
+        ),
+        catchError((error) => {
+          this.notificationService.notify(NotificationType.ERROR,
+            this.translate.instant('notifications.something went wrong on our side'));
+          return throwError(error);
+        })
       );
   }
 

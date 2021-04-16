@@ -1,10 +1,7 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MemoryService} from '../memory.service';
 import {Subscription} from 'rxjs';
-import {NotificationType} from '../../../shared/notification/notification-type.enum';
-import {NotificationMessages} from '../../../shared/notification/notification-messages.enum';
-import {NotificationService} from '../../../shared/notification/notification.service';
 
 @Component({
   selector: 'app-memory-start',
@@ -18,24 +15,19 @@ export class MemoryStartComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private memoryService: MemoryService,
-              private notificationService: NotificationService) {}
+              private memoryService: MemoryService) {}
 
   ngOnInit() {
     this.savedGameExists = false;
     this.memoryService.clearCachedBoard();
     this.subscriptions.push(this.memoryService.fetchSavedGameBoard().subscribe(
-      response => this.savedGameExists = response != null,
-      error => this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR)));
+      response => this.savedGameExists = response != null));
     this.difficultyLvl = 1;
   }
 
   onStart() {
     this.subscriptions.push(this.memoryService.fetchNewBoard(this.difficultyLvl).subscribe(
-      res => this.router.navigate(['play'], {relativeTo: this.route}),
-      error => {
-        this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR);
-      }
+      res => this.router.navigate(['play'], {relativeTo: this.route})
     ));
   }
 

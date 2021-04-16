@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AuthenticationService} from '../../auth/service/authentication.service';
-import {UserDto} from '../../shared/model/user-dto';
+import {AuthenticationService} from '../auth/service/authentication.service';
+import {UserDto} from '../shared/model/user-dto';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 
@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  private userSub: Subscription;
+  private subscriptions: Subscription[] = [];
   public usernameLogged: string;
 
   constructor(private authenticationService: AuthenticationService,
@@ -19,17 +19,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.usernameLogged = this.authenticationService.getLoggedUsernameFromLocalStorage();
-    this.userSub = this.authenticationService.loggedInUser.subscribe((user: UserDto) => {
+    this.subscriptions.push(this.authenticationService.loggedInUser.subscribe((user: UserDto) => {
       this.usernameLogged = user == null ? null : user.username;
-    });
+    }));
   }
 
   ngOnDestroy(): void {
-    this.userSub.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   public onLogout() {
-    this.authenticationService.logout();
-    this.router.navigateByUrl('/');
+    this.authenticationService.logout().subscribe(
+      () => this.router.navigateByUrl('/')
+    );
   }
 }

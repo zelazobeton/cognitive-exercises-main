@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {ChangePasswordForm} from '../../../shared/model/input-forms';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -7,7 +7,7 @@ import {UserService} from '../../../shared/service/user.service';
 import {Subscription} from 'rxjs';
 import {NotificationType} from '../../../shared/notification/notification-type.enum';
 import {NotificationService} from '../../../shared/notification/notification.service';
-import {NotificationMessages} from '../../../shared/notification/notification-messages.enum';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-change-password',
@@ -31,7 +31,8 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private userService: UserService,
               private formBuilder: FormBuilder,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private translate: TranslateService) {
     this.loading = false;
   }
 
@@ -51,23 +52,29 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
       newPassword: this.changePasswordForm.value.password,
     };
     this.changePasswordForm.reset();
+
+    function isPasswordNotAcceptable(error: HttpErrorResponse) {
+      return error.status === 406
+    }
+
     this.subscriptions.push(
       this.userService.changePassword(changePasswordForm).subscribe(
         () => {
           this.error = null;
-          this.notificationService.notify(NotificationType.SUCCESS, `Password successfully changed.`);
+          this.notificationService.notify(NotificationType.SUCCESS, this.translate.instant('notifications.Password successfully changed.'));
           this.loading = false;
         },
         (error: HttpErrorResponse) => {
-          if (error.status === 406) {
+          if (isPasswordNotAcceptable(error)) {
             this.error = error.error.message;
           } else {
-            this.notificationService.notify(NotificationType.ERROR, NotificationMessages.SERVER_ERROR_TRY_AGAIN);
+            this.notificationService.notify(NotificationType.ERROR, this.translate.instant('notifications.server error try again'));
           }
           this.loading = false;
         }
       ));
   }
+
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());

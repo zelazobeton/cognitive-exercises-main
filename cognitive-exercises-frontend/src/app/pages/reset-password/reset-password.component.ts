@@ -6,7 +6,6 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../shared/service/user.service';
 import {AuthenticationService} from '../../auth/service/authentication.service';
 import {NotificationType} from '../../shared/notification/notification-type.enum';
-import {NotificationMessages} from '../../shared/notification/notification-messages.enum';
 import {NotificationService} from '../../shared/notification/notification.service';
 import {CustomHttpResponse} from '../../shared/model/custom-http-response';
 

@@ -46,7 +46,7 @@ export class AuthInterceptor implements HttpInterceptor {
       return this.authenticationService.refreshAccessToken().pipe(
         catchError(error => {
           this.isRefreshing = false;
-          this.authenticationService.logout();
+          this.authenticationService.deleteRefreshToken();
           this.router.navigateByUrl('/login');
           return throwError(error);
         }),
