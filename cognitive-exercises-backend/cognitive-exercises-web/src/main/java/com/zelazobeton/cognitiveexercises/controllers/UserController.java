@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsException;
@@ -119,5 +120,14 @@ public class UserController extends ExceptionHandling {
         userService.deleteUser(user);
         String responseMsg = messageService.getMessage(MessageConstants.USER_CONTROLLER_USER_DELETED_SUCCESSFULLY);
         return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
+    }
+
+    @GetMapping(path = "/logout", produces = { "application/json" })
+    @PreAuthorize("hasAuthority('user.read')")
+    public ResponseEntity<HttpResponse> logout(@AuthenticationPrincipal User user) throws JWTVerificationException {
+        jwtTokenProvider.deleteRefreshTokenByUserId(user.getId());
+        return new ResponseEntity<>(
+                new HttpResponse(OK, messageService.getMessage(MessageConstants.TOKEN_CONTROLLER_REFRESH_TOKEN_SUCCESSFULLY_DELETED)),
+                HttpStatus.OK);
     }
 }

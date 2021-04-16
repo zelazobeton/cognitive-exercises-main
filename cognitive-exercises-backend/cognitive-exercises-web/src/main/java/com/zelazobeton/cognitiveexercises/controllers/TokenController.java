@@ -40,7 +40,7 @@ public class TokenController extends ExceptionHandling {
 
     @PostMapping(path = "/delete", produces = { "application/json" })
     public ResponseEntity<HttpResponse> deleteRefreshToken(@RequestBody String refreshToken) throws JWTVerificationException {
-        jwtTokenProvider.deleteRefreshToken(refreshToken);
+        jwtTokenProvider.deleteRefreshTokenByRefreshToken(refreshToken);
         return new ResponseEntity<>(
                 new HttpResponse(OK, messageService.getMessage(MessageConstants.TOKEN_CONTROLLER_REFRESH_TOKEN_SUCCESSFULLY_DELETED)),
                 HttpStatus.OK);

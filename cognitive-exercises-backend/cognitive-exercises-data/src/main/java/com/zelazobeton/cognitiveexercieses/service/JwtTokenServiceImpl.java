@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class JwtTokenServiceImpl implements JwtTokenService{
+public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -48,7 +48,12 @@ public class JwtTokenServiceImpl implements JwtTokenService{
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public void deleteRefreshToken(String refreshToken) throws JWTVerificationException {
+    public void deleteRefreshTokenByUserId(Long userId) throws JWTVerificationException {
+        refreshTokenRepository.deleteByUser_Id(userId);
+    }
+
+    @Override
+    public void deleteRefreshTokenByRefreshToken(String refreshToken) throws JWTVerificationException {
         JWTVerifier verifier = getJWTVerifier();
         String jwtId = verifier.verify(refreshToken).getId();
         refreshTokenRepository.deleteById(UUID.fromString(jwtId));
@@ -71,8 +76,8 @@ public class JwtTokenServiceImpl implements JwtTokenService{
     }
 
     @Override
-    public Authentication getAuthentication(String token, HttpServletRequest request) throws JWTVerificationException,
-            UserNotFoundException {
+    public Authentication getAuthentication(String token, HttpServletRequest request)
+            throws JWTVerificationException, UserNotFoundException {
         JWTVerifier verifier = getJWTVerifier();
         String username = verifier.verify(token).getSubject();
         if (StringUtils.isEmpty(username) || isAccessTokenExpired(verifier, token)) {
@@ -80,14 +85,16 @@ public class JwtTokenServiceImpl implements JwtTokenService{
         }
         User user = userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
         Set<? extends GrantedAuthority> authorities = getUserAuthorities(user);
-        UsernamePasswordAuthenticationToken userPasswordAuthToken =
-                new UsernamePasswordAuthenticationToken(user, null, authorities);
+        UsernamePasswordAuthenticationToken userPasswordAuthToken = new UsernamePasswordAuthenticationToken(user,
+                null,
+                authorities);
         userPasswordAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return userPasswordAuthToken;
     }
 
     private Set<? extends GrantedAuthority> getUserAuthorities(User user) {
-        return user.getRoles().stream()
+        return user.getRoles()
+                .stream()
                 .map(Role::getAuthorities)
                 .flatMap(Set::stream)
                 .map(auth -> new SimpleGrantedAuthority(auth.getPermission()))
@@ -99,8 +106,7 @@ public class JwtTokenServiceImpl implements JwtTokenService{
         return expiration.before(new Date());
     }
 
-    private String getUsernameFromStoredRefreshToken(String receivedRefreshToken)
-            throws JWTVerificationException {
+    private String getUsernameFromStoredRefreshToken(String receivedRefreshToken) throws JWTVerificationException {
         JWTVerifier verifier = getJWTVerifier();
         String jwtId = verifier.verify(receivedRefreshToken).getId();
 
@@ -120,11 +126,10 @@ public class JwtTokenServiceImpl implements JwtTokenService{
 
     private String generateRefreshToken(User user) {
         Date validUntil = new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME);
-        RefreshToken refreshToken = refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .validUntil(validUntil)
-                        .user(user)
-                        .build());
+        RefreshToken refreshToken = refreshTokenRepository.save(RefreshToken.builder()
+                .validUntil(validUntil)
+                .user(user)
+                .build());
         return JWT.create()
                 .withIssuer(TokenConstant.TOKEN_ISSUER)
                 .withJWTId(refreshToken.getId().toString())
@@ -136,14 +141,14 @@ public class JwtTokenServiceImpl implements JwtTokenService{
         try {
             Algorithm algorithm = Algorithm.HMAC512(secret);
             return JWT.require(algorithm).withIssuer(TokenConstant.TOKEN_ISSUER).build();
-        }
-        catch (JWTVerificationException exception) {
+        } catch (JWTVerificationException exception) {
             throw new JWTVerificationException(TokenConstant.TOKEN_CANNOT_BE_VERIFIED_MSG);
         }
     }
 
     private String generateJwtToken(String username) {
-        return JWT.create().withIssuer(TokenConstant.TOKEN_ISSUER)
+        return JWT.create()
+                .withIssuer(TokenConstant.TOKEN_ISSUER)
                 .withIssuedAt(new Date())
                 .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + TokenConstant.ACCESS_TOKEN_EXPIRATION_TIME))

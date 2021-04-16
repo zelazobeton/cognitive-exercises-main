@@ -10,7 +10,9 @@ import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 
 public interface JwtTokenService {
-    void deleteRefreshToken(String refreshToken) throws JWTVerificationException;
+    void deleteRefreshTokenByUserId(Long userId) throws JWTVerificationException;
+
+    void deleteRefreshTokenByRefreshToken(String refreshToken) throws JWTVerificationException;
 
     HttpHeaders prepareLoginHeaders(User user);
 
