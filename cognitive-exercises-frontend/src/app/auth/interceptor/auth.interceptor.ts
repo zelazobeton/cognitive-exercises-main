@@ -8,7 +8,7 @@ import {
 import {BehaviorSubject, Observable, throwError} from 'rxjs';
 import {AuthenticationService} from '../service/authentication.service';
 import {NonAuthenticatedUrlService} from '../service/non-authenticated-url.service';
-import {catchError, filter, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, filter, switchMap, take} from 'rxjs/operators';
 import {Router} from '@angular/router';
 
 @Injectable()

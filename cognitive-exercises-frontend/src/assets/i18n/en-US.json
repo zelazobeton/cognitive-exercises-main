@@ -1,0 +1,44 @@
+{
+  "notifications": {
+    "server error try again": "Sorry, something went wrong on our side. Please try again",
+    "something went wrong on our side": "Sorry, something went wrong on our side.",
+    "A new account was created for": "A new account was created for {{username}}.\nPlease check your email for password to log in.",
+    "Password successfully changed.": "Password successfully changed.",
+    "Avatar updated": "Avatar updated",
+    "You need to log in to access this page": "You need to log in to access this page"
+  },
+  "page": {
+    "navbar": {
+      "Logout": "Logout",
+      "Profile": "Profile",
+      "Logged in as": "Logged in as {{username}}",
+      "Sign up": "Sign up",
+      "Choose game": "Choose game",
+      "Cognitive exercises": "Cognitive exercises",
+      "Login": "Login",
+      "Loading...": "Loading...",
+      "Forgot password": "Forgot password?"
+    },
+    "login": {
+      "Log in": "Log in",
+      "Loading...": "Loading...",
+      "Forgot password": "Forgot password?"
+    },
+    "register": {
+      "Log in": "Log in",
+      "Register": "Register",
+      "Loading...": "Loading...",
+      "Already have an account?": "Already have an account?"
+    },
+    "reset-password": {
+      "Log in": "Log in",
+      "Please enter a valid email address": "Please enter a valid email address",
+      "Loading...": "Loading...",
+      "Send new password": "Send new password"
+    },
+    "change-password": {
+      "Passwords are not the same.": "Passwords are not the same.",
+      "Change password": "Change password"
+    }
+  }
+}
