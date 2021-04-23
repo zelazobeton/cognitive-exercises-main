@@ -16,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zelazobeton.cognitiveexercieses.domain.PortfolioBuilder;
 import com.zelazobeton.cognitiveexercieses.domain.security.Role;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
@@ -43,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final LoginAttemptServiceImpl loginAttemptService;
     private final EmailService emailService;
+    private final PortfolioBuilderImpl portfolioBuilderImpl;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
                 .password(encodePassword(password))
                 .role(userRole)
                 .build();
-        PortfolioBuilder.createPortfolioWithGeneratedAvatar(newUser);
+        portfolioBuilderImpl.createPortfolioWithGeneratedAvatar(newUser);
         emailService.sendNewPasswordEmail(username, password, email);
         log.debug(username + " password: " + password);
         return userRepository.save(newUser);
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateNewUsernameAndEmail(String username, String email) {
-        if (username.length() >= 50 || Pattern.matches("^[a-zA-Z0-9@.]+", username)) {
+        if (username.length() >= 50 || !Pattern.matches("^[a-zA-Z0-9@.]+$", username)) {
             throw new RegisterFormInvalidException(username + " " + email);
         }
         if (userRepository.existsByUsername(username)) {

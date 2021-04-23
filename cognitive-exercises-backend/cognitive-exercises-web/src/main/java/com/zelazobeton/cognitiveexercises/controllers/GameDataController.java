@@ -5,8 +5,6 @@ import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.GAMES_D
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -19,16 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zelazobeton.cognitiveexercieses.model.GameDataDto;
 import com.zelazobeton.cognitiveexercieses.service.GameDataService;
 import com.zelazobeton.cognitiveexercieses.service.MessageService;
+import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 @RestController
 @RequestMapping(path = "/games")
 public class GameDataController extends ExceptionHandling {
     private final GameDataService gamesDataService;
+    private final ResourceService resourceService;
 
-    public GameDataController(MessageService messageService, GameDataService gamesDataService) {
+    public GameDataController(MessageService messageService, GameDataService gamesDataService, ResourceService resourceService) {
         super(messageService);
         this.gamesDataService = gamesDataService;
+        this.resourceService = resourceService;
     }
 
     @GetMapping(path = "/data", produces = { "application/json" })
@@ -38,6 +39,6 @@ public class GameDataController extends ExceptionHandling {
 
     @GetMapping(path = "/icon/{fileName}", produces = IMAGE_JPEG_VALUE)
     public byte[] getMemoryTileImage(@PathVariable("fileName") String fileName) throws IOException {
-        return Files.readAllBytes(Paths.get(GAMES_DATA_FOLDER + FORWARD_SLASH + fileName));
+        return resourceService.getResource(GAMES_DATA_FOLDER + FORWARD_SLASH + fileName);
     }
 }

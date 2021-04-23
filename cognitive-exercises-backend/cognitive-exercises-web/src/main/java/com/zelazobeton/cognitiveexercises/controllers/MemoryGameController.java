@@ -6,8 +6,6 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +23,7 @@ import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.memory.MemoryBoardDto;
 import com.zelazobeton.cognitiveexercieses.service.MemoryGameService;
 import com.zelazobeton.cognitiveexercieses.service.MessageService;
+import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
@@ -33,10 +32,12 @@ import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 @RequestMapping(path = "/memory")
 public class MemoryGameController extends ExceptionHandling {
     private final MemoryGameService memoryGameService;
+    private final ResourceService resourceService;
 
-    public MemoryGameController(MessageService messageService, MemoryGameService memoryGameService) {
+    public MemoryGameController(MessageService messageService, MemoryGameService memoryGameService, ResourceService resourceService) {
         super(messageService);
         this.memoryGameService = memoryGameService;
+        this.resourceService = resourceService;
     }
 
     @GetMapping(path = "/continue", produces = { "application/json" })
@@ -57,7 +58,7 @@ public class MemoryGameController extends ExceptionHandling {
 
     @GetMapping(path = "/img/{fileName}", produces = IMAGE_JPEG_VALUE)
     public byte[] getMemoryTileImage(@PathVariable("fileName") String fileName) throws IOException {
-        return Files.readAllBytes(Paths.get(MEMORY_IMG_FOLDER + FORWARD_SLASH + fileName));
+        return resourceService.getResource(MEMORY_IMG_FOLDER + FORWARD_SLASH + fileName);
     }
 
     @PostMapping(path = "/save-game")

@@ -1,6 +1,10 @@
 package com.zelazobeton.cognitiveexercises.bootstrap;
 
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.*;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.EXAMPLE_USERNAMES_FILE;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD_SLASH;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.LOCALHOST_ADDRESS;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_FOLDER;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_PATH;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.ADMIN;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
@@ -9,10 +13,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -23,12 +27,12 @@ import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.zelazobeton.cognitiveexercieses.domain.GameData;
 import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
-import com.zelazobeton.cognitiveexercieses.domain.PortfolioBuilder;
 import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryImg;
 import com.zelazobeton.cognitiveexercieses.domain.security.Authority;
 import com.zelazobeton.cognitiveexercieses.domain.security.Role;
@@ -38,6 +42,8 @@ import com.zelazobeton.cognitiveexercieses.repository.GameDataRepository;
 import com.zelazobeton.cognitiveexercieses.repository.MemoryImgRepository;
 import com.zelazobeton.cognitiveexercieses.repository.RoleRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
+import com.zelazobeton.cognitiveexercieses.service.PortfolioBuilder;
+import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +60,9 @@ public class BootstrapDb implements CommandLineRunner {
     private final UserRepository userRepository;
     private final Random rand = new Random();
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ResourceService resourceService;
+    private final PortfolioBuilder portfolioBuilder;
+
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
@@ -84,7 +93,7 @@ public class BootstrapDb implements CommandLineRunner {
         entityManager.close();
 
         List<User> users = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(EXAMPLE_USERNAMES_FILE))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(new ClassPathResource(EXAMPLE_USERNAMES_FILE).getPath()))) {
             User newUser;
             for(String line; (line = br.readLine()) != null; ) {
                 newUser = User.builder()
@@ -104,17 +113,16 @@ public class BootstrapDb implements CommandLineRunner {
         userRepository.saveAll(users);
     }
 
-    private Portfolio generatePortfolio(User newUser) throws IOException{
-        Portfolio portfolio = PortfolioBuilder.createBootstrapPortfolioWithGeneratedAvatar(newUser);
+    private void generatePortfolio(User newUser) throws IOException{
+        Portfolio portfolio = portfolioBuilder.createBootstrapPortfolioWithGeneratedAvatar(newUser);
         long score = this.rand.nextInt(1000);
         portfolio.setTotalScore(score);
-        return portfolio;
     }
 
     private void loadMemoryImages() {
-        Path memoryImagesFolder = Paths.get(MEMORY_IMG_FOLDER).toAbsolutePath().normalize();
+        Path memoryImagesFolder = resourceService.getPath(MEMORY_IMG_FOLDER);
         List<MemoryImg> memoryImgs = new ArrayList<>();
-        for(File file: memoryImagesFolder.toFile().listFiles()) {
+        for(File file: Objects.requireNonNull(memoryImagesFolder.toFile().listFiles())) {
             if (!file.isDirectory()) {
                 String imgAddress = LOCALHOST_ADDRESS + MEMORY_IMG_PATH + file.getName();
                 memoryImgs.add(MemoryImg.builder().address(imgAddress).build());

@@ -6,8 +6,6 @@ import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.USER_FO
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -29,16 +27,21 @@ import com.zelazobeton.cognitiveexercieses.model.PortfolioDto;
 import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
 import com.zelazobeton.cognitiveexercieses.service.MessageService;
 import com.zelazobeton.cognitiveexercieses.service.PortfolioService;
+import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 @RestController
 @RequestMapping(path = "/portfolio")
 public class PortfolioController extends ExceptionHandling {
     private final PortfolioService portfolioService;
+    private final ResourceService resourceService;
 
-    public PortfolioController(MessageService messageService, PortfolioService portfolioService) {
+    public PortfolioController(MessageService messageService,
+            PortfolioService portfolioService,
+            ResourceService resourceService) {
         super(messageService);
         this.portfolioService = portfolioService;
+        this.resourceService = resourceService;
     }
 
     @PostMapping(path = "/update-avatar", produces = { "application/json" })
@@ -52,7 +55,7 @@ public class PortfolioController extends ExceptionHandling {
     @GetMapping(path = "/avatar/{username}/{fileName}", produces = IMAGE_JPEG_VALUE)
     public byte[] getProfileImage(@PathVariable("username") String username, @PathVariable("fileName") String fileName)
             throws IOException {
-        return Files.readAllBytes(Paths.get(USER_FOLDER + FORWARD_SLASH + username + FORWARD_SLASH + AVATAR + FORWARD_SLASH + fileName));
+        return resourceService.getResource(USER_FOLDER + FORWARD_SLASH + username + AVATAR + FORWARD_SLASH + fileName);
     }
 
     @GetMapping(path = "/scoreboard", produces = { "application/json" })

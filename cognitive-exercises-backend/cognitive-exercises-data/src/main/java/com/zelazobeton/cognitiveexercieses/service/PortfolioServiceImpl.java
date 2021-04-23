@@ -15,10 +15,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,10 +45,13 @@ import lombok.extern.slf4j.Slf4j;
 public class PortfolioServiceImpl implements PortfolioService {
     private final UserRepository userRepository;
     private final PortfolioRepository portfolioRepository;
+    private final ResourceService resourceService;
 
-    public PortfolioServiceImpl(UserRepository userRepository, PortfolioRepository portfolioRepository) {
+    public PortfolioServiceImpl(UserRepository userRepository, PortfolioRepository portfolioRepository,
+            ResourceService resourceService) {
         this.userRepository = userRepository;
         this.portfolioRepository = portfolioRepository;
+        this.resourceService = resourceService;
     }
 
     @Override
@@ -61,13 +64,13 @@ public class PortfolioServiceImpl implements PortfolioService {
                 throw new NotAnImageFileException(avatar.getOriginalFilename() + NOT_AN_IMAGE_FILE);
             }
 
-            Path userAvatarFolder = Paths.get(USER_FOLDER + FORWARD_SLASH + currentUser.getUsername() + FORWARD_SLASH + AVATAR).toAbsolutePath().normalize();
+            Path userAvatarFolder = resourceService.getPath(USER_FOLDER + FORWARD_SLASH + currentUser.getUsername() + AVATAR);
             if(!Files.exists(userAvatarFolder)) {
                 Files.createDirectories(userAvatarFolder);
                 log.debug(DIRECTORY_CREATED + userAvatarFolder);
             }
 
-            for(File file: userAvatarFolder.toFile().listFiles()) {
+            for(File file: Objects.requireNonNull(userAvatarFolder.toFile().listFiles())) {
                 if (!file.isDirectory()) {
                     file.delete();
                 }
