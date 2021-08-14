@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.AVATAR;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.DEFAULT_AVATAR_FILE;
@@ -22,15 +22,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
+import com.zelazobeton.cognitiveexercieses.service.PortfolioBuilder;
+import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class PortfolioBuilderImpl implements PortfolioBuilder{
-    private final ResourceService resourceService;
+public class PortfolioBuilderImpl implements PortfolioBuilder {
+    private ResourceService resourceService;
 
-    private PortfolioBuilderImpl(ResourceService resourceService){
+    public PortfolioBuilderImpl(ResourceService resourceService) {
         this.resourceService = resourceService;
     }
 

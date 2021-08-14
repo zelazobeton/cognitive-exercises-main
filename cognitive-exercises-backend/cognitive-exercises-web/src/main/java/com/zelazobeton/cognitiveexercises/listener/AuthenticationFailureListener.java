@@ -4,7 +4,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.stereotype.Component;
 
-import com.zelazobeton.cognitiveexercieses.service.LoginAttemptServiceImpl;
+import com.zelazobeton.cognitiveexercieses.service.impl.LoginAttemptServiceImpl;
 
 @Component
 public class AuthenticationFailureListener {

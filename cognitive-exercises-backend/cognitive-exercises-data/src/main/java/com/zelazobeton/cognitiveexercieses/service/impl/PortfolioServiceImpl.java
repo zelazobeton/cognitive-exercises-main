@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.AVATAR;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.DIRECTORY_CREATED;
@@ -36,6 +36,8 @@ import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
 import com.zelazobeton.cognitiveexercieses.repository.PortfolioRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
+import com.zelazobeton.cognitiveexercieses.service.PortfolioService;
+import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,9 +45,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 public class PortfolioServiceImpl implements PortfolioService {
-    private final UserRepository userRepository;
-    private final PortfolioRepository portfolioRepository;
-    private final ResourceService resourceService;
+    private UserRepository userRepository;
+    private PortfolioRepository portfolioRepository;
+    private ResourceService resourceService;
 
     public PortfolioServiceImpl(UserRepository userRepository, PortfolioRepository portfolioRepository,
             ResourceService resourceService) {

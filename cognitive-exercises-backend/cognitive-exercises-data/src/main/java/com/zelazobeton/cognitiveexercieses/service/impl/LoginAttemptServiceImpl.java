@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.zelazobeton.cognitiveexercieses.service.LoginAttemptService;
 
 @Service
-public class LoginAttemptServiceImpl implements LoginAttemptService{
+public class LoginAttemptServiceImpl implements LoginAttemptService {
     private static final int MAXIMUM_NUMBER_OF_ATTEMPTS = 5;
     private static final int ATTEMPT_INCREMENT = 1;
     private LoadingCache<String, Integer> loginAttemptCache;

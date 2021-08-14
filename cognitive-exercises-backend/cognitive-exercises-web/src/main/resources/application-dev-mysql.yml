@@ -22,3 +22,4 @@ spring:
 logging:
   level:
     com.zelazobeton.cognitiveexercieses: DEBUG
+    org.springframework.transaction: TRACE

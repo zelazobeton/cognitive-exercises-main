@@ -39,7 +39,7 @@ import com.zelazobeton.cognitiveexercieses.exception.EntityAlreadyExistsExceptio
 import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercieses.exception.RegisterFormInvalidException;
-import com.zelazobeton.cognitiveexercieses.service.MessageService;
+import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,49 +49,49 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExceptionHandling implements ErrorController {
     public static final String ERROR_PATH = "/error";
-    protected final MessageService messageService;
+    protected final ExceptionMessageService exceptionMessageService;
 
 
     @ExceptionHandler(RegisterFormInvalidException.class)
     public ResponseEntity<HttpResponse> registerFormInvalidException() {
         return createHttpResponse(BAD_REQUEST,
-                messageService.getMessage(EXCEPTION_HANDLING_SUBMITTED_USERNAME_OR_EMAIL_WERE_INVALID));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_SUBMITTED_USERNAME_OR_EMAIL_WERE_INVALID));
     }
 
     @ExceptionHandler(EmailNotFoundException.class)
     public ResponseEntity<HttpResponse> emailNotFoundException() {
         return createHttpResponse(BAD_REQUEST,
-                messageService.getMessage(EXCEPTION_HANDLING_THERE_IS_NO_REGISTERED_USER_WITH_THAT_EMAIL));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_THERE_IS_NO_REGISTERED_USER_WITH_THAT_EMAIL));
     }
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<HttpResponse> accountDisabledException() {
         return createHttpResponse(BAD_REQUEST,
-                messageService.getMessage(EXCEPTION_HANDLING_YOUR_ACCOUNT_HAS_BEEN_DISABLED));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_YOUR_ACCOUNT_HAS_BEEN_DISABLED));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<HttpResponse> badCredentialsException() {
         return createHttpResponse(BAD_REQUEST,
-                messageService.getMessage(EXCEPTION_HANDLING_USERNAME_PASSWORD_INCORRECT));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_USERNAME_PASSWORD_INCORRECT));
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<HttpResponse> authenticationException(AuthenticationException e) {
         return createHttpResponse(BAD_REQUEST,
-                messageService.getMessage(EXCEPTION_HANDLING_USERNAME_PASSWORD_INCORRECT));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_USERNAME_PASSWORD_INCORRECT));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpResponse> accessDeniedException() {
         return createHttpResponse(UNAUTHORIZED,
-                messageService.getMessage(EXCEPTION_HANDLING_YOU_DO_NOT_HAVE_THE_RIGHT_PERMISSION));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_YOU_DO_NOT_HAVE_THE_RIGHT_PERMISSION));
     }
 
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<HttpResponse> lockedException() {
         return createHttpResponse(UNAUTHORIZED,
-                messageService.getMessage(EXCEPTION_HANDLING_YOUR_ACCOUNT_HAS_BEEN_LOCKED));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_YOUR_ACCOUNT_HAS_BEEN_LOCKED));
     }
 
     @ExceptionHandler(TokenExpiredException.class)
@@ -113,14 +113,14 @@ public class ExceptionHandling implements ErrorController {
     public ResponseEntity<HttpResponse> methodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
         log.error(exception.getMessage());
         return createHttpResponse(METHOD_NOT_ALLOWED,
-                messageService.getMessage(EXCEPTION_HANDLING_THIS_REQUEST_METHOD_IS_NOT_ALLOWED_ON_THIS_ENDPOINT));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_THIS_REQUEST_METHOD_IS_NOT_ALLOWED_ON_THIS_ENDPOINT));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> internalServerErrorException(Exception exception) {
         log.error(exception.getMessage());
         return createHttpResponse(INTERNAL_SERVER_ERROR,
-                messageService.getMessage(EXCEPTION_HANDLING_AN_ERROR_OCCURRED_WHILE_PROCESSING_THE_REQUEST));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_AN_ERROR_OCCURRED_WHILE_PROCESSING_THE_REQUEST));
     }
 
     @ExceptionHandler(NoResultException.class)
@@ -133,7 +133,7 @@ public class ExceptionHandling implements ErrorController {
     public ResponseEntity<HttpResponse> iOException(IOException exception) {
         log.error(exception.getMessage());
         return createHttpResponse(INTERNAL_SERVER_ERROR,
-                messageService.getMessage(EXCEPTION_HANDLING_ERROR_OCCURRED_WHILE_PROCESSING_FILE));
+                exceptionMessageService.getMessage(EXCEPTION_HANDLING_ERROR_OCCURRED_WHILE_PROCESSING_FILE));
     }
 
     @ExceptionHandler(NotAnImageFileException.class)

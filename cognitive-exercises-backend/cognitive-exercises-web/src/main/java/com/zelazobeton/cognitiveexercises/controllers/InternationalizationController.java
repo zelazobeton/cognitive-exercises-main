@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.model.LocaleDto;
-import com.zelazobeton.cognitiveexercieses.service.MessageService;
+import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 @RestController
 @RequestMapping(path = "/lang")
 public class InternationalizationController extends ExceptionHandling {
 
-    public InternationalizationController(MessageService messageService) {
-        super(messageService);
+    public InternationalizationController(ExceptionMessageService exceptionMessageService) {
+        super(exceptionMessageService);
     }
 
     @GetMapping(path = "/locale", produces = { "application/json" })

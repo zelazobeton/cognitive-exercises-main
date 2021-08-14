@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import static com.zelazobeton.cognitiveexercieses.constant.TokenConstant.JWT_REFRESH_TOKEN_HEADER;
 import static com.zelazobeton.cognitiveexercieses.constant.TokenConstant.JWT_TOKEN_HEADER;
@@ -33,6 +33,7 @@ import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.repository.RefreshTokenRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
+import com.zelazobeton.cognitiveexercieses.service.JwtTokenService;
 
 import lombok.RequiredArgsConstructor;
 

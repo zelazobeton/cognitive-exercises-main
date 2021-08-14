@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
-
 import javax.mail.MessagingException;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -27,22 +26,35 @@ import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.UsernameAlreadyExistsException;
 import com.zelazobeton.cognitiveexercieses.repository.RoleRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
+import com.zelazobeton.cognitiveexercieses.service.EmailService;
+import com.zelazobeton.cognitiveexercieses.service.UserService;
+import com.zelazobeton.cognitiveexercieses.service.impl.LoginAttemptServiceImpl;
+import com.zelazobeton.cognitiveexercieses.service.impl.PortfolioBuilderImpl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final LoginAttemptServiceImpl loginAttemptService;
-    private final EmailService emailService;
-    private final PortfolioBuilderImpl portfolioBuilderImpl;
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private LoginAttemptServiceImpl loginAttemptService;
+    private EmailService emailService;
+    private PortfolioBuilderImpl portfolioBuilderImpl;
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+            BCryptPasswordEncoder bCryptPasswordEncoder, LoginAttemptServiceImpl loginAttemptService,
+            EmailService emailService, PortfolioBuilderImpl portfolioBuilderImpl) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.loginAttemptService = loginAttemptService;
+        this.emailService = emailService;
+        this.portfolioBuilderImpl = portfolioBuilderImpl;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

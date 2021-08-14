@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercieses.model.GameDataDto;
 import com.zelazobeton.cognitiveexercieses.service.GameDataService;
-import com.zelazobeton.cognitiveexercieses.service.MessageService;
+import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
@@ -26,8 +26,8 @@ public class GameDataController extends ExceptionHandling {
     private final GameDataService gamesDataService;
     private final ResourceService resourceService;
 
-    public GameDataController(MessageService messageService, GameDataService gamesDataService, ResourceService resourceService) {
-        super(messageService);
+    public GameDataController(ExceptionMessageService exceptionMessageService, GameDataService gamesDataService, ResourceService resourceService) {
+        super(exceptionMessageService);
         this.gamesDataService = gamesDataService;
         this.resourceService = resourceService;
     }

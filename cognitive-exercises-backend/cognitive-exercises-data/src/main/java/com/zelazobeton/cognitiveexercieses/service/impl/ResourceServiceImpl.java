@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,11 +8,15 @@ import java.nio.file.Paths;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import com.zelazobeton.cognitiveexercieses.service.ResourceService;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class ResourceServiceImpl implements ResourceService {
+
+    public ResourceServiceImpl() {}
 
     @Override
     public byte[] getResource(String resourceName) throws IOException {

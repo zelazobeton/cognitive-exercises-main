@@ -25,7 +25,7 @@ import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercieses.model.PortfolioDto;
 import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
-import com.zelazobeton.cognitiveexercieses.service.MessageService;
+import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercieses.service.PortfolioService;
 import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
@@ -36,10 +36,10 @@ public class PortfolioController extends ExceptionHandling {
     private final PortfolioService portfolioService;
     private final ResourceService resourceService;
 
-    public PortfolioController(MessageService messageService,
+    public PortfolioController(ExceptionMessageService exceptionMessageService,
             PortfolioService portfolioService,
             ResourceService resourceService) {
-        super(messageService);
+        super(exceptionMessageService);
         this.portfolioService = portfolioService;
         this.resourceService = resourceService;
     }

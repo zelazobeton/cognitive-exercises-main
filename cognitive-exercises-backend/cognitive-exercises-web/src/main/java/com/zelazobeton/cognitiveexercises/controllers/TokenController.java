@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.zelazobeton.cognitiveexercieses.service.JwtTokenServiceImpl;
-import com.zelazobeton.cognitiveexercieses.service.MessageService;
+import com.zelazobeton.cognitiveexercieses.service.impl.JwtTokenServiceImpl;
+import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
@@ -23,8 +23,8 @@ import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 public class TokenController extends ExceptionHandling {
     private final JwtTokenServiceImpl jwtTokenProvider;
 
-    public TokenController(MessageService messageService, JwtTokenServiceImpl jwtTokenProvider) {
-        super(messageService);
+    public TokenController(ExceptionMessageService exceptionMessageService, JwtTokenServiceImpl jwtTokenProvider) {
+        super(exceptionMessageService);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -34,7 +34,7 @@ public class TokenController extends ExceptionHandling {
         HttpHeaders headers = new HttpHeaders();
         headers.add(JWT_TOKEN_HEADER, token);
         return new ResponseEntity<>(
-                new HttpResponse(OK, messageService.getMessage(MessageConstants.TOKEN_CONTROLLER_TOKEN_SUCCESSFULLY_REFRESHED)),
+                new HttpResponse(OK, exceptionMessageService.getMessage(MessageConstants.TOKEN_CONTROLLER_TOKEN_SUCCESSFULLY_REFRESHED)),
                 headers, HttpStatus.OK);
     }
 
@@ -42,7 +42,7 @@ public class TokenController extends ExceptionHandling {
     public ResponseEntity<HttpResponse> deleteRefreshToken(@RequestBody String refreshToken) throws JWTVerificationException {
         jwtTokenProvider.deleteRefreshTokenByRefreshToken(refreshToken);
         return new ResponseEntity<>(
-                new HttpResponse(OK, messageService.getMessage(MessageConstants.TOKEN_CONTROLLER_REFRESH_TOKEN_SUCCESSFULLY_DELETED)),
+                new HttpResponse(OK, exceptionMessageService.getMessage(MessageConstants.TOKEN_CONTROLLER_REFRESH_TOKEN_SUCCESSFULLY_DELETED)),
                 HttpStatus.OK);
     }
 }

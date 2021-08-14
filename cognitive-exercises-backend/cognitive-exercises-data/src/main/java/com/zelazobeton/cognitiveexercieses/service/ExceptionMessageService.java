@@ -1,5 +1,5 @@
 package com.zelazobeton.cognitiveexercieses.service;
 
-public interface MessageService {
+public interface ExceptionMessageService {
     String getMessage(String messageSignature);
 }

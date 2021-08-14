@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +20,7 @@ import com.zelazobeton.cognitiveexercieses.model.memory.MemoryBoardDto;
 import com.zelazobeton.cognitiveexercieses.repository.MemoryBoardRepository;
 import com.zelazobeton.cognitiveexercieses.repository.MemoryImgRepository;
 import com.zelazobeton.cognitiveexercieses.repository.PortfolioRepository;
+import com.zelazobeton.cognitiveexercieses.service.MemoryGameService;
 
 import lombok.extern.slf4j.Slf4j;
 

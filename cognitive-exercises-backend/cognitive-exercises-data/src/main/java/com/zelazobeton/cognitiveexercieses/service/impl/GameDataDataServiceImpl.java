@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.zelazobeton.cognitiveexercieses.model.GameDataDto;
 import com.zelazobeton.cognitiveexercieses.repository.GameDataRepository;
+import com.zelazobeton.cognitiveexercieses.service.GameDataService;
 
 @Service
 public class GameDataDataServiceImpl implements GameDataService {

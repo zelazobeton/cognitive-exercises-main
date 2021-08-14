@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercieses.service;
+package com.zelazobeton.cognitiveexercieses.service.impl;
 
 import java.util.Date;
 import java.util.Properties;
@@ -13,9 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.sun.mail.smtp.SMTPTransport;
 import com.zelazobeton.cognitiveexercieses.constant.EmailConstants;
+import com.zelazobeton.cognitiveexercieses.service.EmailService;
 
 @Service
-public class EmailServiceImpl implements EmailService{
+public class EmailServiceImpl implements EmailService {
 
     public void sendNewPasswordEmail(String username, String password, String email) throws MessagingException {
         Message message = createEmail(username, password, email);

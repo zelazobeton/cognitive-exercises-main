@@ -19,10 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
-import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.memory.MemoryBoardDto;
 import com.zelazobeton.cognitiveexercieses.service.MemoryGameService;
-import com.zelazobeton.cognitiveexercieses.service.MessageService;
+import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
@@ -34,16 +33,15 @@ public class MemoryGameController extends ExceptionHandling {
     private final MemoryGameService memoryGameService;
     private final ResourceService resourceService;
 
-    public MemoryGameController(MessageService messageService, MemoryGameService memoryGameService, ResourceService resourceService) {
-        super(messageService);
+    public MemoryGameController(ExceptionMessageService exceptionMessageService, MemoryGameService memoryGameService, ResourceService resourceService) {
+        super(exceptionMessageService);
         this.memoryGameService = memoryGameService;
         this.resourceService = resourceService;
     }
 
     @GetMapping(path = "/continue", produces = { "application/json" })
     @PreAuthorize("hasAuthority('user.read')")
-    public ResponseEntity<MemoryBoardDto> getMemoryBoard(@AuthenticationPrincipal User user)
-            throws EntityNotFoundException {
+    public ResponseEntity<MemoryBoardDto> getMemoryBoard(@AuthenticationPrincipal User user) {
         MemoryBoardDto board = memoryGameService.getSavedMemoryBoardDto(user.getPortfolio().getId());
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
@@ -51,7 +49,7 @@ public class MemoryGameController extends ExceptionHandling {
     @PostMapping(path = "/new-game", produces = { "application/json" })
     @PreAuthorize("hasAuthority('user.read')")
     public ResponseEntity<MemoryBoardDto> getNewMemoryBoard(@AuthenticationPrincipal User user,
-            @RequestBody Integer difficultyLvl) throws EntityNotFoundException {
+            @RequestBody Integer difficultyLvl) {
         MemoryBoardDto board = memoryGameService.getNewMemoryBoardDto(user.getPortfolio().getId(), difficultyLvl);
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
@@ -64,16 +62,16 @@ public class MemoryGameController extends ExceptionHandling {
     @PostMapping(path = "/save-game")
     @PreAuthorize("hasAuthority('user.update')")
     public ResponseEntity<HttpResponse> saveGame(@AuthenticationPrincipal User user,
-            @RequestBody MemoryBoardDto memoryBoardDto) throws EntityNotFoundException{
+            @RequestBody MemoryBoardDto memoryBoardDto) {
         memoryGameService.saveGame(user.getPortfolio().getId(), memoryBoardDto);
         return new ResponseEntity<>(
-                new HttpResponse(OK, messageService.getMessage(MessageConstants.MEMORY_GAME_CONTROLLER_GAME_SAVED)), OK);
+                new HttpResponse(OK, exceptionMessageService.getMessage(MessageConstants.MEMORY_GAME_CONTROLLER_GAME_SAVED)), OK);
     }
 
     @PostMapping(path = "/save-score")
     @PreAuthorize("hasAuthority('user.update')")
     public ResponseEntity<Integer> saveScore(@AuthenticationPrincipal User user,
-            @RequestBody MemoryBoardDto memoryBoardDto) throws EntityNotFoundException{
+            @RequestBody MemoryBoardDto memoryBoardDto) {
         Integer score = memoryGameService.saveScore(user.getPortfolio().getId(), memoryBoardDto);
         return new ResponseEntity<>(score, HttpStatus.OK);
     }
