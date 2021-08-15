@@ -17,7 +17,6 @@ import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryImg;
 import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryTile;
 import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.memory.MemoryBoardDto;
-import com.zelazobeton.cognitiveexercieses.repository.MemoryBoardRepository;
 import com.zelazobeton.cognitiveexercieses.repository.MemoryImgRepository;
 import com.zelazobeton.cognitiveexercieses.repository.PortfolioRepository;
 import com.zelazobeton.cognitiveexercieses.service.MemoryGameService;
@@ -30,18 +29,15 @@ import lombok.extern.slf4j.Slf4j;
 public class MemoryGameServiceImpl implements MemoryGameService {
     private PortfolioRepository portfolioRepository;
     private MemoryImgRepository memoryImgRepository;
-    private MemoryBoardRepository memoryBoardRepository;
 
-    public MemoryGameServiceImpl(PortfolioRepository portfolioRepository, MemoryImgRepository memoryImgRepository,
-            MemoryBoardRepository memoryBoardRepository) {
+    public MemoryGameServiceImpl(PortfolioRepository portfolioRepository, MemoryImgRepository memoryImgRepository) {
         this.portfolioRepository = portfolioRepository;
         this.memoryImgRepository = memoryImgRepository;
-        this.memoryBoardRepository = memoryBoardRepository;
     }
 
     @Override
-    public MemoryBoardDto getSavedMemoryBoardDto(Long portfolioId) throws EntityNotFoundException {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
+    public MemoryBoardDto getSavedMemoryBoardDto(Long portfolioId) {
+        Portfolio portfolio = this.portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
         MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
         if (savedMemoryBoard == null) {
             return null;
@@ -50,40 +46,39 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     @Override
-    public MemoryBoardDto getNewMemoryBoardDto(Long portfolioId, Integer difficultyLvl) throws EntityNotFoundException {
+    public MemoryBoardDto getNewMemoryBoardDto(Long portfolioId, String difficultyLvl) {
         int numOfDifferentImgsNeeded;
         switch (difficultyLvl){
-            case 0:
+            case "0":
                 numOfDifferentImgsNeeded = MemoryDiffLvl.EASY.numOfImgs;
                 break;
-            case 2:
+            case "2":
                 numOfDifferentImgsNeeded = MemoryDiffLvl.HARD.numOfImgs;
                 break;
             default:
                 numOfDifferentImgsNeeded = MemoryDiffLvl.MEDIUM.numOfImgs;
         }
-        return new MemoryBoardDto(generateMemoryBoard(numOfDifferentImgsNeeded));
+        return new MemoryBoardDto(this.generateMemoryBoard(numOfDifferentImgsNeeded));
     }
 
     @Override
-    public void saveGame(Long portfolioId, MemoryBoardDto memoryBoardDto) throws EntityNotFoundException {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
+    public void saveGame(Long portfolioId, MemoryBoardDto memoryBoardDto) {
+        Portfolio portfolio = this.portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
         MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
         if (savedMemoryBoard != null) {
             savedMemoryBoard.setPortfolio(null);
         }
-        MemoryBoard newMemoryBoard = createMemoryBoardFromMemoryBoardDto(memoryBoardDto, portfolio);
+        MemoryBoard newMemoryBoard = this.createMemoryBoardFromMemoryBoardDto(memoryBoardDto, portfolio);
         portfolio.setMemoryBoard(newMemoryBoard);
-        portfolioRepository.save(portfolio);
-        memoryBoardRepository.save(savedMemoryBoard);
+        this.portfolioRepository.save(portfolio);
     }
 
     @Override
     public int saveScore(Long portfolioId, MemoryBoardDto memoryBoardDto) {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
-        int score = calculateScore(memoryBoardDto);
+        Portfolio portfolio = this.portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
+        int score = this.calculateScore(memoryBoardDto);
         portfolio.setTotalScore(portfolio.getTotalScore() + score);
-        portfolioRepository.save(portfolio);
+        this.portfolioRepository.save(portfolio);
         return score;
     }
 
@@ -95,7 +90,7 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     private MemoryBoard createMemoryBoardFromMemoryBoardDto(MemoryBoardDto memoryBoardDto, Portfolio portfolio)
             throws EntityNotFoundException{
         List<MemoryTile> tiles = memoryBoardDto.getMemoryTiles().stream().map(tile -> {
-            MemoryImg img = memoryImgRepository.findByAddress(tile.getImgAddress()).orElseThrow(EntityNotFoundException::new);
+            MemoryImg img = this.memoryImgRepository.findByAddress(tile.getImgAddress()).orElseThrow(EntityNotFoundException::new);
             return new MemoryTile(img, img.getId(), tile.isUncovered());
         }).collect(Collectors.toList());
         return MemoryBoard.builder()
@@ -106,13 +101,13 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     private MemoryBoard generateMemoryBoard(int numOfDifferentImgsNeeded) {
-        List<MemoryTile> tiles = generateTiles(numOfDifferentImgsNeeded);
+        List<MemoryTile> tiles = this.generateTiles(numOfDifferentImgsNeeded);
         return MemoryBoard.builder().memoryTiles(tiles).numOfUncoveredTiles(0).portfolio(null).build();
     }
 
     private List<MemoryTile> generateTiles(int numOfImgs) {
         Pageable topTwenty = PageRequest.of(0, numOfImgs);
-        List<MemoryImg> imgs = memoryImgRepository.findAll(topTwenty).getContent();
+        List<MemoryImg> imgs = this.memoryImgRepository.findAll(topTwenty).getContent();
         List<MemoryTile> tiles = new ArrayList<>();
         imgs.forEach(img -> {
             tiles.add(MemoryTile.builder().memoryImg(img).uncovered(false).memory_img_id(img.getId()).build());

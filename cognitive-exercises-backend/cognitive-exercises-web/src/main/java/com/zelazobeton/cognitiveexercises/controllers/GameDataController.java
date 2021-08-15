@@ -26,7 +26,8 @@ public class GameDataController extends ExceptionHandling {
     private final GameDataService gamesDataService;
     private final ResourceService resourceService;
 
-    public GameDataController(ExceptionMessageService exceptionMessageService, GameDataService gamesDataService, ResourceService resourceService) {
+    public GameDataController(ExceptionMessageService exceptionMessageService, GameDataService gamesDataService,
+            ResourceService resourceService) {
         super(exceptionMessageService);
         this.gamesDataService = gamesDataService;
         this.resourceService = resourceService;
@@ -34,11 +35,11 @@ public class GameDataController extends ExceptionHandling {
 
     @GetMapping(path = "/data", produces = { "application/json" })
     public ResponseEntity<List<GameDataDto>> getGames() {
-        return new ResponseEntity<>(gamesDataService.getGamesData(), HttpStatus.OK);
+        return new ResponseEntity<>(this.gamesDataService.getGamesData(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/icon/{fileName}", produces = IMAGE_JPEG_VALUE)
     public byte[] getMemoryTileImage(@PathVariable("fileName") String fileName) throws IOException {
-        return resourceService.getResource(GAMES_DATA_FOLDER + FORWARD_SLASH + fileName);
+        return this.resourceService.getResource(GAMES_DATA_FOLDER + FORWARD_SLASH + fileName);
     }
 }

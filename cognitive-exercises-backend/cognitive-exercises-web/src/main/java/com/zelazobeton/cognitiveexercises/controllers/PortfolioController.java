@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercieses.model.PortfolioDto;
@@ -36,33 +35,32 @@ public class PortfolioController extends ExceptionHandling {
     private final PortfolioService portfolioService;
     private final ResourceService resourceService;
 
-    public PortfolioController(ExceptionMessageService exceptionMessageService,
-            PortfolioService portfolioService,
+    public PortfolioController(ExceptionMessageService exceptionMessageService, PortfolioService portfolioService,
             ResourceService resourceService) {
         super(exceptionMessageService);
         this.portfolioService = portfolioService;
         this.resourceService = resourceService;
     }
 
-    @PostMapping(path = "/update-avatar", produces = { "application/json" })
+    @PostMapping(path = "/avatar", produces = { "application/json" })
     @PreAuthorize("hasAuthority('user.update')")
     public ResponseEntity<PortfolioDto> updatePortfolio(@AuthenticationPrincipal User user,
             @RequestParam("avatar") MultipartFile avatar) throws IOException, NotAnImageFileException {
-        Portfolio updatedPortfolio = portfolioService.updateAvatar(user.getUsername(), avatar);
-        return new ResponseEntity<>(new PortfolioDto(updatedPortfolio), HttpStatus.OK);
+        return new ResponseEntity<>(this.portfolioService.updateAvatar(user.getUsername(), avatar), HttpStatus.OK);
     }
 
     @GetMapping(path = "/avatar/{username}/{fileName}", produces = IMAGE_JPEG_VALUE)
     public byte[] getProfileImage(@PathVariable("username") String username, @PathVariable("fileName") String fileName)
             throws IOException {
-        return resourceService.getResource(USER_FOLDER + FORWARD_SLASH + username + AVATAR + FORWARD_SLASH + fileName);
+        return this.resourceService.getResource(
+                USER_FOLDER + FORWARD_SLASH + username + AVATAR + FORWARD_SLASH + fileName);
     }
 
     @GetMapping(path = "/scoreboard", produces = { "application/json" })
-    public ResponseEntity<List<UserScoreDto>> getScoreboard(@AuthenticationPrincipal User user,
-            @RequestParam("page") String pageNum, @RequestParam("size") String pageSize) throws IOException {
-        List<UserScoreDto> scoreboard = portfolioService.getScoreboardPage(
-                Integer.parseInt(pageNum), Integer.parseInt(pageSize));
-        return new ResponseEntity<>(scoreboard, HttpStatus.OK);
+    public ResponseEntity<List<UserScoreDto>> getScoreboard(@RequestParam("page") String pageNum,
+            @RequestParam("size") String pageSize) {
+        return new ResponseEntity<>(
+                this.portfolioService.getScoreboardPage(Integer.parseInt(pageNum), Integer.parseInt(pageSize)),
+                HttpStatus.OK);
     }
 }

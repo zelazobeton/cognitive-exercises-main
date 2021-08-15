@@ -1,7 +1,6 @@
 package com.zelazobeton.cognitiveexercieses.service;
 
 import java.io.IOException;
-
 import javax.mail.MessagingException;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
