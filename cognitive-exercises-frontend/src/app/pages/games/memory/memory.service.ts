@@ -1,13 +1,14 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {Observable, Subject, Subscription, throwError} from 'rxjs';
 import {MemoryBoardDto} from './memory-board/memory';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {environment} from '../../../../environments/environment';
 import {catchError, tap} from 'rxjs/operators';
 import {NotificationType} from '../../../shared/notification/notification-type.enum';
 import {NotificationService} from '../../../shared/notification/notification.service';
 import {CustomHttpResponse} from '../../../shared/model/custom-http-response';
 import {TranslateService} from '@ngx-translate/core';
+import {URLSearchParams} from 'url';
 
 @Injectable()
 export class MemoryService implements OnDestroy {
@@ -50,7 +51,7 @@ export class MemoryService implements OnDestroy {
   }
 
   saveGame(board: MemoryBoardDto): void {
-    this.saveSub = this.http.post<CustomHttpResponse>(`${this.host}/memory/save-game`, board)
+    this.saveSub = this.http.post<CustomHttpResponse>(`${this.host}/memory/game`, board)
       .subscribe((response: CustomHttpResponse) => {
         this.notificationService.notify(NotificationType.SUCCESS, response.message);
       }, (errorRes => {
@@ -60,11 +61,12 @@ export class MemoryService implements OnDestroy {
   }
 
   saveScore(board: MemoryBoardDto): Observable<number> {
-    return this.http.post<number>(`${this.host}/memory/save-score`, board);
+    return this.http.post<number>(`${this.host}/memory/score`, board);
   }
 
   fetchNewBoard(difficultyLvl: number): Observable<MemoryBoardDto> {
-    return this.http.post<MemoryBoardDto>(`${this.host}/memory/new-game`, difficultyLvl)
+    return this.http.get<MemoryBoardDto>(`${this.host}/memory/game`,
+      {params: new HttpParams().set('level', String(difficultyLvl))})
       .pipe(
         tap(response => {
           this.board = response;
@@ -80,7 +82,7 @@ export class MemoryService implements OnDestroy {
   }
 
   fetchSavedGameBoard(): Observable<MemoryBoardDto> {
-    return this.http.get<MemoryBoardDto>(`${this.host}/memory/continue`)
+    return this.http.get<MemoryBoardDto>(`${this.host}/memory/game`)
       .pipe(
         tap(response => {
             if (response != null) {

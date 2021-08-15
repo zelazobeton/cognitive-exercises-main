@@ -18,7 +18,7 @@ export class PortfolioService {
   }
 
   public updateAvatar(portfolioForm: FormData): Observable<PortfolioDto> {
-    return this.http.post<PortfolioDto>(`${this.host}/portfolio/update-avatar`, portfolioForm, {observe: 'body'})
+    return this.http.post<PortfolioDto>(`${this.host}/portfolio/avatar`, portfolioForm, {observe: 'body'})
       .pipe(
         tap((response: PortfolioDto) => {
           const user: UserDto = JSON.parse(localStorage.getItem('user'));

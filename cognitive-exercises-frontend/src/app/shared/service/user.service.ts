@@ -21,7 +21,7 @@ export class UserService {
 
   public changePassword(changePasswordForm: ChangePasswordForm) {
     return this.http.post<HttpResponse<string> | HttpErrorResponse>(
-      `${this.host}/user/change-password`, changePasswordForm, {observe: 'body'});
+      `${this.host}/user/password`, changePasswordForm, {observe: 'body'});
   }
 
   public resetPassword(email: FormData): Observable<CustomHttpResponse> {
@@ -29,7 +29,7 @@ export class UserService {
   }
 
   public fetchUserData(): Observable<UserDto> {
-    return this.http.get<UserDto>(`${this.host}/user/data`)
+    return this.http.get<UserDto>(`${this.host}/user`)
       .pipe(
         catchError((error) => {
           this.notificationService.notify(NotificationType.ERROR,
