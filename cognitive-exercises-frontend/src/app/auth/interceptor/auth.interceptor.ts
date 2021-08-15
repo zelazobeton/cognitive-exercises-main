@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const url = httpRequest.url.substr(this.authenticationService.host.length);
+    const url = httpRequest.url.substr(this.authenticationService.versionedHost.length);
     if (this.nonAuthenticatedUrls.contain(url)) {
       return next.handle(httpRequest);
     }

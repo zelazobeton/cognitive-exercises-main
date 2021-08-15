@@ -11,14 +11,14 @@ import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class PortfolioService {
-  private readonly host = environment.apiUrl;
+  private readonly versionedHost = environment.versionedApiUrl;
 
   constructor(private http: HttpClient, private notificationService: NotificationService,
               private translate: TranslateService) {
   }
 
   public updateAvatar(portfolioForm: FormData): Observable<PortfolioDto> {
-    return this.http.post<PortfolioDto>(`${this.host}/portfolio/avatar`, portfolioForm, {observe: 'body'})
+    return this.http.post<PortfolioDto>(`${this.versionedHost}/portfolio/avatar`, portfolioForm, {observe: 'body'})
       .pipe(
         tap((response: PortfolioDto) => {
           const user: UserDto = JSON.parse(localStorage.getItem('user'));

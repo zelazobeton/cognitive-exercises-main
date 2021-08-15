@@ -8,12 +8,11 @@ import {NotificationType} from '../../../shared/notification/notification-type.e
 import {NotificationService} from '../../../shared/notification/notification.service';
 import {CustomHttpResponse} from '../../../shared/model/custom-http-response';
 import {TranslateService} from '@ngx-translate/core';
-import {URLSearchParams} from 'url';
 
 @Injectable()
 export class MemoryService implements OnDestroy {
   public tileNotification: Subject<{ id: number, match: boolean }>;
-  private readonly host = environment.apiUrl;
+  private readonly versionedHost = environment.versionedApiUrl;
   private board: MemoryBoardDto;
   private saveSub: Subscription;
 
@@ -51,7 +50,7 @@ export class MemoryService implements OnDestroy {
   }
 
   saveGame(board: MemoryBoardDto): void {
-    this.saveSub = this.http.post<CustomHttpResponse>(`${this.host}/memory/game`, board)
+    this.saveSub = this.http.post<CustomHttpResponse>(`${this.versionedHost}/memory/game`, board)
       .subscribe((response: CustomHttpResponse) => {
         this.notificationService.notify(NotificationType.SUCCESS, response.message);
       }, (errorRes => {
@@ -61,11 +60,11 @@ export class MemoryService implements OnDestroy {
   }
 
   saveScore(board: MemoryBoardDto): Observable<number> {
-    return this.http.post<number>(`${this.host}/memory/score`, board);
+    return this.http.post<number>(`${this.versionedHost}/memory/score`, board);
   }
 
   fetchNewBoard(difficultyLvl: number): Observable<MemoryBoardDto> {
-    return this.http.get<MemoryBoardDto>(`${this.host}/memory/game`,
+    return this.http.get<MemoryBoardDto>(`${this.versionedHost}/memory/game`,
       {params: new HttpParams().set('level', String(difficultyLvl))})
       .pipe(
         tap(response => {
@@ -82,7 +81,7 @@ export class MemoryService implements OnDestroy {
   }
 
   fetchSavedGameBoard(): Observable<MemoryBoardDto> {
-    return this.http.get<MemoryBoardDto>(`${this.host}/memory/game`)
+    return this.http.get<MemoryBoardDto>(`${this.versionedHost}/memory/game`)
       .pipe(
         tap(response => {
             if (response != null) {

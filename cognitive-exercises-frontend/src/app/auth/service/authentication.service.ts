@@ -16,7 +16,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
   private readonly refreshTokenKey = environment.storageRefreshTokenKey;
-  readonly host = environment.apiUrl;
+  readonly versionedHost = environment.versionedApiUrl;
   private token: string;
   public loggedInUser: Subject<UserDto>;
 
@@ -30,7 +30,7 @@ export class AuthenticationService {
 
   public login(loginForm: AuthForm): Observable<HttpEvent<any>> {
     return this.http.post<UserDto>(
-      `${this.host}/user/login`, loginForm, {observe: `response`})
+      `${this.versionedHost}/user/login`, loginForm, {observe: `response`})
       .pipe(
         catchError(errorRes => {
           this.sendErrorNotification(NotificationType.ERROR, errorRes.error.message);
@@ -57,7 +57,7 @@ export class AuthenticationService {
 
   public register(registerForm: RegisterForm): Observable<UserDto | HttpErrorResponse> {
     return this.http.post<UserDto | HttpErrorResponse>(
-      `${this.host}/user/register`, registerForm, {observe: 'body'})
+      `${this.versionedHost}/user/register`, registerForm, {observe: 'body'})
       .pipe(
         catchError(errorRes => {
           return throwError(errorRes);
@@ -71,7 +71,7 @@ export class AuthenticationService {
   }
 
   public logout(): Observable<CustomHttpResponse> {
-    return this.http.get<CustomHttpResponse>(`${this.host}/user/logout`).pipe(
+    return this.http.get<CustomHttpResponse>(`${this.versionedHost}/user/logout`).pipe(
       catchError(errorRes => {
         this.notificationService.notify(NotificationType.ERROR,
           this.translate.instant('notifications.server error try again'));
@@ -86,7 +86,7 @@ export class AuthenticationService {
   public deleteRefreshToken(): void {
     const refreshToken = localStorage.getItem(this.refreshTokenKey);
     this.http.post<HttpResponse<any>>(
-      `${this.host}/token/delete`, refreshToken).subscribe(
+      `${this.versionedHost}/token/delete`, refreshToken).subscribe(
       () => {},
       (errorResponse: HttpErrorResponse) => {
         console.error(errorResponse);
@@ -138,7 +138,7 @@ export class AuthenticationService {
   public refreshAccessToken(): Observable<string> {
     const refreshToken = localStorage.getItem(this.refreshTokenKey);
     return this.http.post<CustomHttpResponse | HttpErrorResponse>(
-      `${this.host}/token/refresh`, refreshToken, {observe: `response`})
+      `${this.versionedHost}/token/refresh`, refreshToken, {observe: `response`})
       .pipe(
         map(response => {
           const token = response.headers.get(Headers.JWT_TOKEN);

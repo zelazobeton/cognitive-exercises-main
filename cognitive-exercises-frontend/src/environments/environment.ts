@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8081',
+  versionedApiUrl: 'http://localhost:8081/v1',
   //storageTokenKey: Math.random().toString(36).substring(10)
   storageTokenKey: 'storageTokenKey',
   storageRefreshTokenKey: 'storageRefreshTokenKey'

@@ -10,7 +10,7 @@ import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class GamesService {
-  private readonly host = environment.apiUrl;
+  private readonly versionedHost = environment.versionedApiUrl;
 
   constructor(private http: HttpClient,
               private notificationService: NotificationService,
@@ -18,7 +18,7 @@ export class GamesService {
   }
 
   public getGamesData(): Observable<GameDataDto[]> {
-    return this.http.get<GameDataDto[]>(`${this.host}/games/data`, {observe: 'body'})
+    return this.http.get<GameDataDto[]>(`${this.versionedHost}/games/data`, {observe: 'body'})
       .pipe(
         catchError((error) => {
           this.notificationService.notify(NotificationType.ERROR, this.translate.instant('notifications.something went wrong on our side'));
