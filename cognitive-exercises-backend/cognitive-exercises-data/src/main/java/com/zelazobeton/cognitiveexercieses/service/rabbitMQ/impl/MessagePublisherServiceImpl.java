@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zelazobeton.cognitiveexercieses.domain.messages.AbstractQueueMessage;
+import com.zelazobeton.cognitiveexercieses.exception.MessagePublishException;
 import com.zelazobeton.cognitiveexercieses.service.rabbitMQ.MessagePublisherService;
 
 @Service
@@ -24,26 +25,24 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
             @Value("#{${spring.rabbitmq.routings}}") Map<String, List<String>> routings) {
         this.amqpTemplate = amqpTemplate;
         this.routings = routings;
-
     }
 
     @Override
     @Transactional
     public void publishMessage(AbstractQueueMessage message, String exchange) {
         try {
-            List<String> routingKeys = this.routings.get(message.getKey());
+            List<String> routingKeys = this.routings.get(message.key());
             if (routingKeys == null || routingKeys.isEmpty()) {
-                throw new RuntimeException(String.format(
+                throw new MessagePublishException(String.format(
                         "Error during sending the message to the exchange: %s - missing routing key for %s event",
-                        exchange, message.getKey()));
+                        exchange, message.key()));
             }
             for (String routingKey : routingKeys) {
-//                this.amqpTemplate.convertAndSend(exchange, routingKey, message);
-                this.amqpTemplate.convertAndSend(exchange, routingKey, message.toString());
+                this.amqpTemplate.convertAndSend(exchange, routingKey, message);
             }
         } catch (AmqpException exception) {
-            throw new RuntimeException(String.format("Error during sending the message to the exchange: %s",
-                    exchange), exception);
+            throw new MessagePublishException(
+                    String.format("Error during sending the message to the exchange: %s", exchange), exception);
         }
     }
 

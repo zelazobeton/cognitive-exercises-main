@@ -8,7 +8,7 @@ public abstract class AbstractQueueMessage implements Serializable {
     @Override
     public abstract String toString();
 
-    public String getKey() {
+    public String key() {
         return this.getClass().getName();
     }
 }

@@ -11,14 +11,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AmqpTemplateConfiguration {
     @Bean
-    public MessageConverter jsonMessageConverter() {
+    public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
     public AmqpTemplate amqpTemplate(ConnectionFactory connectionFactory) {
         final RabbitTemplate amqpTemplate = new RabbitTemplate(connectionFactory);
-        amqpTemplate.setMessageConverter(jsonMessageConverter());
+        amqpTemplate.setMessageConverter(messageConverter());
         return amqpTemplate;
     }
 }

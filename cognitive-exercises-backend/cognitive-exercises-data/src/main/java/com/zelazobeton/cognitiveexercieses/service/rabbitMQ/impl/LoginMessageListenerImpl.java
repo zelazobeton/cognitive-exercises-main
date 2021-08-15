@@ -6,6 +6,7 @@ import org.springframework.amqp.core.MessageListener;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zelazobeton.cognitiveexercieses.domain.messages.LoginMessage;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,9 +18,8 @@ public class LoginMessageListenerImpl implements MessageListener {
     public void onMessage(Message messageReceived) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-//            LoginMessage message = objectMapper.readValue(messageReceived.getBody(), LoginMessage.class);
-            String message = objectMapper.readValue(messageReceived.getBody(), String.class);
-            log.error("Message received in LoginMessageListenerImpl: " + message.toString());
+            LoginMessage message = objectMapper.readValue(messageReceived.getBody(), LoginMessage.class);
+            log.debug("Message received in LoginMessageListenerImpl: " + message.toString());
         } catch (Exception e) {
             throw new AmqpRejectAndDontRequeueException(e);
         }

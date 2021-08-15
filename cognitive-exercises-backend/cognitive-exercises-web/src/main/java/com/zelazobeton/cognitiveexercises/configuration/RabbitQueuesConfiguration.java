@@ -1,5 +1,6 @@
 package com.zelazobeton.cognitiveexercises.configuration;
 
+import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
@@ -25,9 +26,12 @@ public class RabbitQueuesConfiguration {
     }
 
     @Bean
+    public Binding loginBinding(DirectExchange exchange, Queue loginQueue) {
+        return BindingBuilder.bind(loginQueue).to(exchange).with(loginRoutingKey);
+    }
+
+    @Bean
     Queue loginQueue(DirectExchange exchange) {
-        Queue queue = new Queue(loginQueue, false);
-        BindingBuilder.bind(queue).to(exchange).with(loginRoutingKey);
-        return queue;
+        return new Queue(loginQueue, false);
     }
 }
