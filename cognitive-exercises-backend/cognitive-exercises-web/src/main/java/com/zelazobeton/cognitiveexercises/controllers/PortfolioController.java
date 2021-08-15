@@ -30,7 +30,7 @@ import com.zelazobeton.cognitiveexercieses.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 @RestController
-@RequestMapping(path = "/portfolio")
+@RequestMapping(path = "/v1/portfolio")
 public class PortfolioController extends ExceptionHandling {
     private final PortfolioService portfolioService;
     private final ResourceService resourceService;

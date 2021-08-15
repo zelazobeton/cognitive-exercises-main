@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercises.bootstrap;
+package com.zelazobeton.cognitiveexercises.configuration;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig {
+public class SwaggerConfiguration {
 
     @Bean
     public Docket demoApi() {
@@ -28,7 +28,7 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.any())
                 .paths(Predicates.not(PathSelectors.regex(".*/error")))
                 .build()
-                .apiInfo(metadata());
+                .apiInfo(this.metadata());
         }
 
     private ApiInfo metadata() {

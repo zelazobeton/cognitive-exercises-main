@@ -14,7 +14,7 @@ import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 @RestController
-@RequestMapping(path = "/lang")
+@RequestMapping(path = "/v1/lang")
 public class InternationalizationController extends ExceptionHandling {
 
     public InternationalizationController(ExceptionMessageService exceptionMessageService) {

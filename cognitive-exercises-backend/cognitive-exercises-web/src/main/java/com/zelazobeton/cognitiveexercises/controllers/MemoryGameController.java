@@ -29,7 +29,7 @@ import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 
 @RestController
-@RequestMapping(path = "/memory")
+@RequestMapping(path = "/v1/memory")
 public class MemoryGameController extends ExceptionHandling {
     private final MemoryGameService memoryGameService;
     private final ResourceService resourceService;

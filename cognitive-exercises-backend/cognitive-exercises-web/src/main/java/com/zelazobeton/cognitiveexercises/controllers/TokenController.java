@@ -18,7 +18,7 @@ import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 
 @RestController
-@RequestMapping(path = "/token")
+@RequestMapping(path = "/v1/token")
 public class TokenController extends ExceptionHandling {
     private final JwtTokenServiceImpl jwtTokenProvider;
 

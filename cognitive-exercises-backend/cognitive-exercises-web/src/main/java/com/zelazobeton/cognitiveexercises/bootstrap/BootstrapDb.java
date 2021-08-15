@@ -5,6 +5,7 @@ import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.LOCALHOST_ADDRESS;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_FOLDER;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_PATH;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.VERSION_1;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.ADMIN;
 import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
 
@@ -68,21 +69,21 @@ public class BootstrapDb implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        loadRoles();
-        loadMemoryImages();
-        loadExampleUsers();
-        loadGamesData();
+        this.loadRoles();
+        this.loadMemoryImages();
+        this.loadExampleUsers();
+        this.loadGamesData();
     }
 
     private void loadGamesData() {
-        gameDataRepository.save(GameData.builder()
+        this.gameDataRepository.save(GameData.builder()
                 .title("Memory")
-                .icon(LOCALHOST_ADDRESS + FORWARD_SLASH + "games/icon/memory-icon.png")
+                .icon(LOCALHOST_ADDRESS + VERSION_1 + FORWARD_SLASH + "games/icon/memory-icon.png")
                 .build());
     }
 
     void loadExampleUsers() {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         TypedQuery<Role> q = entityManager.createQuery(
                 "SELECT a FROM Role a LEFT JOIN FETCH a.users WHERE a.name=:name", Role.class)
@@ -99,52 +100,52 @@ public class BootstrapDb implements CommandLineRunner {
                 newUser = User.builder()
                         .username(line)
                         .email(line + "@domain.com")
-                        .password(bCryptPasswordEncoder.encode(line))
+                        .password(this.bCryptPasswordEncoder.encode(line))
                         .role(userRole)
                         .build();
                 userRole.addUser(newUser);
-                generatePortfolio(newUser);
+                this.generatePortfolio(newUser);
                 users.add(newUser);
             }
         } catch (IOException ex) {
             log.info(ex.toString());
         }
-        roleRepository.save(userRole);
-        userRepository.saveAll(users);
+        this.roleRepository.save(userRole);
+        this.userRepository.saveAll(users);
     }
 
     private void generatePortfolio(User newUser) throws IOException{
-        Portfolio portfolio = portfolioBuilder.createBootstrapPortfolioWithGeneratedAvatar(newUser);
+        Portfolio portfolio = this.portfolioBuilder.createBootstrapPortfolioWithGeneratedAvatar(newUser);
         long score = this.rand.nextInt(1000);
         portfolio.setTotalScore(score);
     }
 
     private void loadMemoryImages() {
-        Path memoryImagesFolder = resourceService.getPath(MEMORY_IMG_FOLDER);
+        Path memoryImagesFolder = this.resourceService.getPath(MEMORY_IMG_FOLDER);
         List<MemoryImg> memoryImgs = new ArrayList<>();
         for(File file: Objects.requireNonNull(memoryImagesFolder.toFile().listFiles())) {
             if (!file.isDirectory()) {
-                String imgAddress = LOCALHOST_ADDRESS + MEMORY_IMG_PATH + file.getName();
+                String imgAddress = LOCALHOST_ADDRESS + VERSION_1 + MEMORY_IMG_PATH + file.getName();
                 memoryImgs.add(MemoryImg.builder().address(imgAddress).build());
             }
         }
-        memoryImgRepository.saveAll(memoryImgs);
+        this.memoryImgRepository.saveAll(memoryImgs);
     }
 
     private void loadRoles() {
-        Authority createUser = authorityRepository.save(Authority.builder().permission("user.create").build());
-        Authority updateUser = authorityRepository.save(Authority.builder().permission("user.update").build());
-        Authority readUser = authorityRepository.save(Authority.builder().permission("user.read").build());
-        Authority deleteUser = authorityRepository.save(Authority.builder().permission("user.delete").build());
+        Authority createUser = this.authorityRepository.save(Authority.builder().permission("user.create").build());
+        Authority updateUser = this.authorityRepository.save(Authority.builder().permission("user.update").build());
+        Authority readUser = this.authorityRepository.save(Authority.builder().permission("user.read").build());
+        Authority deleteUser = this.authorityRepository.save(Authority.builder().permission("user.delete").build());
 
         Role adminRole = Role.builder().name(ADMIN).build();
         Role userRole = Role.builder().name(USER).build();
 
         adminRole.setAuthorities(Set.of(createUser, updateUser, readUser, deleteUser));
         userRole.setAuthorities(Set.of(readUser, updateUser, deleteUser));
-        roleRepository.saveAll(Arrays.asList(adminRole, userRole));
+        this.roleRepository.saveAll(Arrays.asList(adminRole, userRole));
 
-        log.debug("Authorities Loaded: " + authorityRepository.count());
-        log.debug("Roles Loaded: " + roleRepository.count());
+        log.debug("Authorities Loaded: " + this.authorityRepository.count());
+        log.debug("Roles Loaded: " + this.roleRepository.count());
     }
 }

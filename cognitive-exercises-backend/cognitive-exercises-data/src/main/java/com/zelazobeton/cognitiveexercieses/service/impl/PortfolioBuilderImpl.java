@@ -8,6 +8,7 @@ import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.LOCALHOST_ADDRESS;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.USER_FOLDER;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.USER_IMAGE_PATH;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.VERSION_1;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,28 +39,28 @@ public class PortfolioBuilderImpl implements PortfolioBuilder {
 
     @Override
     public Portfolio createPortfolioWithGeneratedAvatar(User user) throws IOException {
-        return new Portfolio(user, generateAvatarAddress(user.getUsername()), 0L);
+        return new Portfolio(user, this.generateAvatarAddress(user.getUsername()), 0L);
     }
 
     @Override
     public Portfolio createBootstrapPortfolioWithGeneratedAvatar(User user) throws IOException {
-        return new Portfolio(user, generateAvatarAddressForBootstrapUsers(user.getUsername()), 0L);
+        return new Portfolio(user, this.generateAvatarAddressForBootstrapUsers(user.getUsername()), 0L);
     }
 
     private String generateAvatarAddressForBootstrapUsers(String username) throws IOException {
-        generateAvatar(username);
-        return LOCALHOST_ADDRESS + USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME;
+        this.generateAvatar(username);
+        return LOCALHOST_ADDRESS + VERSION_1 + USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME;
     }
 
     private String generateAvatarAddress(String username) throws IOException {
-        generateAvatar(username);
+        this.generateAvatar(username);
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME)
                 .toUriString();
     }
 
     private void generateAvatar(String username) throws IOException {
-        Path target = resourceService.getPath(USER_FOLDER + FORWARD_SLASH + username + AVATAR);
+        Path target = this.resourceService.getPath(USER_FOLDER + FORWARD_SLASH + username + AVATAR);
         try {
             createFolderIfThereIsNone(target);
             URL website = new URL(generateRoboHashAddress());
@@ -67,7 +68,7 @@ public class PortfolioBuilderImpl implements PortfolioBuilder {
             Files.copy(in, target.resolve(DEFAULT_AVATAR_FILENAME), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
             log.info(ex.toString());
-            Path defaultAvatarSrc = resourceService.getPath(DEFAULT_AVATAR_FILE);
+            Path defaultAvatarSrc = this.resourceService.getPath(DEFAULT_AVATAR_FILE);
             Files.copy(defaultAvatarSrc, target, StandardCopyOption.REPLACE_EXISTING);
         }
     }

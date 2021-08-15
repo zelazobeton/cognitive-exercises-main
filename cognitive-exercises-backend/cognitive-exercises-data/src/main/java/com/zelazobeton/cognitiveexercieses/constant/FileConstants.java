@@ -3,6 +3,7 @@ package com.zelazobeton.cognitiveexercieses.constant;
 public class FileConstants {
     private FileConstants(){}
     public static final String LOCALHOST_ADDRESS = "http://localhost:8081";
+    public static final String VERSION_1 = "/v1";
     private static final String RESOURCES_FOLDER = "resources";
     public static final String FORWARD_SLASH = "/";
     public static final String USER_FOLDER = RESOURCES_FOLDER + "/users-data";
