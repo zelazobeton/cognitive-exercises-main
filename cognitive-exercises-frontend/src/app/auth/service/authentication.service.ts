@@ -2,15 +2,16 @@ import {Injectable} from '@angular/core';
 import {Observable, Subject, throwError} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {UserDto} from '../../shared/model/user-dto';
-import {HttpClient, HttpErrorResponse, HttpEvent, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {AuthForm, RegisterForm} from '../../shared/model/input-forms';
 import {catchError, map, tap} from 'rxjs/operators';
-import {Headers} from '../enum/header-type.enum';
 import {NotificationType} from '../../shared/notification/notification-type.enum';
 import {NotificationService} from '../../shared/notification/notification.service';
 import {Router} from '@angular/router';
 import {CustomHttpResponse} from '../../shared/model/custom-http-response';
 import {TranslateService} from '@ngx-translate/core';
+import {HttpEncodingType} from '../../shared/http.enum';
+import {CustomHeaders} from '../enum/custom-headers.enum';
 
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
@@ -37,9 +38,9 @@ export class AuthenticationService {
           return throwError(errorRes);
         }),
         tap((response: HttpResponse<UserDto>) => {
-          const token = response.headers.get(Headers.JWT_TOKEN);
+          const token = response.headers.get(CustomHeaders.JWT_TOKEN);
           this.saveToken(token);
-          const refreshToken = response.headers.get(Headers.JWT_REFRESH_TOKEN);
+          const refreshToken = response.headers.get(CustomHeaders.JWT_REFRESH_TOKEN);
           this.saveRefreshToken(refreshToken);
           this.addUserToLocalStorage(response.body);
           this.loggedInUser.next(response.body);
@@ -87,7 +88,8 @@ export class AuthenticationService {
     const refreshToken = localStorage.getItem(this.refreshTokenKey);
     this.http.post<HttpResponse<any>>(
       `${this.versionedHost}/token/delete`, refreshToken).subscribe(
-      () => {},
+      () => {
+      },
       (errorResponse: HttpErrorResponse) => {
         console.error(errorResponse);
       });
@@ -138,10 +140,11 @@ export class AuthenticationService {
   public refreshAccessToken(): Observable<string> {
     const refreshToken = localStorage.getItem(this.refreshTokenKey);
     return this.http.post<CustomHttpResponse | HttpErrorResponse>(
-      `${this.versionedHost}/token/refresh`, refreshToken, {observe: `response`})
+      `${this.versionedHost}/token/refresh`, refreshToken,
+      {headers: new HttpHeaders().set(CustomHeaders.CONTENT_ENCODING, HttpEncodingType.NONE), observe: `response`})
       .pipe(
         map(response => {
-          const token = response.headers.get(Headers.JWT_TOKEN);
+          const token = response.headers.get(CustomHeaders.JWT_TOKEN);
           this.saveToken(token);
           return this.token;
         })

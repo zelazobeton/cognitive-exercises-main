@@ -23,6 +23,7 @@ import {GamesService} from './shared/service/games.service';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslationService} from './shared/service/translation.service';
+import {CompressModule} from '../compress/compress.module';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import {TranslationService} from './shared/service/translation.service';
   imports: [
     AppRoutingModule,
     AuthModule,
+    CompressModule,
     BrowserModule,
     FormsModule,
     GamesModule,
