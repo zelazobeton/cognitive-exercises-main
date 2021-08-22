@@ -6,6 +6,7 @@ import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.NOT_AN_IMAGE_FILE;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.USER_FOLDER;
 import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.USER_IMAGE_PATH;
+import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.VERSION_1;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.springframework.http.MediaType.IMAGE_GIF_VALUE;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
@@ -99,7 +100,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private String createProfileImageUrl(String username, String fileName) {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(VERSION_1 + USER_IMAGE_PATH + username + FORWARD_SLASH
                 + fileName).toUriString();
     }
 }

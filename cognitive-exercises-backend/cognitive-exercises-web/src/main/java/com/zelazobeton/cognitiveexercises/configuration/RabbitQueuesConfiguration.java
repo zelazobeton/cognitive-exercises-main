@@ -22,16 +22,16 @@ public class RabbitQueuesConfiguration {
 
     @Bean
     DirectExchange exchange() {
-        return new DirectExchange(defaultExchange);
+        return new DirectExchange(this.defaultExchange);
     }
 
     @Bean
     public Binding loginBinding(DirectExchange exchange, Queue loginQueue) {
-        return BindingBuilder.bind(loginQueue).to(exchange).with(loginRoutingKey);
+        return BindingBuilder.bind(loginQueue).to(exchange).with(this.loginRoutingKey);
     }
 
     @Bean
-    Queue loginQueue(DirectExchange exchange) {
-        return new Queue(loginQueue, false);
+    Queue loginQueue() {
+        return new Queue(this.loginQueue, false);
     }
 }

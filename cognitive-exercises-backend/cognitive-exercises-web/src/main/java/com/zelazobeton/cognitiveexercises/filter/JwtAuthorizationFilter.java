@@ -6,12 +6,12 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@Order(2)
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtTokenService jwtTokenServiceImpl;
 
@@ -34,9 +35,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException, JWTVerificationException {
+            throws IOException, ServletException {
         try {
-            tryAuthenticateRequest(request, response);
+            this.tryAuthenticateRequest(request, response);
         }
         catch (JWTVerificationException | UserNotFoundException ex) {
             log.debug(ex.toString());
@@ -62,13 +63,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
             return;
         }
-        authenticateRequest(request, authorizationHeader);
+        this.authenticateRequest(request, authorizationHeader);
     }
 
     private void authenticateRequest(HttpServletRequest request, String authorizationHeader) throws
             JWTVerificationException, UserNotFoundException {
         String token = authorizationHeader.substring(TOKEN_PREFIX.length());
-        Authentication authentication = jwtTokenServiceImpl.getAuthentication(token, request);
+        Authentication authentication = this.jwtTokenServiceImpl.getAuthentication(token, request);
         if (authentication == null) {
             SecurityContextHolder.clearContext();
         } else {

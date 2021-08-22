@@ -55,7 +55,7 @@ public class PortfolioBuilderImpl implements PortfolioBuilder {
     private String generateAvatarAddress(String username) throws IOException {
         this.generateAvatar(username);
         return ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME)
+                .path(VERSION_1 + USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME)
                 .toUriString();
     }
 

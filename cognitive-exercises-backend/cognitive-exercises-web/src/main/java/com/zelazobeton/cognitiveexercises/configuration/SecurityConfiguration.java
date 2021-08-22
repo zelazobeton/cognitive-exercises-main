@@ -41,7 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(this.userDetailsService).passwordEncoder(this.bCryptPasswordEncoder);
     }
 
     @Override
@@ -51,9 +51,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(STATELESS).and()
             .authorizeRequests().antMatchers(PUBLIC_URLS).permitAll()
             .anyRequest().authenticated().and()
-            .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
-            .authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
-            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+            .exceptionHandling().accessDeniedHandler(this.jwtAccessDeniedHandler)
+            .authenticationEntryPoint(this.jwtAuthenticationEntryPoint).and()
+            .addFilterBefore(this.jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
