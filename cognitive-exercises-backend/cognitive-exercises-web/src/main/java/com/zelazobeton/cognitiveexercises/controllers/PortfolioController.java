@@ -6,7 +6,6 @@ import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.USER_FO
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.zelazobeton.cognitiveexercieses.domain.security.User;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercieses.model.PortfolioDto;
-import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
+import com.zelazobeton.cognitiveexercieses.model.ScoreboardPageDto;
 import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercieses.service.PortfolioService;
 import com.zelazobeton.cognitiveexercieses.service.ResourceService;
@@ -57,7 +56,7 @@ public class PortfolioController extends ExceptionHandling {
     }
 
     @GetMapping(path = "/scoreboard", produces = { "application/json" })
-    public ResponseEntity<List<UserScoreDto>> getScoreboard(@RequestParam("page") String pageNum,
+    public ResponseEntity<ScoreboardPageDto> getScoreboard(@RequestParam("page") String pageNum,
             @RequestParam("size") String pageSize) {
         return new ResponseEntity<>(
                 this.portfolioService.getScoreboardPage(Integer.parseInt(pageNum), Integer.parseInt(pageSize)),

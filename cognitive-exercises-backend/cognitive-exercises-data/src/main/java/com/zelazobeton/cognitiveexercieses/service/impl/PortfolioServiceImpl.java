@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,6 +36,7 @@ import com.zelazobeton.cognitiveexercieses.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercieses.model.PortfolioDto;
+import com.zelazobeton.cognitiveexercieses.model.ScoreboardPageDto;
 import com.zelazobeton.cognitiveexercieses.model.UserScoreDto;
 import com.zelazobeton.cognitiveexercieses.repository.PortfolioRepository;
 import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
@@ -87,16 +89,16 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<UserScoreDto> getScoreboardPage(int pageNumber, int pageSize) {
+    public ScoreboardPageDto getScoreboardPage(int pageNumber, int pageSize) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("totalScore").descending());
-        List<Portfolio> portfolioList = this.portfolioRepository.findAll(pageRequest).getContent();
+        Page<Portfolio> page = this.portfolioRepository.findAll(pageRequest);
         List<UserScoreDto> scoreboard = new ArrayList<>();
         int placeInRanking = pageNumber * pageSize + 1;
-        for (int idx = 0; idx < portfolioList.size(); ++idx) {
-            scoreboard.add(new UserScoreDto(portfolioList.get(idx), placeInRanking));
+        for (Portfolio portfolio : page.getContent()) {
+            scoreboard.add(new UserScoreDto(portfolio, placeInRanking));
             ++placeInRanking;
         }
-        return scoreboard;
+        return new ScoreboardPageDto(scoreboard, pageNumber, page.getTotalPages());
     }
 
     private String createProfileImageUrl(String username, String fileName) {
