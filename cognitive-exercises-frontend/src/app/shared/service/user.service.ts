@@ -5,7 +5,7 @@ import {Observable, throwError} from 'rxjs';
 import {CustomHttpResponse} from '../model/custom-http-response';
 import {ChangePasswordForm} from '../model/input-forms';
 import {UserDto} from '../model/user-dto';
-import {UserScoreDto} from '../model/user-score-dto';
+import {ScoreboardPageDto} from '../model/scoreboard-page-dto';
 import {catchError} from 'rxjs/operators';
 import {NotificationType} from '../notification/notification-type.enum';
 import {NotificationService} from '../notification/notification.service';
@@ -38,8 +38,8 @@ export class UserService {
         }));
   }
 
-  public fetchScoreboard(pageNum = 0, pageSize = 10): Observable<UserScoreDto[]> {
-    return this.http.get<UserScoreDto[]>(
+  public fetchScoreboard(pageNum: number, pageSize: number): Observable<ScoreboardPageDto> {
+    return this.http.get<ScoreboardPageDto>(
       `${this.versionedHost}/portfolio/scoreboard`,
       {params: {page: pageNum.toString(), size: pageSize.toString()}})
       .pipe(

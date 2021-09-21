@@ -14,10 +14,7 @@ import _ from 'lodash';
 export class CompressInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('CompressInterceptor');
-    console.log(request.headers);
     if (this.isPostRequest(request) && this.isToBeCompressed(request)) {
-      console.log('compressing');
       const headers: HttpHeaders = request.headers.set(HttpHeader.ContentType, HttpHeaderContentType.JSON)
         .set(HttpHeader.ContentEncoding, HttpEncodingType.GZIP);
       const zippedBodyRequest: Uint8Array = pako.gzip(JSON.stringify(request.body));
