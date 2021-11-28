@@ -29,7 +29,8 @@ public class RefreshToken {
     @Id
     @GeneratedValue( generator = "uuid2" )
     @GenericGenerator( name = "uuid2", strategy = "uuid2" )
-    @Column( name = "id", columnDefinition = "BINARY(16)", nullable = false, updatable = false )
+    @Column( name = "id", columnDefinition = "RAW(16)", nullable = false, updatable = false )
+//    @Column( name = "id", columnDefinition = "BINARY(16)", nullable = false, updatable = false ) // for MySQL
     private UUID id;
 
     private Date validUntil;

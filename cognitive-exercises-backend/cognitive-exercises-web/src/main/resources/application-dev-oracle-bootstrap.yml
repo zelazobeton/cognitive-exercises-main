@@ -1,0 +1,21 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/rife
+    username: cognitive_exercises_dev
+    password: admin
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.Oracle10gDialect
+
+logging:
+  level:
+    com.zelazobeton.cognitiveexercieses: DEBUG
+    org.springframework.transaction: TRACE

@@ -11,7 +11,6 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     database: mysql
-
 logging:
   level:
     com.zelazobeton.cognitiveexercieses: DEBUG

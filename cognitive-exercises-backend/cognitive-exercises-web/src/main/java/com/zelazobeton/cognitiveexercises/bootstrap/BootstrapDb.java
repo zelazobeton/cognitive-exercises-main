@@ -52,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Profile({"dev-mysql-bootstrap"})
+@Profile({"dev-mysql-bootstrap", "dev-oracle-bootstrap"})
 public class BootstrapDb implements CommandLineRunner {
     private final GameDataRepository gameDataRepository;
     private final AuthorityRepository authorityRepository;
@@ -82,7 +82,7 @@ public class BootstrapDb implements CommandLineRunner {
                 .build());
     }
 
-    void loadExampleUsers() {
+    private void loadExampleUsers() {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         TypedQuery<Role> q = entityManager.createQuery(
