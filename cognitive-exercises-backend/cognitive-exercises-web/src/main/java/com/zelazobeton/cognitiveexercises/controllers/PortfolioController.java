@@ -1,8 +1,8 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.AVATAR;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.USER_FOLDER;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.AVATAR;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_FOLDER;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.zelazobeton.cognitiveexercieses.domain.security.User;
-import com.zelazobeton.cognitiveexercieses.exception.NotAnImageFileException;
-import com.zelazobeton.cognitiveexercieses.model.PortfolioDto;
-import com.zelazobeton.cognitiveexercieses.model.ScoreboardPageDto;
-import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
-import com.zelazobeton.cognitiveexercieses.service.PortfolioService;
-import com.zelazobeton.cognitiveexercieses.service.ResourceService;
+import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.exception.NotAnImageFileException;
+import com.zelazobeton.cognitiveexercises.model.PortfolioDto;
+import com.zelazobeton.cognitiveexercises.model.ScoreboardPageDto;
+import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
+import com.zelazobeton.cognitiveexercises.service.PortfolioService;
+import com.zelazobeton.cognitiveexercises.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 @RestController
@@ -41,7 +41,7 @@ public class PortfolioController extends ExceptionHandling {
         this.resourceService = resourceService;
     }
 
-    @PostMapping(path = "/avatar", produces = { "application/json" })
+    @PostMapping(path = "/avatar", headers=("content-type=multipart/*"))
     @PreAuthorize("hasAuthority('user.update')")
     public ResponseEntity<PortfolioDto> updatePortfolio(@AuthenticationPrincipal User user,
             @RequestParam("avatar") MultipartFile avatar) throws IOException, NotAnImageFileException {

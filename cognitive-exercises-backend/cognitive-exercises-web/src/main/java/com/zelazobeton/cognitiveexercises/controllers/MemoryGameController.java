@@ -1,7 +1,7 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_FOLDER;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MEMORY_IMG_FOLDER;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zelazobeton.cognitiveexercieses.domain.security.User;
-import com.zelazobeton.cognitiveexercieses.model.memory.MemoryBoardDto;
-import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
-import com.zelazobeton.cognitiveexercieses.service.MemoryGameService;
-import com.zelazobeton.cognitiveexercieses.service.ResourceService;
+import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.model.memory.MemoryBoardDto;
+import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
+import com.zelazobeton.cognitiveexercises.service.MemoryGameService;
+import com.zelazobeton.cognitiveexercises.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;

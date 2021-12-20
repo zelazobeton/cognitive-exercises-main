@@ -5,11 +5,11 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
-import com.zelazobeton.cognitiveexercieses.domain.security.User;
-import com.zelazobeton.cognitiveexercieses.service.PortfolioBuilder;
-import com.zelazobeton.cognitiveexercieses.service.impl.PortfolioBuilderImpl;
-import com.zelazobeton.cognitiveexercieses.service.impl.ResourceServiceImpl;
+import com.zelazobeton.cognitiveexercises.domain.Portfolio;
+import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.service.PortfolioBuilder;
+import com.zelazobeton.cognitiveexercises.service.impl.PortfolioBuilderImpl;
+import com.zelazobeton.cognitiveexercises.service.impl.ResourceServiceImpl;
 
 public class PortfolioBuilderImplTest {
 
@@ -17,7 +17,7 @@ public class PortfolioBuilderImplTest {
 
     @Before
     public void setUp() {
-        sut = new PortfolioBuilderImpl(new ResourceServiceImpl());
+        this.sut = new PortfolioBuilderImpl(new ResourceServiceImpl());
     }
 
     @Test

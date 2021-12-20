@@ -4,8 +4,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;
 
-import com.zelazobeton.cognitiveexercieses.domain.security.UserPrincipal;
-import com.zelazobeton.cognitiveexercieses.service.impl.LoginAttemptServiceImpl;
+import com.zelazobeton.cognitiveexercises.domain.security.UserPrincipal;
+import com.zelazobeton.cognitiveexercises.service.impl.LoginAttemptServiceImpl;
 
 @Component
 public class AuthenticationSuccessListener {
@@ -20,7 +20,7 @@ public class AuthenticationSuccessListener {
         Object principal = event.getAuthentication().getPrincipal();
         if(principal instanceof UserPrincipal) {
             UserPrincipal user = (UserPrincipal) principal;
-            loginAttemptService.removeUserFromLoginAttemptCache(user.getUsername());
+            this.loginAttemptService.removeUserFromLoginAttemptCache(user.getUsername());
         }
     }
 }

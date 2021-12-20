@@ -1,6 +1,6 @@
 package com.zelazobeton.cognitiveexercises.filter;
 
-import static com.zelazobeton.cognitiveexercieses.constant.TokenConstant.TOKEN_PREFIX;
+import static com.zelazobeton.cognitiveexercises.constant.TokenConstant.TOKEN_PREFIX;
 import static com.zelazobeton.cognitiveexercises.constant.SecurityConstants.OPTIONS_HTTP_METHOD;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.zelazobeton.cognitiveexercieses.exception.UserNotFoundException;
-import com.zelazobeton.cognitiveexercieses.service.JwtTokenService;
+import com.zelazobeton.cognitiveexercises.exception.UserNotFoundException;
+import com.zelazobeton.cognitiveexercises.service.JwtTokenService;
 
 import lombok.extern.slf4j.Slf4j;
 

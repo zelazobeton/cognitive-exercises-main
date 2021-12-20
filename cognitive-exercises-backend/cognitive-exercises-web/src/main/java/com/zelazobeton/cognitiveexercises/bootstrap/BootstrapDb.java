@@ -1,13 +1,13 @@
 package com.zelazobeton.cognitiveexercises.bootstrap;
 
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.EXAMPLE_USERNAMES_FILE;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.LOCALHOST_ADDRESS;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_FOLDER;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.MEMORY_IMG_PATH;
-import static com.zelazobeton.cognitiveexercieses.constant.FileConstants.VERSION_1;
-import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.ADMIN;
-import static com.zelazobeton.cognitiveexercieses.constant.RolesConstant.USER;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.EXAMPLE_USERNAMES_FILE;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.LOCALHOST_ADDRESS;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MEMORY_IMG_FOLDER;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MEMORY_IMG_PATH;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.VERSION_1;
+import static com.zelazobeton.cognitiveexercises.constant.RolesConstant.ADMIN;
+import static com.zelazobeton.cognitiveexercises.constant.RolesConstant.USER;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,19 +32,19 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.zelazobeton.cognitiveexercieses.domain.GameData;
-import com.zelazobeton.cognitiveexercieses.domain.Portfolio;
-import com.zelazobeton.cognitiveexercieses.domain.memory.MemoryImg;
-import com.zelazobeton.cognitiveexercieses.domain.security.Authority;
-import com.zelazobeton.cognitiveexercieses.domain.security.Role;
-import com.zelazobeton.cognitiveexercieses.domain.security.User;
-import com.zelazobeton.cognitiveexercieses.repository.AuthorityRepository;
-import com.zelazobeton.cognitiveexercieses.repository.GameDataRepository;
-import com.zelazobeton.cognitiveexercieses.repository.MemoryImgRepository;
-import com.zelazobeton.cognitiveexercieses.repository.RoleRepository;
-import com.zelazobeton.cognitiveexercieses.repository.UserRepository;
-import com.zelazobeton.cognitiveexercieses.service.PortfolioBuilder;
-import com.zelazobeton.cognitiveexercieses.service.ResourceService;
+import com.zelazobeton.cognitiveexercises.domain.GameData;
+import com.zelazobeton.cognitiveexercises.domain.Portfolio;
+import com.zelazobeton.cognitiveexercises.domain.memory.MemoryImg;
+import com.zelazobeton.cognitiveexercises.domain.security.Authority;
+import com.zelazobeton.cognitiveexercises.domain.security.Role;
+import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.repository.AuthorityRepository;
+import com.zelazobeton.cognitiveexercises.repository.GameDataRepository;
+import com.zelazobeton.cognitiveexercises.repository.MemoryImgRepository;
+import com.zelazobeton.cognitiveexercises.repository.RoleRepository;
+import com.zelazobeton.cognitiveexercises.repository.UserRepository;
+import com.zelazobeton.cognitiveexercises.service.PortfolioBuilder;
+import com.zelazobeton.cognitiveexercises.service.ResourceService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

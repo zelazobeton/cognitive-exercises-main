@@ -13,5 +13,5 @@ spring:
     database: mysql
 logging:
   level:
-    com.zelazobeton.cognitiveexercieses: DEBUG
+    com.zelazobeton.cognitiveexercises: DEBUG
     org.springframework.transaction: TRACE

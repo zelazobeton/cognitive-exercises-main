@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zelazobeton.cognitiveexercieses.model.LocaleDto;
-import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
+import com.zelazobeton.cognitiveexercises.model.LocaleDto;
+import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 @RestController

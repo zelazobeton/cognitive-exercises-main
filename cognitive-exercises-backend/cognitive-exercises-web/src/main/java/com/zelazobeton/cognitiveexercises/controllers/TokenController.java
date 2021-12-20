@@ -1,6 +1,6 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static com.zelazobeton.cognitiveexercieses.constant.TokenConstant.JWT_TOKEN_HEADER;
+import static com.zelazobeton.cognitiveexercises.constant.TokenConstant.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.OK;
 
 import org.springframework.http.HttpHeaders;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zelazobeton.cognitiveexercieses.service.ExceptionMessageService;
-import com.zelazobeton.cognitiveexercieses.service.impl.JwtTokenServiceImpl;
+import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
+import com.zelazobeton.cognitiveexercises.service.impl.JwtTokenServiceImpl;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;

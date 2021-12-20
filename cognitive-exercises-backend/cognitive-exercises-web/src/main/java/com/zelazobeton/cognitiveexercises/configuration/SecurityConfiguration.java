@@ -14,7 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.zelazobeton.cognitiveexercieses.service.UserService;
+import com.zelazobeton.cognitiveexercises.service.UserService;
 import com.zelazobeton.cognitiveexercises.filter.JwtAccessDeniedHandler;
 import com.zelazobeton.cognitiveexercises.filter.JwtAuthenticationEntryPoint;
 import com.zelazobeton.cognitiveexercises.filter.JwtAuthorizationFilter;

@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.zelazobeton.cognitiveexercieses.service.rabbitMQ.impl.LoginMessageListenerImpl;
+import com.zelazobeton.cognitiveexercises.service.rabbitMQ.impl.LoginMessageListenerImpl;
 
 @Configuration
 public class LoginMessageListenerContainer {
@@ -22,7 +22,7 @@ public class LoginMessageListenerContainer {
     MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
-        simpleMessageListenerContainer.setQueues(loginQueue);
+        simpleMessageListenerContainer.setQueues(this.loginQueue);
         simpleMessageListenerContainer.setMessageListener(new LoginMessageListenerImpl());
         return simpleMessageListenerContainer;
     }
