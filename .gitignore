@@ -1,3 +1,4 @@
+/docker_tmp/**
 ### BACKEND GITIGNORE ###
 
 target/

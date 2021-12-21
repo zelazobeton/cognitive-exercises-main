@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+  mysql-service:
+    image: mysql:latest
+    volumes:
+      - ./docker_tmp/mysql:/var/lib/mysql
+    ports:
+      - "33070:33060"
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_USER: "cognitive_exercises_dev_admin"
+      MYSQL_PASSWORD: "admin"
+  rabbit-service:
+    image: rabbitmq:3-management
+    volumes: 
+      - ./docker_tmp/rabbitmq:/var/lib/rabbitmq/cookie
+    ports:
+      - "15672:15672"
+      - "15671:15671"
+      - "5673:5672"
+  cognitive-exercises-backend:
+    build: ./cognitive-exercises-backend
+    image: cognitive-exercises-backend:0.0.2-SNAPSHOT
+    ports:
+      - "8081:8081"
+    depends_on:
+      - my-sql
+      - rabbit-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/cognitive_exercises_dev?serverTimezone=UTC
+      SPRING_RABBITMQ_HOST: rabbit-service
+  cognitive-exercises-frontend:
+    build: ./cognitive-exercises-frontend
+    image: cognitive-exercises-frontend:0.0.2
+    depends_on:
+      - cognitive-exercises-backend
+    ports:
+      - "80:80"

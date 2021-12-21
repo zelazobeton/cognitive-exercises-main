@@ -6,7 +6,6 @@
   <modules>
     <module>cognitive-exercises-data</module>
     <module>cognitive-exercises-web</module>
-<!--    <module>cognitive-exercises-packaging</module>-->
   </modules>
 
   <parent>
