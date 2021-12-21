@@ -15,7 +15,7 @@ import {TranslateService} from '@ngx-translate/core';
   styleUrls: ['./personal-data.component.css'],
 })
 export class PersonalDataComponent implements OnInit, OnDestroy {
-  @Input() private userData: UserDto;
+  @Input() public userData: UserDto;
   public fileName: string;
   public profileImage: File;
   loading: boolean;

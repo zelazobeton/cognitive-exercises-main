@@ -15,10 +15,10 @@ import {TranslateService} from '@ngx-translate/core';
   styleUrls: ['./change-password.component.css']
 })
 export class ChangePasswordComponent implements OnInit, OnDestroy {
-  private changePasswordForm: FormGroup;
-  private loading: boolean;
+  public changePasswordForm: FormGroup;
+  public loading: boolean;
   private subscriptions: Subscription[] = [];
-  private error: string = null;
+  public error: string = null;
 
   checkPasswords = (group: FormGroup) => {
     const passwordInput = group.controls.password;

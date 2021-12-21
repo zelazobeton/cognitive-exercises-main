@@ -15,10 +15,10 @@ import {CustomHttpResponse} from '../../shared/model/custom-http-response';
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
-  private resetPasswordForm: FormGroup;
+  public resetPasswordForm: FormGroup;
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
-  private error: string | null = null;
+  public error: string | null = null;
   public emailInputInvalid = false;
 
   showEmailInvalidError() {

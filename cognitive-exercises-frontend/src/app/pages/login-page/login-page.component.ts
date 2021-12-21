@@ -12,7 +12,7 @@ import {AuthForm} from '../../shared/model/input-forms';
   styleUrls: ['./login-page.component.css']
 })
 export class LoginPageComponent implements OnInit, OnDestroy {
-  private loginForm: FormGroup;
+  public loginForm: FormGroup;
   private subscriptions: Subscription[] = [];
   public showLoading: boolean;
   private returnUrl: string;

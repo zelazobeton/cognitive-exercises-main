@@ -13,10 +13,10 @@ import { RegisterForm} from '../../shared/model/input-forms';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
-  private registerForm: FormGroup;
+  public registerForm: FormGroup;
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
-  private submitError: string | null = null;
+  public submitError: string | null = null;
   public formErrors = [];
 
   onValueChange() {

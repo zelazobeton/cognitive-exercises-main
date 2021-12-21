@@ -10,7 +10,7 @@ import {ScoreboardPageDto, UserScoreDto} from '../../../shared/model/scoreboard-
 })
 export class ScoreboardComponent implements OnInit, OnDestroy {
   private scoreboardSub: Subscription;
-  private scoreboard: UserScoreDto[] = null;
+  public scoreboard: UserScoreDto[] = null;
   private pageNumber: number;
   private pagesTotal: number;
 
@@ -48,11 +48,11 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
       });
   }
 
-  private isLastPage() {
+  public isLastPage() {
     return this.pageNumber === this.pagesTotal - 1;
   }
 
-  private isFirstPage() {
+  public isFirstPage() {
     return this.pageNumber === 0;
   }
 }

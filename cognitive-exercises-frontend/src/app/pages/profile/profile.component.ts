@@ -14,7 +14,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 export class ProfileComponent implements OnInit, OnDestroy {
   currentCard: string;
   private userSub: Subscription;
-  private userData: UserDto;
+  public userData: UserDto;
 
   constructor(private userService: UserService, private notificationService: NotificationService,
               private router: Router) {

@@ -10,7 +10,7 @@ import {GameDataDto} from '../../shared/model/game-data-dto';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private gamesSub: Subscription;
-  private gamesData: GameDataDto[];
+  public gamesData: GameDataDto[];
 
   constructor(private gamesService: GamesService) {
   }

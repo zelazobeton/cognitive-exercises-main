@@ -12,11 +12,11 @@ export class MemoryBoardComponent implements OnInit, OnDestroy {
   readonly board: MemoryBoardDto;
   private firstTileId: TileClick;
   private secondTileId: TileClick;
-  private gameIsOn: boolean;
+  public gameIsOn: boolean;
   private matchedPairs: number;
-  private pointsWon: number;
+  public pointsWon: number;
   private saveScoreSub: Subscription;
-  private tileSize: number;
+  public tileSize: number;
 
   constructor(private memoryService: MemoryService) {
     this.board = this.memoryService.getMemoryBoard();

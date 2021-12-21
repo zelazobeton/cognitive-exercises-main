@@ -12,7 +12,7 @@ import {AuthenticationService} from '../../auth/service/authentication.service';
   styleUrls: ['./login-dropdown.component.css']
 })
 export class LoginDropdownComponent implements OnInit, OnDestroy {
-  private loginForm: FormGroup;
+  public loginForm: FormGroup;
   private subscriptions: Subscription[] = [];
   public showLoading: boolean;
 
