@@ -17,7 +17,7 @@ import com.zelazobeton.cognitiveexercises.service.EmailService;
 
 @Service
 public class EmailServiceImpl implements EmailService {
-
+    @Override
     public void sendNewPasswordEmail(String username, String password, String email) throws MessagingException {
         Message message = this.createEmail(username, password, email);
         SMTPTransport smtpTransport = (SMTPTransport) this.getEmailSession().getTransport(EmailConstants.SIMPLE_MAIL_TRANSFER_PROTOCOL);
@@ -47,6 +47,7 @@ public class EmailServiceImpl implements EmailService {
         return Session.getInstance(properties, null);
     }
 
+    @Override
     public boolean validateEmail(String email) {
         EmailValidator validator = EmailValidator.getInstance();
         return validator.isValid(email);
