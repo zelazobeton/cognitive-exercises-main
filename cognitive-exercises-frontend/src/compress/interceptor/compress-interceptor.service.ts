@@ -9,6 +9,7 @@ import {Observable} from 'rxjs';
 import {HttpHeader, HttpHeaderContentType, HttpRequestMethod, HttpEncodingType} from '../../app/shared/http.enum';
 import * as pako from 'pako';
 import _ from 'lodash';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class CompressInterceptor implements HttpInterceptor {
@@ -28,8 +29,9 @@ export class CompressInterceptor implements HttpInterceptor {
   }
 
   private isToBeCompressed(request: HttpRequest<any>): boolean {
-      return !request.headers.has(HttpHeader.ContentEncoding) ||
-    !_.includes(request.headers.getAll(HttpHeader.ContentEncoding), HttpEncodingType.NONE);
+      return !request.url.includes(environment.authorizationServerTokenUrl) &&
+        (!request.headers.has(HttpHeader.ContentEncoding) ||
+        !_.includes(request.headers.getAll(HttpHeader.ContentEncoding), HttpEncodingType.NONE));
   }
 
   private isPostRequest(request: HttpRequest<any>): boolean {

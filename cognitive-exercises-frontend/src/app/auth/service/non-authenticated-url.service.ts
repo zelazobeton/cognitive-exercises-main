@@ -13,6 +13,7 @@ export class NonAuthenticatedUrlService {
     this.urlsSet.add('/games/data');
     this.urlsSet.add('/portfolio/scoreboard');
     this.urlsSet.add('/token/refresh');
+    this.urlsSet.add('/lang/locale');
   }
 
   contain(url: string) {

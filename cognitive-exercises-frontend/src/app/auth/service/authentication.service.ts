@@ -12,12 +12,14 @@ import {CustomHttpResponse} from '../../shared/model/custom-http-response';
 import {TranslateService} from '@ngx-translate/core';
 import {HttpEncodingType} from '../../shared/http.enum';
 import {CustomHeaders} from '../enum/custom-headers.enum';
+import {AuthServerTokenForm} from './auth-server-token-form';
 
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
   private readonly refreshTokenKey = environment.storageRefreshTokenKey;
   readonly versionedHost = environment.versionedApiUrl;
+  readonly authorizationServerTokenUrl = environment.authorizationServerTokenUrl;
   private token: string;
   public loggedInUser: Subject<UserDto>;
 
@@ -30,20 +32,29 @@ export class AuthenticationService {
   }
 
   public login(loginForm: AuthForm): Observable<HttpEvent<any>> {
-    return this.http.post<UserDto>(
-      `${this.versionedHost}/user/login`, loginForm, {observe: `response`})
+    const body = new URLSearchParams();
+    body.set('grant_type', 'password');
+    body.set('client_id', 'cognitive-exercises-frontend');
+    body.set('username', loginForm.username);
+    body.set('password', loginForm.password);
+
+    return this.http.post<AuthServerTokenForm>(
+      this.authorizationServerTokenUrl, body.toString(), {
+        headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+        observe: `response`})
       .pipe(
         catchError(errorRes => {
           this.sendErrorNotification(NotificationType.ERROR, errorRes.error.message);
           return throwError(errorRes);
         }),
-        tap((response: HttpResponse<UserDto>) => {
-          const token = response.headers.get(CustomHeaders.JWT_TOKEN);
-          this.saveToken(token);
-          const refreshToken = response.headers.get(CustomHeaders.JWT_REFRESH_TOKEN);
-          this.saveRefreshToken(refreshToken);
-          this.addUserToLocalStorage(response.body);
-          this.loggedInUser.next(response.body);
+        tap((response: HttpResponse<AuthServerTokenForm>) => {
+          console.log(response.body.access_token);
+          this.saveToken(response.body.access_token);
+          this.saveRefreshToken(response.body.refresh_token);
+          const loggedUser = new UserDto();
+          loggedUser.username = loginForm.username;
+          this.addUserToLocalStorage(loggedUser);
+          this.loggedInUser.next(loggedUser);
         })
       );
   }
