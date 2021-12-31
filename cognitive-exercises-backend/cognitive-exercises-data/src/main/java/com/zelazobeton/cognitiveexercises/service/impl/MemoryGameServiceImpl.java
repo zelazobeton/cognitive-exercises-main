@@ -52,7 +52,7 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     @Override
-    public MemoryBoardDto getNewMemoryBoardDto(String difficultyLvl) {
+    public MemoryBoardDto getNewMemoryBoardDto(String username, String difficultyLvl) {
         int numOfDifferentImgsNeeded;
         switch (difficultyLvl){
             case "0":
@@ -64,7 +64,16 @@ public class MemoryGameServiceImpl implements MemoryGameService {
             default:
                 numOfDifferentImgsNeeded = MemoryDiffLvl.MEDIUM.numOfImgs;
         }
-        return new MemoryBoardDto(this.generateMemoryBoard(numOfDifferentImgsNeeded));
+
+        User user = this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        Portfolio portfolio = user.getPortfolio();
+        MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
+        if (savedMemoryBoard != null) {
+            savedMemoryBoard.setPortfolio(null);
+        }
+        portfolio.setMemoryBoard(this.generateMemoryBoard(numOfDifferentImgsNeeded));
+        Portfolio savedPortfolio = this.portfolioRepository.save(portfolio);
+        return new MemoryBoardDto(savedPortfolio.getMemoryBoard());
     }
 
     @Override

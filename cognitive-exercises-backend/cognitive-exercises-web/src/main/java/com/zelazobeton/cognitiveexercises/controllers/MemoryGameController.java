@@ -47,8 +47,8 @@ public class MemoryGameController extends ExceptionHandling {
 
     @GetMapping(path = "/game", produces = { "application/json" }, params = "level")
     @RolesAllowed("ROLE_ce-user")
-    public ResponseEntity<MemoryBoardDto> getNewMemoryBoard(@RequestParam("level") String difficultyLvl) {
-        MemoryBoardDto board = this.memoryGameService.getNewMemoryBoardDto(difficultyLvl);
+    public ResponseEntity<MemoryBoardDto> getNewMemoryBoard(Principal principal, @RequestParam("level") String difficultyLvl) {
+        MemoryBoardDto board = this.memoryGameService.getNewMemoryBoardDto(principal.getName(), difficultyLvl);
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
