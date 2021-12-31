@@ -6,11 +6,11 @@ import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_FOL
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
+import java.security.Principal;
+import javax.annotation.security.RolesAllowed;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercises.model.PortfolioDto;
 import com.zelazobeton.cognitiveexercises.model.ScoreboardPageDto;
 import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercises.service.PortfolioService;
 import com.zelazobeton.cognitiveexercises.service.ResourceService;
-import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
+//@CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/v1/portfolio")
 public class PortfolioController extends ExceptionHandling {
@@ -42,10 +42,10 @@ public class PortfolioController extends ExceptionHandling {
     }
 
     @PostMapping(path = "/avatar", headers=("content-type=multipart/*"))
-    @PreAuthorize("hasAuthority('user.update')")
-    public ResponseEntity<PortfolioDto> updatePortfolio(@AuthenticationPrincipal User user,
+    @RolesAllowed("ROLE_ce-user")
+    public ResponseEntity<PortfolioDto> updatePortfolio(Principal principal,
             @RequestParam("avatar") MultipartFile avatar) throws IOException, NotAnImageFileException {
-        return new ResponseEntity<>(this.portfolioService.updateAvatar(user.getUsername(), avatar), HttpStatus.OK);
+        return new ResponseEntity<>(this.portfolioService.updateAvatar(principal.getName(), avatar), HttpStatus.OK);
     }
 
     @GetMapping(path = "/avatar/{username}/{fileName}", produces = IMAGE_JPEG_VALUE)

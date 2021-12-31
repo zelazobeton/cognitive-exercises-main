@@ -15,10 +15,13 @@ import com.zelazobeton.cognitiveexercises.domain.Portfolio;
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryBoard;
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryImg;
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryTile;
+import com.zelazobeton.cognitiveexercises.domain.security.User;
 import com.zelazobeton.cognitiveexercises.exception.EntityNotFoundException;
+import com.zelazobeton.cognitiveexercises.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercises.model.memory.MemoryBoardDto;
 import com.zelazobeton.cognitiveexercises.repository.MemoryImgRepository;
 import com.zelazobeton.cognitiveexercises.repository.PortfolioRepository;
+import com.zelazobeton.cognitiveexercises.repository.UserRepository;
 import com.zelazobeton.cognitiveexercises.service.MemoryGameService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,16 +32,19 @@ import lombok.extern.slf4j.Slf4j;
 public class MemoryGameServiceImpl implements MemoryGameService {
     private PortfolioRepository portfolioRepository;
     private MemoryImgRepository memoryImgRepository;
+    private UserRepository userRepository;
 
-    public MemoryGameServiceImpl(PortfolioRepository portfolioRepository, MemoryImgRepository memoryImgRepository) {
+    public MemoryGameServiceImpl(PortfolioRepository portfolioRepository, MemoryImgRepository memoryImgRepository,
+            UserRepository userRepository) {
         this.portfolioRepository = portfolioRepository;
         this.memoryImgRepository = memoryImgRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public MemoryBoardDto getSavedMemoryBoardDto(Long portfolioId) {
-        Portfolio portfolio = this.portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
-        MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
+    public MemoryBoardDto getSavedMemoryBoardDto(String username) {
+        User user = this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        MemoryBoard savedMemoryBoard = user.getPortfolio().getMemoryBoard();
         if (savedMemoryBoard == null) {
             return null;
         }
@@ -46,7 +52,7 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     @Override
-    public MemoryBoardDto getNewMemoryBoardDto(Long portfolioId, String difficultyLvl) {
+    public MemoryBoardDto getNewMemoryBoardDto(String difficultyLvl) {
         int numOfDifferentImgsNeeded;
         switch (difficultyLvl){
             case "0":
@@ -62,8 +68,9 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     @Override
-    public void saveGame(Long portfolioId, MemoryBoardDto memoryBoardDto) {
-        Portfolio portfolio = this.portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
+    public void saveGame(String username, MemoryBoardDto memoryBoardDto) {
+        User user = this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        Portfolio portfolio = user.getPortfolio();
         MemoryBoard savedMemoryBoard = portfolio.getMemoryBoard();
         if (savedMemoryBoard != null) {
             savedMemoryBoard.setPortfolio(null);
@@ -74,8 +81,9 @@ public class MemoryGameServiceImpl implements MemoryGameService {
     }
 
     @Override
-    public int saveScore(Long portfolioId, MemoryBoardDto memoryBoardDto) {
-        Portfolio portfolio = this.portfolioRepository.findById(portfolioId).orElseThrow(EntityNotFoundException::new);
+    public int saveScore(String username, MemoryBoardDto memoryBoardDto) {
+        User user = this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        Portfolio portfolio = user.getPortfolio();
         int score = this.calculateScore(memoryBoardDto);
         portfolio.setTotalScore(portfolio.getTotalScore() + score);
         this.portfolioRepository.save(portfolio);
