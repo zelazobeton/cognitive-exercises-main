@@ -23,14 +23,14 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const url = httpRequest.url.substr(this.authenticationService.versionedHost.length);
-    if (this.nonAuthenticatedUrls.contain(url)) {
+    if (httpRequest.url.startsWith(this.authenticationService.authorizationServerUrl) || this.nonAuthenticatedUrls.contain(url)) {
       return next.handle(httpRequest);
     }
     const token = this.authenticationService.getToken();
     const request = this.createRequestWithTokenHeader(httpRequest, token);
     return next.handle(request).pipe(
       catchError(error => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
+        if (error instanceof HttpErrorResponse && error.status === 401 ) {
           return this.handle401Error(request, next);
         } else {
           return throwError(error);

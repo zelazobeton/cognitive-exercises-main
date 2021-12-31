@@ -39,11 +39,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   public onSubmit(): void {
     this.showLoading = true;
-    const formData = new FormData();
-    formData.append('email', this.resetPasswordForm.value.email);
-    this.resetPasswordForm.reset();
     this.subscriptions.push(
-      this.userService.resetPassword(formData).subscribe(
+      this.userService.resetPassword(this.resetPasswordForm.value.email).subscribe(
         (response: CustomHttpResponse) => {
           this.notificationService.notify(NotificationType.SUCCESS, response.message);
           this.showLoading = false;

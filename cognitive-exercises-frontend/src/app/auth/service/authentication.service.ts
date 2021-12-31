@@ -16,9 +16,10 @@ export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
   private readonly refreshTokenKey = environment.storageRefreshTokenKey;
   readonly versionedHost = environment.versionedApiUrl;
+  readonly authorizationServerUrl = environment.authorizationServerUrl;
+  readonly authorizationServerClientId = environment.authorizationServerClientId;
   readonly authorizationServerTokenUrl = authServerUris.authorizationServerTokenUrl;
   readonly authorizationServerLogoutUrl = authServerUris.authorizationServerLogoutUrl;
-  readonly authorizationServerClientId = environment.authorizationServerClientId;
   private token: string;
   public loggedInUser: Subject<UserDto>;
 
