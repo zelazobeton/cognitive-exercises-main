@@ -29,6 +29,7 @@ import lombok.Singular;
 @NoArgsConstructor
 @Table(name = "USERS") //'USER' is reserved word in Oracle
 public class User extends BaseEntity {
+    @Builder.Default private String authServerId = null;
     private String username;
     private String password;
     private String email;

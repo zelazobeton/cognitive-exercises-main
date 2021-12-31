@@ -6,8 +6,6 @@ import static com.zelazobeton.cognitiveexercises.constant.FileConstants.LOCALHOS
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MEMORY_IMG_FOLDER;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MEMORY_IMG_PATH;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.VERSION_1;
-import static com.zelazobeton.cognitiveexercises.constant.RolesConstant.ADMIN;
-import static com.zelazobeton.cognitiveexercises.constant.RolesConstant.USER;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,17 +13,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Set;
+import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
@@ -35,13 +27,9 @@ import org.springframework.stereotype.Component;
 import com.zelazobeton.cognitiveexercises.domain.GameData;
 import com.zelazobeton.cognitiveexercises.domain.Portfolio;
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryImg;
-import com.zelazobeton.cognitiveexercises.domain.security.Authority;
-import com.zelazobeton.cognitiveexercises.domain.security.Role;
 import com.zelazobeton.cognitiveexercises.domain.security.User;
-import com.zelazobeton.cognitiveexercises.repository.AuthorityRepository;
 import com.zelazobeton.cognitiveexercises.repository.GameDataRepository;
 import com.zelazobeton.cognitiveexercises.repository.MemoryImgRepository;
-import com.zelazobeton.cognitiveexercises.repository.RoleRepository;
 import com.zelazobeton.cognitiveexercises.repository.UserRepository;
 import com.zelazobeton.cognitiveexercises.service.PortfolioBuilder;
 import com.zelazobeton.cognitiveexercises.service.ResourceService;
@@ -55,8 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @Profile({"dev-mysql-bootstrap", "dev-oracle-bootstrap"})
 public class BootstrapDb implements CommandLineRunner {
     private final GameDataRepository gameDataRepository;
-    private final AuthorityRepository authorityRepository;
-    private final RoleRepository roleRepository;
     private final MemoryImgRepository memoryImgRepository;
     private final UserRepository userRepository;
     private final Random rand = new Random();
@@ -64,12 +50,8 @@ public class BootstrapDb implements CommandLineRunner {
     private final ResourceService resourceService;
     private final PortfolioBuilder portfolioBuilder;
 
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-
     @Override
     public void run(String... args) {
-        this.loadRoles();
         this.loadMemoryImages();
         this.loadExampleUsers();
         this.loadGamesData();
@@ -83,15 +65,6 @@ public class BootstrapDb implements CommandLineRunner {
     }
 
     private void loadExampleUsers() {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        TypedQuery<Role> q = entityManager.createQuery(
-                "SELECT a FROM Role a LEFT JOIN FETCH a.users WHERE a.name=:name", Role.class)
-                .setParameter("name", USER);
-        Role userRole = q.getSingleResult();
-
-        entityManager.getTransaction().commit();
-        entityManager.close();
 
         List<User> users = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(new ClassPathResource(EXAMPLE_USERNAMES_FILE).getPath()))) {
@@ -101,16 +74,14 @@ public class BootstrapDb implements CommandLineRunner {
                         .username(line)
                         .email(line + "@domain.com")
                         .password(this.bCryptPasswordEncoder.encode(line))
-                        .role(userRole)
+                        .authServerId(UUID.randomUUID().toString())
                         .build();
-                userRole.addUser(newUser);
                 this.generatePortfolio(newUser);
                 users.add(newUser);
             }
         } catch (IOException ex) {
             log.info(ex.toString());
         }
-        this.roleRepository.save(userRole);
         this.userRepository.saveAll(users);
     }
 
@@ -132,20 +103,4 @@ public class BootstrapDb implements CommandLineRunner {
         this.memoryImgRepository.saveAll(memoryImgs);
     }
 
-    private void loadRoles() {
-        Authority createUser = this.authorityRepository.save(Authority.builder().permission("user.create").build());
-        Authority updateUser = this.authorityRepository.save(Authority.builder().permission("user.update").build());
-        Authority readUser = this.authorityRepository.save(Authority.builder().permission("user.read").build());
-        Authority deleteUser = this.authorityRepository.save(Authority.builder().permission("user.delete").build());
-
-        Role adminRole = Role.builder().name(ADMIN).build();
-        Role userRole = Role.builder().name(USER).build();
-
-        adminRole.setAuthorities(Set.of(createUser, updateUser, readUser, deleteUser));
-        userRole.setAuthorities(Set.of(readUser, updateUser, deleteUser));
-        this.roleRepository.saveAll(Arrays.asList(adminRole, userRole));
-
-        log.debug("Authorities Loaded: " + this.authorityRepository.count());
-        log.debug("Roles Loaded: " + this.roleRepository.count());
-    }
 }
