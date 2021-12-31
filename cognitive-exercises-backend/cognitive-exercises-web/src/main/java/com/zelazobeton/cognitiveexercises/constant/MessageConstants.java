@@ -8,9 +8,6 @@ public class MessageConstants {
     public static final String USER_CONTROLLER_PASSWORD_CHANGED_SUCCESSFULLY = "user_controller_password_changed_successfully";
     public static final String USER_CONTROLLER_PASSWORD_IS_INCORRECT = "user_controller_password_is_incorrect";
 
-    public static final String TOKEN_CONTROLLER_TOKEN_SUCCESSFULLY_REFRESHED = "token_controller_token_successfully_refreshed";
-    public static final String TOKEN_CONTROLLER_REFRESH_TOKEN_SUCCESSFULLY_DELETED = "token_controller_refresh_token_successfully_deleted";
-
     public static final String MEMORY_GAME_CONTROLLER_GAME_SAVED = "memory_game_controller_game_saved";
 
     public static final String EXCEPTION_HANDLING_YOUR_ACCOUNT_HAS_BEEN_LOCKED = "exception_handling_your_account_has_been_locked";

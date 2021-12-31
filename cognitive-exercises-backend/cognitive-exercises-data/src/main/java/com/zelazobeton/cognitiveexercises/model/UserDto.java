@@ -1,6 +1,6 @@
 package com.zelazobeton.cognitiveexercises.model;
 
-import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,11 +17,6 @@ public class UserDto {
     private String username;
     private String email;
     private String password;
-//    private Date lastLoginDate;
-//    private Date lastLoginDateDisplay;
-//    private Date joinDate;
-//    private boolean isActive;
-//    private boolean isNotLocked;
     private PortfolioDto portfolio;
 
     public UserDto(User user) {

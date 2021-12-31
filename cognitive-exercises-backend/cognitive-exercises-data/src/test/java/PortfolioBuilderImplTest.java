@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.zelazobeton.cognitiveexercises.domain.Portfolio;
-import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.service.PortfolioBuilder;
 import com.zelazobeton.cognitiveexercises.service.impl.PortfolioBuilderImpl;
 import com.zelazobeton.cognitiveexercises.service.impl.ResourceServiceImpl;

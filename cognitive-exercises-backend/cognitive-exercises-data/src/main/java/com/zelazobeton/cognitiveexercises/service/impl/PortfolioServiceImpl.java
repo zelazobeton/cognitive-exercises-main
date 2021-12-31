@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zelazobeton.cognitiveexercises.domain.Portfolio;
-import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercises.exception.UserNotFoundException;

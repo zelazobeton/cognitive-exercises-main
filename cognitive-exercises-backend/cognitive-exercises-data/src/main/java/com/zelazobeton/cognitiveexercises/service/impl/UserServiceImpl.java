@@ -19,8 +19,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +26,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.zelazobeton.cognitiveexercises.domain.security.User;
-import com.zelazobeton.cognitiveexercises.domain.security.UserPrincipal;
+import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.exception.EmailAlreadyExistsException;
 import com.zelazobeton.cognitiveexercises.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.RegisterFormInvalidException;
@@ -51,7 +48,6 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private LoginAttemptServiceImpl loginAttemptService;
     private EmailService emailService;
     private PortfolioBuilderImpl portfolioBuilderImpl;
     private RestTemplate restTemplate;
@@ -63,43 +59,15 @@ public class UserServiceImpl implements UserService {
     private String registrationClientId;
 
     public UserServiceImpl(UserRepository userRepository,
-            BCryptPasswordEncoder bCryptPasswordEncoder, LoginAttemptServiceImpl loginAttemptService,
+            BCryptPasswordEncoder bCryptPasswordEncoder,
             EmailService emailService, PortfolioBuilderImpl portfolioBuilderImpl,
             RestTemplateBuilder restTemplateBuilder) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.loginAttemptService = loginAttemptService;
         this.emailService = emailService;
         this.portfolioBuilderImpl = portfolioBuilderImpl;
         this.restTemplate = restTemplateBuilder.build();
     }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.debug("Getting User info via JPA");
-
-        User user = this.userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
-//        this.lockUserIfHasExceededMaxFailedLoginAttempts(user);
-//        user.setLastLoginDateDisplay(user.getLastLoginDate());
-//        user.setLastLoginDate(new Date());
-        this.userRepository.save(user);
-
-        return new UserPrincipal(user);
-    }
-
-//    private void lockUserIfHasExceededMaxFailedLoginAttempts(User user) {
-//        if (user.isNotLocked()) {
-//            if (this.loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
-//                log.debug(user.getUsername() + " has exceeded max number of login attempts");
-//                user.setNotLocked(false);
-//            } else {
-//                user.setNotLocked(true);
-//            }
-//        } else {
-//            this.loginAttemptService.removeUserFromLoginAttemptCache(user.getUsername());
-//        }
-//    }
 
     private String getAuthorizationServerAdminAccessToken() {
         HttpHeaders headers = new HttpHeaders();

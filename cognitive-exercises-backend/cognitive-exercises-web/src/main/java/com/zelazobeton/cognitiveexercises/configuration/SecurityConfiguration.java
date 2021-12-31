@@ -13,23 +13,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-
-import com.zelazobeton.cognitiveexercises.service.UserService;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(jsr250Enabled = true)
-public class ResourceServerConfiguration extends KeycloakWebSecurityConfigurerAdapter {
-    private UserService userDetailsService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public ResourceServerConfiguration(UserService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userDetailsService = userDetailsService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
 
     @Bean
     @Override
@@ -37,16 +27,10 @@ public class ResourceServerConfiguration extends KeycloakWebSecurityConfigurerAd
         return super.authenticationManagerBean();
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(this.userDetailsService);
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests().anyRequest().permitAll();
-//        http.authorizeRequests().antMatchers(PUBLIC_URLS).permitAll()
         http.csrf().disable();
     }
 

@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 import com.zelazobeton.cognitiveexercises.domain.GameData;
 import com.zelazobeton.cognitiveexercises.domain.Portfolio;
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryImg;
-import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.repository.GameDataRepository;
 import com.zelazobeton.cognitiveexercises.repository.MemoryImgRepository;
 import com.zelazobeton.cognitiveexercises.repository.UserRepository;

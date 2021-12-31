@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class LoginMessageListenerImpl implements MessageListener {
-
+    //Unused for now, deadcode left as template for future use
     @Override
     public void onMessage(Message messageReceived) {
         try {

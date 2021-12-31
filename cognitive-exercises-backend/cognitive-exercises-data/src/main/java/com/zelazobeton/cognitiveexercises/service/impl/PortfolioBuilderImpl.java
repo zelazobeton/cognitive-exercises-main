@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zelazobeton.cognitiveexercises.domain.Portfolio;
-import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.service.PortfolioBuilder;
 import com.zelazobeton.cognitiveexercises.service.ResourceService;
 

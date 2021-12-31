@@ -15,7 +15,7 @@ import com.zelazobeton.cognitiveexercises.domain.Portfolio;
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryBoard;
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryImg;
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryTile;
-import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercises.model.memory.MemoryBoardDto;

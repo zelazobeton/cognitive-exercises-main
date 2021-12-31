@@ -6,7 +6,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 
 import com.zelazobeton.cognitiveexercises.domain.memory.MemoryBoard;
-import com.zelazobeton.cognitiveexercises.domain.security.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

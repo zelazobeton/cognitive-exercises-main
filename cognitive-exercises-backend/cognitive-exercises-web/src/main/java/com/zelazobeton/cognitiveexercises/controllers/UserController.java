@@ -24,12 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
-import com.zelazobeton.cognitiveexercises.domain.security.User;
+import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.model.PasswordFormDto;
 import com.zelazobeton.cognitiveexercises.model.UserDto;
 import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercises.service.UserService;
-import com.zelazobeton.cognitiveexercises.service.rabbitMQ.MessagePublisherService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,15 +38,12 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController extends ExceptionHandling {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private final MessagePublisherService messagePublisherService;
 
     public UserController(ExceptionMessageService exceptionMessageService, AuthenticationManager authenticationManager,
-            UserService userService,
-            MessagePublisherService messagePublisherService) {
+            UserService userService) {
         super(exceptionMessageService);
         this.authenticationManager = authenticationManager;
         this.userService = userService;
-        this.messagePublisherService = messagePublisherService;
     }
 
     @PostMapping(path = "/register", produces = { "application/json" })
@@ -105,14 +101,5 @@ public class UserController extends ExceptionHandling {
         this.userService.resetPassword(email);
         String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_EMAIL_WITH_NEW_PASSWORD) + email;
         return new ResponseEntity<>(new HttpResponse(OK,  responseMsg), OK);
-    }
-
-    @GetMapping(path = "/logout", produces = { "application/json" })
-    @RolesAllowed("ROLE_ce-user")
-    public ResponseEntity<HttpResponse> logout(Principal principal) {
-//        this.jwtTokenProvider.deleteRefreshTokenByUserId(user.getId());
-        return new ResponseEntity<>(
-                new HttpResponse(OK, this.exceptionMessageService.getMessage(MessageConstants.TOKEN_CONTROLLER_REFRESH_TOKEN_SUCCESSFULLY_DELETED)),
-                HttpStatus.OK);
     }
 }
