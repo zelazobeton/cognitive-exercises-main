@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject, throwError} from 'rxjs';
-import {environment} from '../../../environments/environment';
+import {authServerUris, environment} from '../../../environments/environment';
 import {UserDto} from '../../shared/model/user-dto';
 import {HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {AuthForm, RegisterForm} from '../../shared/model/input-forms';
@@ -19,7 +19,9 @@ export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
   private readonly refreshTokenKey = environment.storageRefreshTokenKey;
   readonly versionedHost = environment.versionedApiUrl;
-  readonly authorizationServerTokenUrl = environment.authorizationServerTokenUrl;
+  readonly authorizationServerTokenUrl = authServerUris.authorizationServerTokenUrl;
+  readonly authorizationServerLogoutUrl = authServerUris.authorizationServerLogoutUrl;
+  readonly authorizationServerClientId = environment.authorizationServerClientId;
   private token: string;
   public loggedInUser: Subject<UserDto>;
 
@@ -48,7 +50,6 @@ export class AuthenticationService {
           return throwError(errorRes);
         }),
         tap((response: HttpResponse<AuthServerTokenForm>) => {
-          console.log(response.body.access_token);
           this.saveToken(response.body.access_token);
           this.saveRefreshToken(response.body.refresh_token);
           const loggedUser = new UserDto();
@@ -75,23 +76,32 @@ export class AuthenticationService {
           return throwError(errorRes);
         }),
         tap((response: UserDto) => {
-            this.notificationService.notify(NotificationType.SUCCESS,
-              this.translate.instant('notifications.A new account was created for', {username: response.username})
-            )
-          }
-        ));
+          this.notificationService.notify(NotificationType.SUCCESS,
+            this.translate.instant('notifications.A new account was created for', {username: response.username})
+          )
+        })
+      );
   }
 
-  public logout(): Observable<CustomHttpResponse> {
-    return this.http.get<CustomHttpResponse>(`${this.versionedHost}/user/logout`).pipe(
-      catchError(errorRes => {
-        this.notificationService.notify(NotificationType.ERROR,
-          this.translate.instant('notifications.server error try again'));
-        return throwError(errorRes);
-      }),
-      tap(() => {
-        this.removeUserDataFromApp();
-      })
+  public logout(): Observable<HttpResponse<void>> {
+    const body = new URLSearchParams();
+    const refreshToken = localStorage.getItem(this.refreshTokenKey);
+    body.set('refresh_token', refreshToken);
+    body.set('client_id', this.authorizationServerClientId);
+
+    return this.http.post<void>(
+      this.authorizationServerLogoutUrl, body.toString(), {
+        headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+        observe: `response`})
+      .pipe(
+        catchError(errorRes => {
+          this.notificationService.notify(NotificationType.ERROR,
+            this.translate.instant('notifications.server error try again'));
+          return throwError(errorRes);
+        }),
+        tap(() => {
+          this.removeUserDataFromApp();
+        })
     );
   }
 

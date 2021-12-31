@@ -29,7 +29,7 @@ export class CompressInterceptor implements HttpInterceptor {
   }
 
   private isToBeCompressed(request: HttpRequest<any>): boolean {
-      return !request.url.includes(environment.authorizationServerTokenUrl) &&
+      return !request.url.includes(environment.authorizationServerUrl) &&
         (!request.headers.has(HttpHeader.ContentEncoding) ||
         !_.includes(request.headers.getAll(HttpHeader.ContentEncoding), HttpEncodingType.NONE));
   }

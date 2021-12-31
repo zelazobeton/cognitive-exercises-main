@@ -4,11 +4,17 @@
 
 export const environment = {
   production: false,
-  authorizationServerTokenUrl: 'http://localhost:8080/auth/realms/cognitive-exercises/protocol/openid-connect/token',
+  authorizationServerUrl: 'http://localhost:8080/auth/realms/cognitive-exercises/protocol/openid-connect',
+  authorizationServerClientId: 'cognitive-exercises-frontend',
   versionedApiUrl: 'http://localhost:8081/v1',
   //storageTokenKey: Math.random().toString(36).substring(10)
   storageTokenKey: 'storageTokenKey',
   storageRefreshTokenKey: 'storageRefreshTokenKey'
+};
+
+export const authServerUris = {
+  authorizationServerTokenUrl: environment.authorizationServerUrl + '/token',
+  authorizationServerLogoutUrl: environment.authorizationServerUrl + '/logout',
 };
 
 /*
