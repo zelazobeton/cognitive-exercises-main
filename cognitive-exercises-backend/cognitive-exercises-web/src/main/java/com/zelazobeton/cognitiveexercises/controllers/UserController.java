@@ -10,10 +10,6 @@ import javax.mail.MessagingException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +21,7 @@ import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 import com.zelazobeton.cognitiveexercises.domain.User;
+import com.zelazobeton.cognitiveexercises.model.EmailFormDto;
 import com.zelazobeton.cognitiveexercises.model.PasswordFormDto;
 import com.zelazobeton.cognitiveexercises.model.UserDto;
 import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
@@ -36,13 +33,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping(path = "/v1/user")
 public class UserController extends ExceptionHandling {
-    private final AuthenticationManager authenticationManager;
     private final UserService userService;
 
-    public UserController(ExceptionMessageService exceptionMessageService, AuthenticationManager authenticationManager,
+    public UserController(ExceptionMessageService exceptionMessageService,
             UserService userService) {
         super(exceptionMessageService);
-        this.authenticationManager = authenticationManager;
         this.userService = userService;
     }
 
@@ -68,38 +63,24 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(new UserDto(updatedUser), HttpStatus.OK);
     }
 
-    @DeleteMapping
-    @RolesAllowed("ROLE_ce-user")
-    public ResponseEntity<HttpResponse> deleteUser(Principal principal) {
-        User user = this.userService.findUserByUsername(principal.getName());
-        this.userService.deleteUser(user);
-        String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_USER_DELETED_SUCCESSFULLY);
-        return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
-    }
-
     @PostMapping(path = "/password", produces = { "application/json" })
     @RolesAllowed("ROLE_ce-user")
     public ResponseEntity<HttpResponse> changePassword(Principal principal,
             @RequestBody PasswordFormDto passwordFormDto) {
-        try {
-            this.authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(principal.getName(), passwordFormDto.getOldPassword()));
+        boolean passwordChanged = this.userService.changePassword(principal.getName(), passwordFormDto);
+        if (passwordChanged) {
+            String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_CHANGED_SUCCESSFULLY);
+            return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
         }
-        catch (AuthenticationException ex) {
-            log.debug(ex.toString());
-            String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_IS_INCORRECT);
-            return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, responseMsg), NOT_ACCEPTABLE);
-        }
-        this.userService.changePassword(principal.getName(), passwordFormDto.getNewPassword());
-        String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_CHANGED_SUCCESSFULLY);
-        return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
+        String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_IS_INCORRECT);
+        return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, responseMsg), NOT_ACCEPTABLE);
     }
 
     @PostMapping(path = "/reset-password")
-    public ResponseEntity<HttpResponse> resetPassword(@RequestParam("email") String email)
+    public ResponseEntity<HttpResponse> resetPassword(@RequestBody EmailFormDto emailForm)
             throws MessagingException {
-        this.userService.resetPassword(email);
-        String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_EMAIL_WITH_NEW_PASSWORD) + email;
+        this.userService.resetPassword(emailForm.getEmail());
+        String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_EMAIL_WITH_NEW_PASSWORD) + emailForm.getEmail();
         return new ResponseEntity<>(new HttpResponse(OK,  responseMsg), OK);
     }
 }

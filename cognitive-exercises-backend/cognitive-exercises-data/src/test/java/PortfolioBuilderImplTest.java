@@ -23,7 +23,7 @@ public class PortfolioBuilderImplTest {
     @Test
     public void returnsBootstrapPortfolioWithGeneratedAvatar() throws IOException {
         // given
-        User user = User.builder().username("testUsername").email("testUsername@mail.com").password("pass").build();
+        User user = User.builder().username("testUsername").email("testUsername@mail.com").build();
 
         // when
         Portfolio portfolio = this.sut.createBootstrapPortfolioWithGeneratedAvatar(user);

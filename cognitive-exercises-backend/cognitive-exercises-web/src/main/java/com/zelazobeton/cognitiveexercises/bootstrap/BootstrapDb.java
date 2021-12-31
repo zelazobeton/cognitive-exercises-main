@@ -73,7 +73,6 @@ public class BootstrapDb implements CommandLineRunner {
                 newUser = User.builder()
                         .username(line)
                         .email(line + "@domain.com")
-                        .password(this.bCryptPasswordEncoder.encode(line))
                         .authServerId(UUID.randomUUID().toString())
                         .build();
                 this.generatePortfolio(newUser);

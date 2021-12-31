@@ -7,6 +7,7 @@ import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.exception.EmailAlreadyExistsException;
 import com.zelazobeton.cognitiveexercises.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.UsernameAlreadyExistsException;
+import com.zelazobeton.cognitiveexercises.model.PasswordFormDto;
 
 public interface UserService {
     User register(String username, String email)
@@ -17,9 +18,7 @@ public interface UserService {
 
     User findUserByUsername(String username) throws UserNotFoundException;
 
-    void changePassword(String username, String newPassword) throws UserNotFoundException;
+    boolean changePassword(String username, PasswordFormDto passwordFormDto) throws UserNotFoundException;
 
     void resetPassword(String email) throws MessagingException;
-
-    void deleteUser(User user);
 }

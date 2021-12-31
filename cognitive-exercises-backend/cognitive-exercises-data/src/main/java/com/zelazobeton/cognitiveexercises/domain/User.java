@@ -22,7 +22,6 @@ import lombok.Setter;
 public class User extends BaseEntity {
     @Builder.Default private String authServerId = null;
     private String username;
-    private String password;
     private String email;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Portfolio portfolio;

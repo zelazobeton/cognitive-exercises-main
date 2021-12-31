@@ -16,13 +16,11 @@ import lombok.Setter;
 public class UserDto {
     private String username;
     private String email;
-    private String password;
     private PortfolioDto portfolio;
 
     public UserDto(User user) {
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.password = null;
         this.portfolio = new PortfolioDto(user.getPortfolio());
     }
 }
