@@ -8,10 +8,7 @@ import {catchError, map, tap} from 'rxjs/operators';
 import {NotificationType} from '../../shared/notification/notification-type.enum';
 import {NotificationService} from '../../shared/notification/notification.service';
 import {Router} from '@angular/router';
-import {CustomHttpResponse} from '../../shared/model/custom-http-response';
 import {TranslateService} from '@ngx-translate/core';
-import {HttpEncodingType} from '../../shared/http.enum';
-import {CustomHeaders} from '../enum/custom-headers.enum';
 import {AuthServerTokenForm} from './auth-server-token-form';
 
 @Injectable({providedIn: 'root'})
@@ -36,7 +33,7 @@ export class AuthenticationService {
   public login(loginForm: AuthForm): Observable<HttpEvent<any>> {
     const body = new URLSearchParams();
     body.set('grant_type', 'password');
-    body.set('client_id', 'cognitive-exercises-frontend');
+    body.set('client_id', this.authorizationServerClientId);
     body.set('username', loginForm.username);
     body.set('password', loginForm.password);
 
@@ -58,14 +55,6 @@ export class AuthenticationService {
           this.loggedInUser.next(loggedUser);
         })
       );
-  }
-
-  private sendErrorNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, this.translate.instant('notifications.server error try again'));
-    }
   }
 
   public register(registerForm: RegisterForm): Observable<UserDto | HttpErrorResponse> {
@@ -105,19 +94,7 @@ export class AuthenticationService {
     );
   }
 
-  public deleteRefreshToken(): void {
-    const refreshToken = localStorage.getItem(this.refreshTokenKey);
-    this.http.post<HttpResponse<any>>(
-      `${this.versionedHost}/token/delete`, refreshToken).subscribe(
-      () => {
-      },
-      (errorResponse: HttpErrorResponse) => {
-        console.error(errorResponse);
-      });
-    this.removeUserDataFromApp();
-  }
-
-  private removeUserDataFromApp() {
+  public removeUserDataFromApp() {
     this.token = null;
     this.loggedInUser.next(null);
     localStorage.removeItem('user');
@@ -125,30 +102,9 @@ export class AuthenticationService {
     localStorage.removeItem(this.refreshTokenKey);
   }
 
-  public saveRefreshToken(refreshToken: string): void {
-    localStorage.setItem(this.refreshTokenKey, refreshToken);
-  }
-
-  public saveToken(token: string): void {
-    this.token = token;
-    localStorage.setItem(this.tokenKey, token);
-  }
-
-  public addUserToLocalStorage(user: UserDto): void {
-    localStorage.setItem('user', JSON.stringify(user));
-  }
-
-  private getUserFromLocalStorage(): UserDto {
-    return JSON.parse(localStorage.getItem('user'));
-  }
-
   public getLoggedUsernameFromLocalStorage(): string {
     const user = this.getUserFromLocalStorage();
     return user == null ? null : user.username;
-  }
-
-  private loadToken(): void {
-    this.token = localStorage.getItem(this.tokenKey);
   }
 
   public getToken(): string {
@@ -160,14 +116,24 @@ export class AuthenticationService {
 
   public refreshAccessToken(): Observable<string> {
     const refreshToken = localStorage.getItem(this.refreshTokenKey);
-    return this.http.post<CustomHttpResponse | HttpErrorResponse>(
-      `${this.versionedHost}/token/refresh`, refreshToken,
-      {headers: new HttpHeaders().set(CustomHeaders.CONTENT_ENCODING, HttpEncodingType.NONE), observe: `response`})
+    const body = new URLSearchParams();
+    body.set('grant_type', 'refresh_token');
+    body.set('client_id', this.authorizationServerClientId);
+    body.set('refresh_token', refreshToken);
+
+    return this.http.post<AuthServerTokenForm>(
+      this.authorizationServerTokenUrl, body.toString(), {
+        headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+        observe: `response`})
       .pipe(
+        catchError(errorRes => {
+          this.sendErrorNotification(NotificationType.ERROR, errorRes.error.message);
+          return throwError(errorRes);
+        }),
         map(response => {
-          const token = response.headers.get(CustomHeaders.JWT_TOKEN);
-          this.saveToken(token);
-          return this.token;
+          this.saveToken(response.body.access_token);
+          this.saveRefreshToken(response.body.refresh_token);
+          return response.body.access_token;
         })
       );
   }
@@ -177,5 +143,34 @@ export class AuthenticationService {
       this.loadToken();
     }
     return this.token !== null;
+  }
+
+  private sendErrorNotification(notificationType: NotificationType, message: string): void {
+    if (message) {
+      this.notificationService.notify(notificationType, message);
+    } else {
+      this.notificationService.notify(notificationType, this.translate.instant('notifications.server error try again'));
+    }
+  }
+
+  private saveRefreshToken(refreshToken: string): void {
+    localStorage.setItem(this.refreshTokenKey, refreshToken);
+  }
+
+  private saveToken(token: string): void {
+    this.token = token;
+    localStorage.setItem(this.tokenKey, token);
+  }
+
+  private addUserToLocalStorage(user: UserDto): void {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  private getUserFromLocalStorage(): UserDto {
+    return JSON.parse(localStorage.getItem('user'));
+  }
+
+  private loadToken(): void {
+    this.token = localStorage.getItem(this.tokenKey);
   }
 }

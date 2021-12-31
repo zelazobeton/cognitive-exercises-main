@@ -22,7 +22,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // DOES THIS IF WORK?
     const url = httpRequest.url.substr(this.authenticationService.versionedHost.length);
     if (this.nonAuthenticatedUrls.contain(url)) {
       return next.handle(httpRequest);
@@ -47,7 +46,7 @@ export class AuthInterceptor implements HttpInterceptor {
       return this.authenticationService.refreshAccessToken().pipe(
         catchError(error => {
           this.isRefreshing = false;
-          this.authenticationService.deleteRefreshToken();
+          this.authenticationService.logout();
           this.router.navigateByUrl('/login');
           return throwError(error);
         }),
