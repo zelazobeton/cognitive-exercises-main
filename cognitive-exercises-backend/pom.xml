@@ -17,7 +17,7 @@
 
   <groupId>com.zelazobeton</groupId>
   <artifactId>cognitive-exercises</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.5-SNAPSHOT</version>
   <name>cognitive-exercises</name>
   <properties>
     <java.version>11</java.version>
