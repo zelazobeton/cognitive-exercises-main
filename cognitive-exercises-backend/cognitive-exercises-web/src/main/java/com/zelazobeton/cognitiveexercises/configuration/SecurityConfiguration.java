@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.session.NullAuthenticated
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(jsr250Enabled = true)
 public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
 

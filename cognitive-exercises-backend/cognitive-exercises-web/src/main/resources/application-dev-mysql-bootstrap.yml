@@ -1,5 +1,3 @@
-server:
-  port: 8081
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/cognitive_exercises_dev?serverTimezone=UTC

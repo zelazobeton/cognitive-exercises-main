@@ -1,7 +1,6 @@
 package com.zelazobeton.cognitiveexercises.service.impl;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,12 +32,24 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
     private RestTemplate restTemplate;
     @Value("${custom-keycloak-params.admin-access-token-url}")
     private String adminAccessTokenUrl;
+    @Value("${custom-keycloak-params.admin-roles-url}")
+    private String adminRolesUrl;
+    @Value("${custom-keycloak-params.role-mapping-url}")
+    private String roleMappingUrl;
+    @Value("${custom-keycloak-params.reset-password-url}")
+    private String resetPasswordUrl;
+    @Value("${custom-keycloak-params.get-user-data-url}")
+    private String getUserDataUrl;
+    @Value("${custom-keycloak-params.register-user-url}")
+    private String registerUserUrl;
     @Value("${custom-keycloak-params.admin-cli.secret}")
     private String registrationClientSecret;
     @Value("${custom-keycloak-params.admin-cli.id}")
     private String registrationClientId;
     @Value("${custom-keycloak-params.token-client.id}")
     private String tokenClientId;
+
+
 
     public KeycloakServiceImpl(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -80,9 +91,9 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
                 .put("temporary", "false")
                 .toString();
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+        String resetPasswordUrlWithUserId = this.resetPasswordUrl.replaceAll("\\{\\{userId}}", authServerUserId);
 
-        String url = "http://localhost:8080/auth/admin/realms/cognitive-exercises/users/" + authServerUserId + "/reset-password";
-        ResponseEntity<String> responseEntity = this.restTemplate.exchange(url,
+        ResponseEntity<String> responseEntity = this.restTemplate.exchange(resetPasswordUrlWithUserId,
                 HttpMethod.PUT, entity, new ParameterizedTypeReference<>() {
                 }, AdminAccessTokenDto.class);
 
@@ -104,8 +115,10 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(adminAccessToken);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
+        String getUserDataUrlWithUserId = this.getUserDataUrl.replaceAll("\\{\\{username}}", username);
+
         ResponseEntity<AuthServerUserDto[]> getUserDataResponse = this.restTemplate.exchange(
-                "http://localhost:8080/auth/admin/realms/cognitive-exercises/users/?username=" + username,
+                getUserDataUrlWithUserId,
                 HttpMethod.GET, entity, new ParameterizedTypeReference<>() {
                 }, AuthServerUserDto[].class);
 
@@ -138,8 +151,7 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
                 .toString();
         HttpEntity<String> entity = new HttpEntity<>(jsonObject, headers);
 
-        ResponseEntity<String> responseEntity = this.restTemplate.exchange(
-                "http://localhost:8080/auth/admin/realms/cognitive-exercises/users", HttpMethod.POST, entity,
+        ResponseEntity<String> responseEntity = this.restTemplate.exchange(this.registerUserUrl, HttpMethod.POST, entity,
                 new ParameterizedTypeReference<>() {
                 }, AdminAccessTokenDto.class);
         return responseEntity.getBody();
@@ -168,8 +180,7 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(adminAccessToken);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
-        ResponseEntity<AuthServerRoleDto[]> getRolesResponse = this.restTemplate.exchange(
-                "http://localhost:8080/auth/admin/realms/cognitive-exercises/roles",
+        ResponseEntity<AuthServerRoleDto[]> getRolesResponse = this.restTemplate.exchange(this.adminRolesUrl,
                 HttpMethod.GET, entity, AuthServerRoleDto[].class);
 
         AuthServerRoleDto[] roleDtos = Objects.requireNonNull(getRolesResponse.getBody());
@@ -180,15 +191,17 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
             }
         }
 
-        UUID userId = userDto.getId();
+        String userId = userDto.getId().toString();
         JSONObject realmRole = new JSONObject()
                 .put("name", "app-user")
                 .put("id", roleId);
         String realmRolesArray = (new JSONArray()).put(realmRole).toString();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> setRolesEntity = new HttpEntity<>(realmRolesArray, headers);
+        String roleMappingUrlWithUserId = this.roleMappingUrl.replaceAll("\\{\\{userId}}", userId);
+
         ResponseEntity<String> setRolesResponse = this.restTemplate.exchange(
-                "http://localhost:8080/auth/admin/realms/cognitive-exercises/users/" + userId + "/role-mappings/realm",
+                roleMappingUrlWithUserId,
                 HttpMethod.POST, setRolesEntity, String.class);
 
         if (setRolesResponse.getStatusCode() != HttpStatus.NO_CONTENT) {

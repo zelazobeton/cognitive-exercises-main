@@ -2,7 +2,6 @@ package com.zelazobeton.cognitiveexercises.bootstrap;
 
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.EXAMPLE_USERNAMES_FILE;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.LOCALHOST_ADDRESS;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MEMORY_IMG_FOLDER;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MEMORY_IMG_PATH;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.VERSION_1;
@@ -18,6 +17,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
@@ -42,6 +42,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Profile({"dev-mysql-bootstrap", "dev-oracle-bootstrap"})
 public class BootstrapDb implements CommandLineRunner {
+    @Value("${server-host}")
+    private String serverHost;
+    @Value("${server.port}")
+    private String serverPort;
+    private String serverAddress = this.serverHost + this.serverPort;
     private final GameDataRepository gameDataRepository;
     private final MemoryImgRepository memoryImgRepository;
     private final UserRepository userRepository;
@@ -60,7 +65,7 @@ public class BootstrapDb implements CommandLineRunner {
     private void loadGamesData() {
         this.gameDataRepository.save(GameData.builder()
                 .title("Memory")
-                .icon(LOCALHOST_ADDRESS + VERSION_1 + FORWARD_SLASH + "games/icon/memory-icon.png")
+                .icon(this.serverAddress + VERSION_1 + FORWARD_SLASH + "games/icon/memory-icon.png")
                 .build());
     }
 
@@ -95,7 +100,7 @@ public class BootstrapDb implements CommandLineRunner {
         List<MemoryImg> memoryImgs = new ArrayList<>();
         for(File file: Objects.requireNonNull(memoryImagesFolder.toFile().listFiles())) {
             if (!file.isDirectory()) {
-                String imgAddress = LOCALHOST_ADDRESS + VERSION_1 + MEMORY_IMG_PATH + file.getName();
+                String imgAddress = this.serverAddress + VERSION_1 + MEMORY_IMG_PATH + file.getName();
                 memoryImgs.add(MemoryImg.builder().address(imgAddress).build());
             }
         }

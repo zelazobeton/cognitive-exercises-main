@@ -5,7 +5,6 @@ import static com.zelazobeton.cognitiveexercises.constant.FileConstants.DEFAULT_
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.DEFAULT_AVATAR_FILENAME;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.DIRECTORY_CREATED;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.LOCALHOST_ADDRESS;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_FOLDER;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_IMAGE_PATH;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.VERSION_1;
@@ -18,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -31,6 +31,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PortfolioBuilderImpl implements PortfolioBuilder {
+    @Value("${server-host}")
+    private String serverHost;
+    @Value("${server.port}")
+    private String serverPort;
+    private String serverAddress = this.serverHost + this.serverPort;
     private ResourceService resourceService;
 
     public PortfolioBuilderImpl(ResourceService resourceService) {
@@ -49,7 +54,7 @@ public class PortfolioBuilderImpl implements PortfolioBuilder {
 
     private String generateAvatarAddressForBootstrapUsers(String username) throws IOException {
         this.generateAvatar(username);
-        return LOCALHOST_ADDRESS + VERSION_1 + USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME;
+        return this.serverAddress + VERSION_1 + USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME;
     }
 
     private String generateAvatarAddress(String username) throws IOException {
