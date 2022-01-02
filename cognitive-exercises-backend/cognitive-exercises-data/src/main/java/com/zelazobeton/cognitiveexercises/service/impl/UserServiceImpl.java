@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
                 password, email);
 
         String authServerUserId = userDto.getId().toString();
-        User newUser = User.builder().username(username).email(email).authServerId(authServerUserId).build();
+        User newUser = User.builder().username(username).email(email).externalId(authServerUserId).build();
         this.portfolioBuilderImpl.createPortfolioWithGeneratedAvatar(newUser);
         this.emailService.sendNewPasswordEmail(username, password, email);
         log.debug(username + " password: " + password);
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         User user = this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
-        this.authorizationServerService.setNewPasswordForUser(user.getAuthServerId(), username,
+        this.authorizationServerService.setNewPasswordForUser(user.getExternalId(), username,
                 passwordFormDto.getNewPassword());
         return true;
     }
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findUserByEmail(email).orElseThrow(EmailNotFoundException::new);
         String password = this.generatePassword();
         this.emailService.sendNewPasswordEmail(user.getUsername(), password, email);
-        this.authorizationServerService.setNewPasswordForUser(user.getAuthServerId(), user.getUsername(),
+        this.authorizationServerService.setNewPasswordForUser(user.getExternalId(), user.getUsername(),
                 password);
     }
 

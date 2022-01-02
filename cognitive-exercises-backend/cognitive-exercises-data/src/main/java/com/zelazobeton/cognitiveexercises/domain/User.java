@@ -20,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "USERS") //'USER' is reserved word in Oracle
 public class User extends BaseEntity {
-    @Builder.Default private String authServerId = null;
+    @Builder.Default private String externalId = null;
     private String username;
     private String email;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
