@@ -19,9 +19,9 @@ services:
       - "15672:15672"
       - "15671:15671"
       - "5673:5672"
-  cognitive-exercises-backend:
-    build: ./cognitive-exercises-backend
-    image: cognitive-exercises-backend:0.0.2-SNAPSHOT
+  cognitive-exercises-main:
+    build: ./
+    image: cognitive-exercises-main:0.0.2-SNAPSHOT
     ports:
       - "8081:8081"
     depends_on:

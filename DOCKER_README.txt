@@ -1,20 +1,16 @@
 README
 
-Backend jar file for docker is "cognitive-exercises-web.jar" created with "mvn clean install", it already contains 
+Backend jar file for docker is "cognitive-exercises-web.jar" created with "mvn clean package", it already contains 
 data module as its dependency.
 
 After running "docker compose up" one needs to enter backend centos container by using
 "docker exec -it {container_name} bash" and run the cognitive-exercises app by using one of the scripts:
 	- run-cog-ex-dev-mysql.sh
-	- run-cog-ex-dev-mysql-bootstrap.sh
+	- run-cog-ex-dev-mysql-bootstrap.sh (to put sample data into db)
 	
 On the first run, before running "run-cog-ex-dev-mysql-bootstrap.sh" one should prepare database:
 	- CREATE DATABASE cognitive_exercises_dev;
 	- create user "cognitive_exercises_dev_admin" with password "admin" and full DDL & DML access
-
-Frontend container also does not start automatically as it has to be started after backend is set up. 
-One needs to enter bash in the container by using "docker exec -it {container_name} bash" and run 
-"service nginx start".
 
 Files:
 	- docker-entrypoint.sh
