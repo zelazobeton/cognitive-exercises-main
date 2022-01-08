@@ -30,10 +30,3 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/cognitive_exercises_dev?serverTimezone=UTC
       SPRING_RABBITMQ_HOST: rabbit-service
-  cognitive-exercises-frontend:
-    build: ./cognitive-exercises-frontend
-    image: cognitive-exercises-frontend:0.0.2
-    depends_on:
-      - cognitive-exercises-backend
-    ports:
-      - "80:80"
