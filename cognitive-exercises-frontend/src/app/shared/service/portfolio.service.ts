@@ -9,19 +9,18 @@ import {NotificationType} from '../notification/notification-type.enum';
 import {NotificationService} from '../notification/notification.service';
 import {TranslateService} from '@ngx-translate/core';
 import {CustomHeaders} from '../../auth/enum/custom-headers.enum';
-import {HttpEncodingType, HttpHeader} from '../http.enum';
-import {TagContentType} from '@angular/compiler';
+import {HttpEncodingType} from '../http.enum';
 
 @Injectable()
 export class PortfolioService {
-  private readonly versionedHost = environment.versionedApiUrl;
+  private readonly versionedPortfolioHost = environment.apiUrl + '/main/portfolio/v1';
 
   constructor(private http: HttpClient, private notificationService: NotificationService,
               private translate: TranslateService) {
   }
 
   public updateAvatar(portfolioForm: FormData): Observable<PortfolioDto> {
-    return this.http.post<PortfolioDto>(`${this.versionedHost}/portfolio/avatar`, portfolioForm,
+    return this.http.post<PortfolioDto>(`${this.versionedPortfolioHost}/avatar`, portfolioForm,
       {headers: new HttpHeaders().set(CustomHeaders.CONTENT_ENCODING, HttpEncodingType.NONE), observe: `body`})
       .pipe(
         tap((response: PortfolioDto) => {

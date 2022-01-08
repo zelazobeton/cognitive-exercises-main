@@ -10,6 +10,7 @@ import {AuthenticationService} from '../service/authentication.service';
 import {NonAuthenticatedUrlService} from '../service/non-authenticated-url.service';
 import {catchError, filter, switchMap, take} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import {environment} from '../../../environments/environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -23,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const url = httpRequest.url.substr(this.authenticationService.versionedHost.length);
-    if (httpRequest.url.startsWith(this.authenticationService.authorizationServerUrl) || this.nonAuthenticatedUrls.contain(url)) {
+    if (this.nonAuthenticatedUrls.contain(url) || this.isAuthorizationServiceRequest(httpRequest.url)) {
       return next.handle(httpRequest);
     }
     const token = this.authenticationService.getToken();
@@ -68,5 +69,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private createRequestWithTokenHeader(httpRequest: HttpRequest<any>, token: string): HttpRequest<any> {
     return httpRequest.clone({setHeaders: {Authorization: `Bearer ${token}`}});
+  }
+
+  private isAuthorizationServiceRequest(url: string) {
+    return url.startsWith(environment.authorizationHost);
   }
 }

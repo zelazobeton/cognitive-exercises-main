@@ -29,9 +29,11 @@ export class CompressInterceptor implements HttpInterceptor {
   }
 
   private isToBeCompressed(request: HttpRequest<any>): boolean {
-      return !request.url.includes(environment.authorizationServerUrl) &&
-        (!request.headers.has(HttpHeader.ContentEncoding) ||
-        !_.includes(request.headers.getAll(HttpHeader.ContentEncoding), HttpEncodingType.NONE));
+      if (this.isAuthorizationServiceRequest(request.url)) {
+        return false;
+      }
+      return !request.headers.has(HttpHeader.ContentEncoding) ||
+        !_.includes(request.headers.getAll(HttpHeader.ContentEncoding), HttpEncodingType.NONE);
   }
 
   private isPostRequest(request: HttpRequest<any>): boolean {
@@ -43,5 +45,9 @@ export class CompressInterceptor implements HttpInterceptor {
       result.push(String.fromCharCode(value));
     }, [] as string[]);
     return btoa(accumulator.join(''));
+  }
+
+  private isAuthorizationServiceRequest(url: string) {
+    return url.startsWith(environment.authorizationHost);
   }
 }

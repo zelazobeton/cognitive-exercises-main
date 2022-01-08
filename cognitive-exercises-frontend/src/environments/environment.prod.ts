@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  versionedApiUrl: '/v1',
+  apiUrl: '/v1',
   storageTokenKey: 'storageTokenKey',
   storageRefreshTokenKey: 'storageRefreshTokenKey'
 };

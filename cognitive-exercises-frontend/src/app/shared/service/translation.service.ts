@@ -8,7 +8,7 @@ import {LocaleDto} from '../model/locale-dto';
 @Injectable()
 export class TranslationService implements OnDestroy {
   private subscriptions: Subscription[] = [];
-  private readonly versionedHost = environment.versionedApiUrl;
+  private readonly translationHost = environment.apiUrl + '/main/lang/v1';
 
   //constructor(private http: HttpClient) {}
   constructor(private http: HttpClient, private translate: TranslateService) {
@@ -32,7 +32,7 @@ export class TranslationService implements OnDestroy {
   }
 
   public getLocale(): Observable<LocaleDto> {
-    return this.http.get<LocaleDto>(`${this.versionedHost}/lang/locale`);
+    return this.http.get<LocaleDto>(`${this.translationHost}/locale`);
   }
 
   ngOnDestroy(): void {

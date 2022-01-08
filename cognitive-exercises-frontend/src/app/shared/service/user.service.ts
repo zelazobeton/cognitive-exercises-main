@@ -13,7 +13,8 @@ import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class UserService {
-  private readonly versionedHost = environment.versionedApiUrl;
+  private readonly versionedUserHost = environment.apiUrl + '/main/user/v1';
+  private readonly versionedPortfolioHost = environment.apiUrl + '/main/portfolio/v1';
 
   constructor(private http: HttpClient, private notificationService: NotificationService,
               private translate: TranslateService) {
@@ -21,15 +22,15 @@ export class UserService {
 
   public changePassword(changePasswordForm: ChangePasswordForm) {
     return this.http.post<HttpResponse<string> | HttpErrorResponse>(
-      `${this.versionedHost}/user/password`, changePasswordForm, {observe: 'body'});
+      `${this.versionedUserHost}/password`, changePasswordForm, {observe: 'body'});
   }
 
   public resetPassword(email: string): Observable<CustomHttpResponse> {
-    return this.http.post<CustomHttpResponse>(`${this.versionedHost}/user/reset-password`, email);
+    return this.http.post<CustomHttpResponse>(`${this.versionedUserHost}/reset-password`, email);
   }
 
   public fetchUserData(): Observable<UserDto> {
-    return this.http.get<UserDto>(`${this.versionedHost}/user`)
+    return this.http.get<UserDto>(`${this.versionedUserHost}`)
       .pipe(
         catchError((error) => {
           this.notificationService.notify(NotificationType.ERROR,
@@ -40,7 +41,7 @@ export class UserService {
 
   public fetchScoreboard(pageNum: number, pageSize: number): Observable<ScoreboardPageDto> {
     return this.http.get<ScoreboardPageDto>(
-      `${this.versionedHost}/portfolio/scoreboard`,
+      `${this.versionedPortfolioHost}/scoreboard`,
       {params: {page: pageNum.toString(), size: pageSize.toString()}})
       .pipe(
         catchError((error) => {

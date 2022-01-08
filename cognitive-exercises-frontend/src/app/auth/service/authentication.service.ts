@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject, throwError} from 'rxjs';
-import {authServerUris, environment} from '../../../environments/environment';
+import {environment} from '../../../environments/environment';
 import {UserDto} from '../../shared/model/user-dto';
 import {HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {AuthForm, RegisterForm} from '../../shared/model/input-forms';
@@ -15,20 +15,27 @@ import {AuthServerTokenForm} from './auth-server-token-form';
 export class AuthenticationService {
   private readonly tokenKey = environment.storageTokenKey;
   private readonly refreshTokenKey = environment.storageRefreshTokenKey;
-  readonly versionedHost = environment.versionedApiUrl;
-  readonly authorizationServerUrl = environment.authorizationServerUrl;
+  readonly versionedHost = environment.apiUrl;
+  private readonly versionedUserHost = environment.apiUrl + '/main/user/v1';
   readonly authorizationServerClientId = environment.authorizationServerClientId;
-  readonly authorizationServerTokenUrl = authServerUris.authorizationServerTokenUrl;
-  readonly authorizationServerLogoutUrl = authServerUris.authorizationServerLogoutUrl;
+  readonly authHost = environment.authorizationServerUrl;
   private token: string;
   public loggedInUser: Subject<UserDto>;
+
+  private static addUserToLocalStorage(user: UserDto): void {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  private static getUserFromLocalStorage(): UserDto {
+    return JSON.parse(localStorage.getItem('user'));
+  }
 
   constructor(private http: HttpClient,
               private notificationService: NotificationService,
               private router: Router,
               private translate: TranslateService) {
     this.loggedInUser = new Subject<UserDto>();
-    this.loggedInUser.next(this.getUserFromLocalStorage());
+    this.loggedInUser.next(AuthenticationService.getUserFromLocalStorage());
   }
 
   public login(loginForm: AuthForm): Observable<HttpEvent<any>> {
@@ -39,8 +46,9 @@ export class AuthenticationService {
     body.set('password', loginForm.password);
 
     return this.http.post<AuthServerTokenForm>(
-      this.authorizationServerTokenUrl, body.toString(), {
-        headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+      `${this.authHost}/token`, body.toString(), {
+        headers: new HttpHeaders()
+          .set('Content-Type', 'application/x-www-form-urlencoded'),
         observe: `response`})
       .pipe(
         catchError(errorRes => {
@@ -52,7 +60,7 @@ export class AuthenticationService {
           this.saveRefreshToken(response.body.refresh_token);
           const loggedUser = new UserDto();
           loggedUser.username = loginForm.username;
-          this.addUserToLocalStorage(loggedUser);
+          AuthenticationService.addUserToLocalStorage(loggedUser);
           this.loggedInUser.next(loggedUser);
         })
       );
@@ -60,7 +68,7 @@ export class AuthenticationService {
 
   public register(registerForm: RegisterForm): Observable<UserDto | HttpErrorResponse> {
     return this.http.post<UserDto | HttpErrorResponse>(
-      `${this.versionedHost}/user/register`, registerForm, {observe: 'body'})
+      `${this.versionedUserHost}/register`, registerForm, {observe: 'body'})
       .pipe(
         catchError(errorRes => {
           return throwError(errorRes);
@@ -80,7 +88,7 @@ export class AuthenticationService {
     body.set('client_id', this.authorizationServerClientId);
 
     return this.http.post<void>(
-      this.authorizationServerLogoutUrl, body.toString(), {
+      `${this.authHost}/logout`, body.toString(), {
         headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
         observe: `response`})
       .pipe(
@@ -104,7 +112,7 @@ export class AuthenticationService {
   }
 
   public getLoggedUsernameFromLocalStorage(): string {
-    const user = this.getUserFromLocalStorage();
+    const user = AuthenticationService.getUserFromLocalStorage();
     return user == null ? null : user.username;
   }
 
@@ -123,7 +131,7 @@ export class AuthenticationService {
     body.set('refresh_token', refreshToken);
 
     return this.http.post<AuthServerTokenForm>(
-      this.authorizationServerTokenUrl, body.toString(), {
+      `${this.authHost}/token`, body.toString(), {
         headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
         observe: `response`})
       .pipe(
@@ -161,14 +169,6 @@ export class AuthenticationService {
   private saveToken(token: string): void {
     this.token = token;
     localStorage.setItem(this.tokenKey, token);
-  }
-
-  private addUserToLocalStorage(user: UserDto): void {
-    localStorage.setItem('user', JSON.stringify(user));
-  }
-
-  private getUserFromLocalStorage(): UserDto {
-    return JSON.parse(localStorage.getItem('user'));
   }
 
   private loadToken(): void {
