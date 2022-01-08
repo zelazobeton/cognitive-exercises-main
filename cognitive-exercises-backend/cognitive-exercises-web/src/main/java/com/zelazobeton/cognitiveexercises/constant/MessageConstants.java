@@ -4,11 +4,8 @@ public class MessageConstants {
     private MessageConstants(){}
 
     public static final String USER_CONTROLLER_EMAIL_WITH_NEW_PASSWORD = "user_controller_email_with_new_password";
-    public static final String USER_CONTROLLER_USER_DELETED_SUCCESSFULLY = "user_controller_user_deleted_successfully";
     public static final String USER_CONTROLLER_PASSWORD_CHANGED_SUCCESSFULLY = "user_controller_password_changed_successfully";
     public static final String USER_CONTROLLER_PASSWORD_IS_INCORRECT = "user_controller_password_is_incorrect";
-
-    public static final String MEMORY_GAME_CONTROLLER_GAME_SAVED = "memory_game_controller_game_saved";
 
     public static final String EXCEPTION_HANDLING_YOUR_ACCOUNT_HAS_BEEN_LOCKED = "exception_handling_your_account_has_been_locked";
     public static final String EXCEPTION_HANDLING_THIS_REQUEST_METHOD_IS_NOT_ALLOWED_ON_THIS_ENDPOINT = "exception_handling_this_request_method_is_not_allowed_on_this_endpoint";

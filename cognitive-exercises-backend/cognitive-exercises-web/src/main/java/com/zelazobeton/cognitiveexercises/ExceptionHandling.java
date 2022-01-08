@@ -3,7 +3,6 @@ package com.zelazobeton.cognitiveexercises;
 import static com.zelazobeton.cognitiveexercises.constant.MessageConstants.EXCEPTION_HANDLING_AN_ERROR_OCCURRED_WHILE_PROCESSING_THE_REQUEST;
 import static com.zelazobeton.cognitiveexercises.constant.MessageConstants.EXCEPTION_HANDLING_ERROR_OCCURRED_WHILE_PROCESSING_FILE;
 import static com.zelazobeton.cognitiveexercises.constant.MessageConstants.EXCEPTION_HANDLING_SUBMITTED_USERNAME_OR_EMAIL_WERE_INVALID;
-import static com.zelazobeton.cognitiveexercises.constant.MessageConstants.EXCEPTION_HANDLING_THERE_IS_NO_REGISTERED_USER_WITH_THAT_EMAIL;
 import static com.zelazobeton.cognitiveexercises.constant.MessageConstants.EXCEPTION_HANDLING_THIS_REQUEST_METHOD_IS_NOT_ALLOWED_ON_THIS_ENDPOINT;
 import static com.zelazobeton.cognitiveexercises.constant.MessageConstants.EXCEPTION_HANDLING_USERNAME_PASSWORD_INCORRECT;
 import static com.zelazobeton.cognitiveexercises.constant.MessageConstants.EXCEPTION_HANDLING_YOUR_ACCOUNT_HAS_BEEN_DISABLED;
@@ -16,7 +15,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.io.IOException;
-
 import javax.persistence.NoResultException;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -34,7 +32,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.zelazobeton.cognitiveexercises.exception.EmailNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.EntityAlreadyExistsException;
 import com.zelazobeton.cognitiveexercises.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.NotAnImageFileException;
@@ -55,11 +52,6 @@ public class ExceptionHandling implements ErrorController {
     @ExceptionHandler(RegisterFormInvalidException.class)
     public ResponseEntity<HttpResponse> registerFormInvalidException() {
         return this.createHttpResponse(BAD_REQUEST, this.exceptionMessageService.getMessage(EXCEPTION_HANDLING_SUBMITTED_USERNAME_OR_EMAIL_WERE_INVALID));
-    }
-
-    @ExceptionHandler(EmailNotFoundException.class)
-    public ResponseEntity<HttpResponse> emailNotFoundException() {
-        return this.createHttpResponse(BAD_REQUEST, this.exceptionMessageService.getMessage(EXCEPTION_HANDLING_THERE_IS_NO_REGISTERED_USER_WITH_THAT_EMAIL));
     }
 
     @ExceptionHandler(DisabledException.class)

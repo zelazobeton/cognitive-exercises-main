@@ -21,7 +21,7 @@ import com.zelazobeton.cognitiveexercises.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 @RestController
-@RequestMapping(path = "/v1/games")
+@RequestMapping(path = "/games/v1")
 public class GameDataController extends ExceptionHandling {
     private final GameDataService gamesDataService;
     private final ResourceService resourceService;

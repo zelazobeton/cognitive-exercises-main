@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping(path = "/v1/user")
+@RequestMapping(path = "/user/v1")
 public class UserController extends ExceptionHandling {
     private final UserService userService;
 

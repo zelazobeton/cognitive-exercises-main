@@ -3,6 +3,7 @@ package com.zelazobeton.cognitiveexercises.constant;
 public class FileConstants {
     private FileConstants(){}
     public static final String VERSION_1 = "/v1";
+    public static final String MICROSERVICE_NAME = "/main";
     private static final String RESOURCES_FOLDER = "resources";
     public static final String FORWARD_SLASH = "/";
     public static final String USER_FOLDER = RESOURCES_FOLDER + "/users-data";
@@ -14,7 +15,7 @@ public class FileConstants {
 
     public static final String AVATAR = "/avatar";
     public static final String DEFAULT_AVATAR_FILENAME = "avatar.jpg";
-    public static final String USER_IMAGE_PATH = "/portfolio/avatar/";
+    public static final String PORTFOLIO_SERVICE = "/portfolio";
     public static final String NOT_AN_IMAGE_FILE = " is not an image file. Please upload an image file";
     public static final String DIRECTORY_CREATED = "Created directory for: ";
 }

@@ -5,8 +5,9 @@ import static com.zelazobeton.cognitiveexercises.constant.FileConstants.DEFAULT_
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.DEFAULT_AVATAR_FILENAME;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.DIRECTORY_CREATED;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MICROSERVICE_NAME;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.PORTFOLIO_SERVICE;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_FOLDER;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_IMAGE_PATH;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.VERSION_1;
 
 import java.io.IOException;
@@ -19,7 +20,6 @@ import java.nio.file.StandardCopyOption;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zelazobeton.cognitiveexercises.domain.Portfolio;
 import com.zelazobeton.cognitiveexercises.domain.User;
@@ -31,15 +31,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PortfolioBuilderImpl implements PortfolioBuilder {
-    @Value("${server-host}")
-    private String serverHost;
-    @Value("${server.port}")
-    private String serverPort;
-    private String serverAddress = this.serverHost + this.serverPort;
+    @Value("${gateway-address}")
+    private String serverAddress;
     private ResourceService resourceService;
+    private StringBuilder stringBuilder;
 
     public PortfolioBuilderImpl(ResourceService resourceService) {
         this.resourceService = resourceService;
+        this.stringBuilder = new StringBuilder();
     }
 
     @Override
@@ -47,21 +46,21 @@ public class PortfolioBuilderImpl implements PortfolioBuilder {
         return new Portfolio(user, this.generateAvatarAddress(user.getUsername()), 0L);
     }
 
-    @Override
-    public Portfolio createBootstrapPortfolioWithGeneratedAvatar(User user) throws IOException {
-        return new Portfolio(user, this.generateAvatarAddressForBootstrapUsers(user.getUsername()), 0L);
-    }
-
-    private String generateAvatarAddressForBootstrapUsers(String username) throws IOException {
-        this.generateAvatar(username);
-        return this.serverAddress + VERSION_1 + USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME;
-    }
-
     private String generateAvatarAddress(String username) throws IOException {
         this.generateAvatar(username);
-        return ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(VERSION_1 + USER_IMAGE_PATH + username + FORWARD_SLASH + DEFAULT_AVATAR_FILENAME)
-                .toUriString();
+        String avatarAddress = this.stringBuilder
+                .append(this.serverAddress)
+                .append(MICROSERVICE_NAME)
+                .append(PORTFOLIO_SERVICE)
+                .append(VERSION_1)
+                .append(AVATAR)
+                .append(FORWARD_SLASH)
+                .append(username)
+                .append(FORWARD_SLASH)
+                .append(DEFAULT_AVATAR_FILENAME)
+                .toString();
+        this.stringBuilder.setLength(0);
+        return avatarAddress;
     }
 
     private void generateAvatar(String username) throws IOException {

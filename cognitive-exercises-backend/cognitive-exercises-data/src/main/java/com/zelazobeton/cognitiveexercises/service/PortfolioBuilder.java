@@ -7,6 +7,5 @@ import com.zelazobeton.cognitiveexercises.domain.User;
 
 public interface PortfolioBuilder {
     Portfolio createPortfolioWithGeneratedAvatar(User user) throws IOException;
-    Portfolio createBootstrapPortfolioWithGeneratedAvatar(User user) throws IOException;
 }
 

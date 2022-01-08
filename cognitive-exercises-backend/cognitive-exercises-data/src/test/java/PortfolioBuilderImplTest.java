@@ -26,7 +26,7 @@ public class PortfolioBuilderImplTest {
         User user = User.builder().username("testUsername").email("testUsername@mail.com").build();
 
         // when
-        Portfolio portfolio = this.sut.createBootstrapPortfolioWithGeneratedAvatar(user);
+        Portfolio portfolio = this.sut.createPortfolioWithGeneratedAvatar(user);
 
         // then
         assertThat(portfolio.getAvatar()).isNotNull();

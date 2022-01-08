@@ -16,8 +16,8 @@
   </parent>
 
   <groupId>com.zelazobeton</groupId>
-  <artifactId>cognitive-exercises</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <artifactId>cognitive-exercises-main</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <name>cognitive-exercises</name>
   <properties>
     <java.version>11</java.version>

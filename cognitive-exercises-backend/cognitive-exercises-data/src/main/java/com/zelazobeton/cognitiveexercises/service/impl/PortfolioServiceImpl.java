@@ -3,9 +3,10 @@ package com.zelazobeton.cognitiveexercises.service.impl;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.AVATAR;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.DIRECTORY_CREATED;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.MICROSERVICE_NAME;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.NOT_AN_IMAGE_FILE;
+import static com.zelazobeton.cognitiveexercises.constant.FileConstants.PORTFOLIO_SERVICE;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_FOLDER;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_IMAGE_PATH;
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.VERSION_1;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.springframework.http.MediaType.IMAGE_GIF_VALUE;
@@ -102,7 +103,16 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private String createProfileImageUrl(String username, String fileName) {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(VERSION_1 + USER_IMAGE_PATH + username + FORWARD_SLASH
-                + fileName).toUriString();
+        String path = new StringBuilder()
+                .append(MICROSERVICE_NAME)
+                .append(PORTFOLIO_SERVICE)
+                .append(VERSION_1)
+                .append(AVATAR)
+                .append(FORWARD_SLASH)
+                .append(username)
+                .append(FORWARD_SLASH)
+                .append(fileName)
+                .toString();
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).toUriString();
     }
 }

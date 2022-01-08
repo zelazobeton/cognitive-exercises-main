@@ -1,8 +1,6 @@
 package com.zelazobeton.cognitiveexercises.bootstrap;
 
 import static com.zelazobeton.cognitiveexercises.constant.FileConstants.EXAMPLE_USERNAMES_FILE;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.VERSION_1;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -37,8 +35,8 @@ public class BootstrapDb implements CommandLineRunner {
     private final GameDataRepository gameDataRepository;
     private final Random rand = new Random();
     private final PortfolioBuilder portfolioBuilder;
-    @Value("${server-address}")
-    private String serverAddress;
+    @Value("${gateway-address}")
+    private String gatewayAddress;
 
     @Override
     public void run(String... args) {
@@ -49,7 +47,7 @@ public class BootstrapDb implements CommandLineRunner {
     private void loadGamesData() {
         this.gameDataRepository.save(GameData.builder()
                 .title("Memory")
-                .icon(this.serverAddress + VERSION_1 + FORWARD_SLASH + "games/icon/memory-icon.png")
+                .icon(this.gatewayAddress + "/main/games/v1/icon/memory-icon.png")
                 .build());
     }
 
@@ -74,7 +72,7 @@ public class BootstrapDb implements CommandLineRunner {
     }
 
     private void generatePortfolio(User newUser) throws IOException{
-        Portfolio portfolio = this.portfolioBuilder.createBootstrapPortfolioWithGeneratedAvatar(newUser);
+        Portfolio portfolio = this.portfolioBuilder.createPortfolioWithGeneratedAvatar(newUser);
         long score = this.rand.nextInt(1000);
         portfolio.setTotalScore(score);
     }

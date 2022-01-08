@@ -29,7 +29,7 @@ import com.zelazobeton.cognitiveexercises.service.ResourceService;
 
 //@CrossOrigin("*")
 @RestController
-@RequestMapping(path = "/v1/portfolio")
+@RequestMapping(path = "/portfolio/v1")
 public class PortfolioController extends ExceptionHandling {
     private final PortfolioService portfolioService;
     private final ResourceService resourceService;
