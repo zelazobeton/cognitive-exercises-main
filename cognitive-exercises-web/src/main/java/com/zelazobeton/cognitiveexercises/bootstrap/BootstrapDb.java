@@ -35,8 +35,8 @@ public class BootstrapDb implements CommandLineRunner {
     private final GameDataRepository gameDataRepository;
     private final Random rand = new Random();
     private final PortfolioBuilder portfolioBuilder;
-    @Value("${gateway-address}")
-    private String gatewayAddress;
+    @Value("${frontend-server-address}")
+    private String frontendAddress;
 
     @Override
     public void run(String... args) {
@@ -47,7 +47,7 @@ public class BootstrapDb implements CommandLineRunner {
     private void loadGamesData() {
         this.gameDataRepository.save(GameData.builder()
                 .title("Memory")
-                .icon(this.gatewayAddress + "/main/games/v1/icon/memory-icon.png")
+                .icon(this.frontendAddress + "/main/games/v1/icon/memory-icon.png")
                 .build());
     }
 

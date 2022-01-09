@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 //@Order(Ordered.HIGHEST_PRECEDENCE)
 class CustomCorsFilter implements Filter {
 
-    @Value("${frontend-address}")
+    @Value("${frontend-server-address}")
     private String frontendAddress;
 
     @Override

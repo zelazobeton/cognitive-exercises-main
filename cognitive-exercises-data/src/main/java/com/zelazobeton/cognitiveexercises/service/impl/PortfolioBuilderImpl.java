@@ -31,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PortfolioBuilderImpl implements PortfolioBuilder {
-    @Value("${gateway-address}")
-    private String serverAddress;
+    @Value("${frontend-server-address}")
+    private String frontendAddress;
     private ResourceService resourceService;
     private StringBuilder stringBuilder;
 
@@ -49,7 +49,7 @@ public class PortfolioBuilderImpl implements PortfolioBuilder {
     private String generateAvatarAddress(String username) throws IOException {
         this.generateAvatar(username);
         String avatarAddress = this.stringBuilder
-                .append(this.serverAddress)
+                .append(this.frontendAddress)
                 .append(MICROSERVICE_NAME)
                 .append(PORTFOLIO_SERVICE)
                 .append(VERSION_1)

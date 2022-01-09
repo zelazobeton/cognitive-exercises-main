@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zelazobeton.cognitiveexercises.domain.Portfolio;
 import com.zelazobeton.cognitiveexercises.domain.User;
@@ -50,6 +50,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 public class PortfolioServiceImpl implements PortfolioService {
+    @Value("${frontend-server-address}")
+    private String frontendAddress;
     private UserRepository userRepository;
     private PortfolioRepository portfolioRepository;
     private ResourceService resourceService;
@@ -103,7 +105,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private String createProfileImageUrl(String username, String fileName) {
-        String path = new StringBuilder()
+        return new StringBuilder()
+                .append(this.frontendAddress)
                 .append(MICROSERVICE_NAME)
                 .append(PORTFOLIO_SERVICE)
                 .append(VERSION_1)
@@ -113,6 +116,5 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .append(FORWARD_SLASH)
                 .append(fileName)
                 .toString();
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).toUriString();
     }
 }
