@@ -35,7 +35,7 @@ public class BootstrapDb implements CommandLineRunner {
     private final GameDataRepository gameDataRepository;
     private final Random rand = new Random();
     private final PortfolioBuilder portfolioBuilder;
-    @Value("${frontend-server-address}")
+    @Value("${frontend-address}")
     private String frontendAddress;
 
     @Override

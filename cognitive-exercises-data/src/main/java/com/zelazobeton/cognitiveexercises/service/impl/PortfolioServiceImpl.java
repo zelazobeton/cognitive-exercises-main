@@ -50,7 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 public class PortfolioServiceImpl implements PortfolioService {
-    @Value("${frontend-server-address}")
+    @Value("${frontend-address}")
     private String frontendAddress;
     private UserRepository userRepository;
     private PortfolioRepository portfolioRepository;

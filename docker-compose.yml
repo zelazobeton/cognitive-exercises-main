@@ -11,22 +11,20 @@ services:
       MYSQL_ROOT_PASSWORD: "password"
       MYSQL_USER: "cognitive_exercises_dev_admin"
       MYSQL_PASSWORD: "admin"
-  rabbit-service:
-    image: rabbitmq:3-management
-    volumes: 
-      - ./docker_tmp/rabbitmq:/var/lib/rabbitmq/cookie
-    ports:
-      - "15672:15672"
-      - "15671:15671"
-      - "5673:5672"
   cognitive-exercises-main:
     build: ./
     image: cognitive-exercises-main:0.0.2-SNAPSHOT
     ports:
       - "8081:8081"
     depends_on:
-      - my-sql
-      - rabbit-service
+      - mysql-service
+#      - rabbit-service
+#      - cognitive-exercises-gateway
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/cognitive_exercises_dev?serverTimezone=UTC
-      SPRING_RABBITMQ_HOST: rabbit-service
+#      SPRING_RABBITMQ_HOST: rabbit-service
+#      SPRING_RABBITMQ_PORT: 5672
+#      KEYCLOAK_AUTH-SERVER-URL: http://keycloak-service:8080/auth
+#      FRONTEND-ADDRESS: http://localhost:80/api
+#       seems that sth is wrong with setting this value here, for now it is hardcoded in application.properties
+#      CUTOM-KEYCLOAK-PARAMS_ADMIN-CLI_SECRET: WxIieRB64oxJvFmsm7IVZJy2JMd2KHoG

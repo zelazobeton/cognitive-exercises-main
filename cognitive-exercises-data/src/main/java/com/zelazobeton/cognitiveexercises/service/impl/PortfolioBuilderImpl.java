@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PortfolioBuilderImpl implements PortfolioBuilder {
-    @Value("${frontend-server-address}")
+    @Value("${frontend-address}")
     private String frontendAddress;
     private ResourceService resourceService;
     private StringBuilder stringBuilder;
