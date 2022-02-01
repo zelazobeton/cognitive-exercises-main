@@ -27,4 +27,9 @@ public class Portfolio extends BaseEntity {
         this.totalScore = totalScore;
         user.setPortfolio(this);
     }
+
+    public Long incrementTotalScore(Integer score) {
+        this.totalScore += score;
+        return this.totalScore;
+    }
 }

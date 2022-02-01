@@ -15,4 +15,6 @@ public interface PortfolioService {
             throws EntityNotFoundException, IOException, NotAnImageFileException;
 
     ScoreboardPageDto getScoreboardPage(int pageNumber, int pageSize);
+
+    void updateScore(String userExternalId, Integer score);
 }

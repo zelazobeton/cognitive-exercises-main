@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.amqp.AmqpException;
-import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +18,12 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
 
     @Value("${spring.rabbitmq.defaultExchange}")
     private String defaultExchangeName;
-    private AmqpTemplate amqpTemplate;
+    private RabbitTemplate rabbitTemplate;
     private Map<String, List<String>> routings;
 
-    public MessagePublisherServiceImpl(AmqpTemplate amqpTemplate,
+    public MessagePublisherServiceImpl(RabbitTemplate rabbitTemplate,
             @Value("#{${spring.rabbitmq.routings}}") Map<String, List<String>> routings) {
-        this.amqpTemplate = amqpTemplate;
+        this.rabbitTemplate = rabbitTemplate;
         this.routings = routings;
     }
 
@@ -38,7 +38,7 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
                         exchange, message.key()));
             }
             for (String routingKey : routingKeys) {
-                this.amqpTemplate.convertAndSend(exchange, routingKey, message);
+                this.rabbitTemplate.convertAndSend(exchange, routingKey, message);
             }
         } catch (AmqpException exception) {
             throw new MessagePublishException(

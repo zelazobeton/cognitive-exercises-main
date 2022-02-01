@@ -63,6 +63,15 @@ public class PortfolioServiceImpl implements PortfolioService {
         this.resourceService = resourceService;
     }
 
+
+    @Override
+    public void updateScore(String userExternalId, Integer score) {
+        User user = this.userRepository.findUserByExternalId(userExternalId).orElseThrow(EntityNotFoundException::new);
+        Portfolio portfolio = user.getPortfolio();
+        portfolio.incrementTotalScore(score);
+        this.portfolioRepository.save(portfolio);
+    }
+
     @Override
     public PortfolioDto updateAvatar(String username, MultipartFile avatar)
             throws EntityNotFoundException, IOException, NotAnImageFileException {
