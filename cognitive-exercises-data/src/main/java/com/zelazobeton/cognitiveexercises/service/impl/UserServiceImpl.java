@@ -1,14 +1,21 @@
 package com.zelazobeton.cognitiveexercises.service.impl;
 
+import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
+import static org.springframework.http.HttpStatus.OK;
+
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import javax.mail.MessagingException;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.exception.EmailAlreadyExistsException;
 import com.zelazobeton.cognitiveexercises.exception.EmailNotFoundException;
@@ -16,10 +23,12 @@ import com.zelazobeton.cognitiveexercises.exception.RegisterFormInvalidException
 import com.zelazobeton.cognitiveexercises.exception.UserNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.UsernameAlreadyExistsException;
 import com.zelazobeton.cognitiveexercises.model.AuthServerUserDto;
+import com.zelazobeton.cognitiveexercises.model.HttpResponse;
 import com.zelazobeton.cognitiveexercises.model.PasswordFormDto;
 import com.zelazobeton.cognitiveexercises.repository.UserRepository;
 import com.zelazobeton.cognitiveexercises.service.AuthorizationServerService;
 import com.zelazobeton.cognitiveexercises.service.EmailService;
+import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercises.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,13 +41,16 @@ public class UserServiceImpl implements UserService {
     private EmailService emailService;
     private PortfolioBuilderImpl portfolioBuilderImpl;
     private AuthorizationServerService authorizationServerService;
+    private ExceptionMessageService exceptionMessageService;
 
     public UserServiceImpl(UserRepository userRepository, EmailService emailService,
-            PortfolioBuilderImpl portfolioBuilderImpl, AuthorizationServerService keycloakServiceImpl) {
+            PortfolioBuilderImpl portfolioBuilderImpl, AuthorizationServerService keycloakServiceImpl,
+            ExceptionMessageService exceptionMessageService) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.portfolioBuilderImpl = portfolioBuilderImpl;
         this.authorizationServerService = keycloakServiceImpl;
+        this.exceptionMessageService = exceptionMessageService;
     }
 
     @Override
@@ -85,19 +97,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean changePassword(String username, PasswordFormDto passwordFormDto) throws UserNotFoundException {
-        if (!this.authorizationServerService.isPasswordCorrect(username, passwordFormDto.getOldPassword())) {
-            return false;
+    public ResponseEntity<HttpResponse> changePassword(String username, PasswordFormDto passwordFormDto)
+            throws UserNotFoundException, ExecutionException, InterruptedException {
+        Future<Boolean> isPasswordCorrect = this.authorizationServerService.isPasswordCorrect(username,
+                passwordFormDto.getOldPassword());
+        Future<String> adminAccessToken = this.authorizationServerService.getAuthorizationServerAdminAccessTokenAsync();
+
+        if (!isPasswordCorrect.get()) {
+            adminAccessToken.cancel(true);
+            String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_IS_INCORRECT);
+            return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, responseMsg), NOT_ACCEPTABLE);
         }
         User user = this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
         this.authorizationServerService.setNewPasswordForUser(user.getExternalId(), username,
-                passwordFormDto.getNewPassword());
-        return true;
+                passwordFormDto.getNewPassword(), adminAccessToken.get());
+        String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_CHANGED_SUCCESSFULLY);
+        return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
     }
 
     @Override
     public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
-        User user = this.userRepository.findUserByEmail(email).orElseThrow(EmailNotFoundException::new);
+        User user = this.userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException(
+                        this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_NO_SUCH_EMAIL))
+        );
         String password = this.generatePassword();
         this.emailService.sendNewPasswordEmail(user.getUsername(), password, email);
         this.authorizationServerService.setNewPasswordForUser(user.getExternalId(), user.getUsername(),

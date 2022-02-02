@@ -36,6 +36,7 @@ import com.zelazobeton.cognitiveexercises.exception.EntityAlreadyExistsException
 import com.zelazobeton.cognitiveexercises.exception.EntityNotFoundException;
 import com.zelazobeton.cognitiveexercises.exception.NotAnImageFileException;
 import com.zelazobeton.cognitiveexercises.exception.RegisterFormInvalidException;
+import com.zelazobeton.cognitiveexercises.model.HttpResponse;
 import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.zelazobeton.cognitiveexercises;
+package com.zelazobeton.cognitiveexercises.model;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,6 +1,7 @@
 package com.zelazobeton.cognitiveexercises.service.impl;
 
 import java.util.Objects;
+import java.util.concurrent.Future;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -56,7 +59,8 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
     }
 
     @Override
-    public boolean isPasswordCorrect(String username, String password) {
+    @Async
+    public Future<Boolean> isPasswordCorrect(String username, String password) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -75,13 +79,11 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
         } catch(HttpClientErrorException ex) {
             log.info(ex.toString());
         }
-
-        return responseEntity != null && responseEntity.getStatusCode() == HttpStatus.OK;
+        return new AsyncResult<>(responseEntity != null && responseEntity.getStatusCode() == HttpStatus.OK);
     }
 
     @Override
-    public void setNewPasswordForUser(String authServerUserId, String username, String newPassword) {
-        String accessToken = this.getAuthorizationServerAdminAccessToken();
+    public void setNewPasswordForUser(String authServerUserId, String username, String newPassword, String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -103,12 +105,24 @@ public class KeycloakServiceImpl implements AuthorizationServerService {
     }
 
     @Override
+    public void setNewPasswordForUser(String authServerUserId, String username, String newPassword) {
+        String accessToken = this.getAuthorizationServerAdminAccessToken();
+        this.setNewPasswordForUser(authServerUserId, username, newPassword, accessToken);
+    }
+
+    @Override
     public AuthServerUserDto registerUserInAuthorizationServer(String username, String password, String email) {
         String adminAccessToken = this.getAuthorizationServerAdminAccessToken();
         this.saveNewUserInAuthorizationServer(username, password, email, adminAccessToken);
         AuthServerUserDto userDto = this.getUserDataFromAuthorizationServer(username, adminAccessToken);
         this.assignRolesInAuthorizationServer(userDto, adminAccessToken);
         return userDto;
+    }
+
+    @Override
+    @Async
+    public Future<String> getAuthorizationServerAdminAccessTokenAsync() {
+        return new AsyncResult<>(this.getAuthorizationServerAdminAccessToken());
     }
 
     private AuthServerUserDto getUserDataFromAuthorizationServer(String username, String adminAccessToken) {

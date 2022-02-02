@@ -1,10 +1,10 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.security.RolesAllowed;
 import javax.mail.MessagingException;
 
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
-import com.zelazobeton.cognitiveexercises.HttpResponse;
+import com.zelazobeton.cognitiveexercises.model.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.model.EmailFormDto;
@@ -66,14 +66,8 @@ public class UserController extends ExceptionHandling {
     @PostMapping(path = "/password", produces = { "application/json" })
     @RolesAllowed("ROLE_ce-user")
     public ResponseEntity<HttpResponse> changePassword(Principal principal,
-            @RequestBody PasswordFormDto passwordFormDto) {
-        boolean passwordChanged = this.userService.changePassword(principal.getName(), passwordFormDto);
-        if (passwordChanged) {
-            String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_CHANGED_SUCCESSFULLY);
-            return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
-        }
-        String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_IS_INCORRECT);
-        return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, responseMsg), NOT_ACCEPTABLE);
+            @RequestBody PasswordFormDto passwordFormDto) throws ExecutionException, InterruptedException {
+        return this.userService.changePassword(principal.getName(), passwordFormDto);
     }
 
     @PostMapping(path = "/reset-password")
