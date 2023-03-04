@@ -43,7 +43,7 @@ public class PortfolioController extends ExceptionHandling {
 
     @PostMapping(path = "/avatar", headers=("content-type=multipart/*"))
     @RolesAllowed("ROLE_ce-user")
-    public ResponseEntity<PortfolioDto> updatePortfolio(Principal principal,
+    public ResponseEntity<PortfolioDto> updateAvatar(Principal principal,
             @RequestParam("avatar") MultipartFile avatar) throws IOException, NotAnImageFileException {
         return new ResponseEntity<>(this.portfolioService.updateAvatar(principal.getName(), avatar), HttpStatus.OK);
     }

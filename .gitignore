@@ -5,6 +5,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 **/src/main/resources/users-data/**
+**/resources-for-docker-jar/**
 
 ### STS ###
 .apt_generated

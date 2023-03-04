@@ -19,6 +19,7 @@ import com.zelazobeton.cognitiveexercises.service.EmailService;
 public class EmailServiceImpl implements EmailService {
     @Override
     public void sendNewPasswordEmail(String username, String password, String email) throws MessagingException {
+        //TODO using gmail this way is unavailable anymore
         Message message = this.createEmail(username, password, email);
         SMTPTransport smtpTransport = (SMTPTransport) this.getEmailSession().getTransport(EmailConstants.SIMPLE_MAIL_TRANSFER_PROTOCOL);
         smtpTransport.connect(EmailConstants.GMAIL_SMTP_SERVER, EmailConstants.USERNAME, EmailConstants.PASSWORD);

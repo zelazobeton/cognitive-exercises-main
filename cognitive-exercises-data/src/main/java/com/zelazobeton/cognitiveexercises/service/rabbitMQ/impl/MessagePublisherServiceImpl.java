@@ -7,7 +7,6 @@ import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.zelazobeton.cognitiveexercises.domain.messages.AbstractQueueMessage;
 import com.zelazobeton.cognitiveexercises.exception.MessagePublishException;
@@ -28,7 +27,6 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
     }
 
     @Override
-    @Transactional
     public void publishMessage(AbstractQueueMessage message, String exchange) {
         try {
             List<String> routingKeys = this.routings.get(message.key());
@@ -47,7 +45,6 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
     }
 
     @Override
-    @Transactional
     public void publishMessage(AbstractQueueMessage message) {
         this.publishMessage(message, this.defaultExchangeName);
     }

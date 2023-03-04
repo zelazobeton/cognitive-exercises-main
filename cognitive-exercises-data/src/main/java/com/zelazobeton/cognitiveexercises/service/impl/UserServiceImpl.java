@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(String username, String email)
-            throws UsernameAlreadyExistsException, EmailAlreadyExistsException, MessagingException, IOException {
+            throws MessagingException, IOException {
         this.validateNewUsernameAndEmail(username, email);
         String password = this.generatePassword();
         AuthServerUserDto userDto = this.authorizationServerService.registerUserInAuthorizationServer(username,
@@ -64,14 +64,13 @@ public class UserServiceImpl implements UserService {
         String authServerUserId = userDto.getId().toString();
         User newUser = User.builder().username(username).email(email).externalId(authServerUserId).build();
         this.portfolioBuilderImpl.createPortfolioWithGeneratedAvatar(newUser);
-        this.emailService.sendNewPasswordEmail(username, password, email);
+//        this.emailService.sendNewPasswordEmail(username, password, email);
         log.debug(username + " password: " + password);
         return this.userRepository.save(newUser);
     }
 
     @Override
-    public User updateUser(String currentUsername, String newUsername, String newEmail)
-            throws UserNotFoundException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
+    public User updateUser(String currentUsername, String newUsername, String newEmail) {
         User currentUser = this.userRepository.findUserByUsername(currentUsername)
                 .orElseThrow(UserNotFoundException::new);
         this.setNewUsername(currentUser, newUsername);
