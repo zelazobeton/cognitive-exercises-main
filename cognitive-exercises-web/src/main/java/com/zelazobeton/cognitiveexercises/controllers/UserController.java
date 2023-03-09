@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
-import com.zelazobeton.cognitiveexercises.model.HttpResponse;
 import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
 import com.zelazobeton.cognitiveexercises.domain.User;
 import com.zelazobeton.cognitiveexercises.model.EmailFormDto;
+import com.zelazobeton.cognitiveexercises.model.HttpResponse;
 import com.zelazobeton.cognitiveexercises.model.PasswordFormDto;
 import com.zelazobeton.cognitiveexercises.model.UserDto;
 import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
@@ -35,8 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController extends ExceptionHandling {
     private final UserService userService;
 
-    public UserController(ExceptionMessageService exceptionMessageService,
-            UserService userService) {
+    public UserController(ExceptionMessageService exceptionMessageService, UserService userService) {
         super(exceptionMessageService);
         this.userService = userService;
     }

@@ -20,21 +20,26 @@ import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
 import com.zelazobeton.cognitiveexercises.service.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
+import io.micrometer.core.instrument.Counter;
+
 @RestController
 @RequestMapping(path = "/games/v1")
 public class GameDataController extends ExceptionHandling {
     private final GameDataService gamesDataService;
     private final ResourceService resourceService;
+    private final Counter getGamesCounter;
 
     public GameDataController(ExceptionMessageService exceptionMessageService, GameDataService gamesDataService,
-            ResourceService resourceService) {
+            ResourceService resourceService, Counter getGamesCounter) {
         super(exceptionMessageService);
         this.gamesDataService = gamesDataService;
         this.resourceService = resourceService;
+        this.getGamesCounter = getGamesCounter;
     }
 
     @GetMapping(path = "/data", produces = { "application/json" })
     public ResponseEntity<List<GameDataDto>> getGames() {
+        this.getGamesCounter.increment();
         return new ResponseEntity<>(this.gamesDataService.getGamesData(), HttpStatus.OK);
     }
 
