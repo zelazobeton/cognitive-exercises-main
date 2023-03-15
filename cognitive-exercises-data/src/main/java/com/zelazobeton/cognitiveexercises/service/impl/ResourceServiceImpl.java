@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,6 @@ public class ResourceServiceImpl implements ResourceService {
     public ResourceServiceImpl() {}
 
     @Override
-    @Cacheable("tileImages")
     public byte[] getResource(String resourceName) throws IOException {
         ClassPathResource res = new ClassPathResource(resourceName);
         String path = res.getPath();

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/cache
+       http://www.springframework.org/schema/cache/spring-cache.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <bean id="customCacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+        <property name="caches">
+            <set>
+                <bean
+                    class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"
+                    name="ResourceServiceImpl.getResource"/>
+                <bean
+                    class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"
+                    name="ResourceServiceImpl.getPath"/>
+                <bean
+                    class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"
+                    name="PortfolioServiceImpl.getScoreboardPage"/>
+            </set>
+        </property>
+    </bean>
+
+    <cache:advice id="cachingBehaviorForResourceServiceImpl" cache-manager="customCacheManager">
+        <cache:caching cache="ResourceServiceImpl.getResource">
+            <cache:cacheable method="getResource"/>
+        </cache:caching>
+        <cache:caching cache="ResourceServiceImpl.getPath">
+            <cache:cacheable method="getPath"/>
+        </cache:caching>
+    </cache:advice>
+
+    <cache:advice id="cachingBehaviorForPortfolioServiceImpl" cache-manager="customCacheManager">
+        <cache:caching cache="PortfolioServiceImpl.getScoreboardPage">
+            <cache:cacheable method="getScoreboardPage"/>
+        </cache:caching>
+    </cache:advice>
+
+    <cache:advice id="evictionBehaviorForPortfolioServiceImpl" cache-manager="customCacheManager">
+        <cache:caching cache="PortfolioServiceImpl.getScoreboardPage">
+          <cache:cache-evict method="updateScore" all-entries="true" before-invocation="true"/>
+        </cache:caching>
+    </cache:advice>
+
+    <aop:config>
+        <aop:advisor advice-ref="cachingBehaviorForResourceServiceImpl"
+                     pointcut="execution(* com.zelazobeton.cognitiveexercises.service.impl.ResourceServiceImpl.*(..))"/>
+        <aop:advisor advice-ref="cachingBehaviorForPortfolioServiceImpl"
+                     pointcut="execution(* com.zelazobeton.cognitiveexercises.service.impl.PortfolioServiceImpl.*(..))"/>
+        <aop:advisor advice-ref="evictionBehaviorForPortfolioServiceImpl"
+                     pointcut="execution(* com.zelazobeton.cognitiveexercises.service.impl.PortfolioServiceImpl.*(..))"/>
+    </aop:config>
+</beans>
