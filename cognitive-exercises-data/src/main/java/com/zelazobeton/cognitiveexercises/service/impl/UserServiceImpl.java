@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(String username, String email)
-            throws MessagingException, IOException {
+            throws IOException {
         this.validateNewUsernameAndEmail(username, email);
         String password = this.generatePassword();
         AuthServerUserDto userDto = this.authorizationServerService.registerUserInAuthorizationServer(username,
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByExternalId(String username) throws UserNotFoundException {
+    public User findUserByExternalId(String username) {
         return this.userRepository.findUserByExternalId(username).orElseThrow(UserNotFoundException::new);
     }
 
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<HttpResponse> changePassword(String externalId, PasswordFormDto passwordFormDto)
-            throws UserNotFoundException, ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException {
         User user = this.userRepository.findUserByExternalId(externalId).orElseThrow(UserNotFoundException::new);
         Future<Boolean> isPasswordCorrect = this.authorizationServerService.isPasswordCorrect(user.getUsername(),
                 passwordFormDto.getOldPassword());
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
+    public void resetPassword(String email) throws MessagingException {
         User user = this.userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(
                         this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_NO_SUCH_EMAIL))
@@ -126,8 +126,7 @@ public class UserServiceImpl implements UserService {
                 password);
     }
 
-    private void setNewEmail(User currentUser, String newEmail)
-            throws UsernameAlreadyExistsException, IllegalArgumentException {
+    private void setNewEmail(User currentUser, String newEmail) {
         if (newEmail == null || newEmail.equals("")) {
             return;
         }
@@ -141,7 +140,7 @@ public class UserServiceImpl implements UserService {
         currentUser.setEmail(newEmail);
     }
 
-    private void setNewUsername(User currentUser, String newUsername) throws UsernameAlreadyExistsException {
+    private void setNewUsername(User currentUser, String newUsername) {
         if (newUsername == null || newUsername.equals("")) {
             return;
         }
