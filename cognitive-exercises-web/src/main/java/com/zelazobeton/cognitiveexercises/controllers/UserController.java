@@ -5,11 +5,11 @@ import static org.springframework.http.HttpStatus.OK;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.security.RolesAllowed;
 import javax.mail.MessagingException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,14 +48,14 @@ public class UserController extends ExceptionHandling {
     }
 
     @GetMapping(produces = { "application/json" })
-    @RolesAllowed("ROLE_ce-user")
+    @PreAuthorize("hasAuthority(app-user)")
     public ResponseEntity<UserDto> getUserData(Principal principal) {
-        User userData = this.userService.findUserByUsername(principal.getName());
+        User userData = this.userService.findUserByExternalId(principal.getName());
         return new ResponseEntity<>(new UserDto(userData), HttpStatus.OK);
     }
 
     @PostMapping(produces = { "application/json" })
-    @RolesAllowed("ROLE_ce-user")
+    @PreAuthorize("hasAuthority(app-user)")
     public ResponseEntity<UserDto> updateUser(Principal principal,
             @RequestParam("username") String username, @RequestParam("email") String email) {
         User updatedUser = this.userService.updateUser(principal.getName(), username, email);
@@ -63,7 +63,7 @@ public class UserController extends ExceptionHandling {
     }
 
     @PostMapping(path = "/password", produces = { "application/json" })
-    @RolesAllowed("ROLE_ce-user")
+    @PreAuthorize("hasAuthority(app-user)")
     public ResponseEntity<HttpResponse> changePassword(Principal principal,
             @RequestBody PasswordFormDto passwordFormDto) throws ExecutionException, InterruptedException {
         return this.userService.changePassword(principal.getName(), passwordFormDto);

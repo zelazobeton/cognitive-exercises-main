@@ -73,9 +73,9 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public PortfolioDto updateAvatar(String username, MultipartFile avatar)
+    public PortfolioDto updateAvatar(String externalId, MultipartFile avatar)
             throws EntityNotFoundException, IOException, NotAnImageFileException {
-        User currentUser = this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+        User currentUser = this.userRepository.findUserByExternalId(externalId).orElseThrow(UserNotFoundException::new);
         Portfolio currentPortfolio = currentUser.getPortfolio();
         if (avatar != null) {
             if(!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(avatar.getContentType())) {

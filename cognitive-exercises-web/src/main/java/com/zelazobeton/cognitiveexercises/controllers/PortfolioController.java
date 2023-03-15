@@ -7,10 +7,10 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
 import java.security.Principal;
-import javax.annotation.security.RolesAllowed;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +42,7 @@ public class PortfolioController extends ExceptionHandling {
     }
 
     @PostMapping(path = "/avatar", headers=("content-type=multipart/*"))
-    @RolesAllowed("ROLE_ce-user")
+    @PreAuthorize("hasAuthority(app-user)")
     public ResponseEntity<PortfolioDto> updateAvatar(Principal principal,
             @RequestParam("avatar") MultipartFile avatar) throws IOException, NotAnImageFileException {
         return new ResponseEntity<>(this.portfolioService.updateAvatar(principal.getName(), avatar), HttpStatus.OK);

@@ -11,7 +11,7 @@ import com.zelazobeton.cognitiveexercises.model.ScoreboardPageDto;
 
 public interface PortfolioService {
 
-    PortfolioDto updateAvatar(String username, MultipartFile avatar)
+    PortfolioDto updateAvatar(String externalId, MultipartFile avatar)
             throws EntityNotFoundException, IOException, NotAnImageFileException;
 
     ScoreboardPageDto getScoreboardPage(int pageNumber, int pageSize);

@@ -70,8 +70,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(String currentUsername, String newUsername, String newEmail) {
-        User currentUser = this.userRepository.findUserByUsername(currentUsername)
+    public User updateUser(String externalId, String newUsername, String newEmail) {
+        User currentUser = this.userRepository.findUserByExternalId(externalId)
                 .orElseThrow(UserNotFoundException::new);
         this.setNewUsername(currentUser, newUsername);
         this.setNewEmail(currentUser, newEmail);
@@ -79,8 +79,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByUsername(String username) throws UserNotFoundException {
-        return this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
+    public User findUserByExternalId(String username) throws UserNotFoundException {
+        return this.userRepository.findUserByExternalId(username).orElseThrow(UserNotFoundException::new);
     }
 
     private void validateNewUsernameAndEmail(String username, String email) {
@@ -96,9 +96,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<HttpResponse> changePassword(String username, PasswordFormDto passwordFormDto)
+    public ResponseEntity<HttpResponse> changePassword(String externalId, PasswordFormDto passwordFormDto)
             throws UserNotFoundException, ExecutionException, InterruptedException {
-        Future<Boolean> isPasswordCorrect = this.authorizationServerService.isPasswordCorrect(username,
+        User user = this.userRepository.findUserByExternalId(externalId).orElseThrow(UserNotFoundException::new);
+        Future<Boolean> isPasswordCorrect = this.authorizationServerService.isPasswordCorrect(user.getUsername(),
                 passwordFormDto.getOldPassword());
         Future<String> adminAccessToken = this.authorizationServerService.getAuthorizationServerAdminAccessTokenAsync();
 
@@ -107,8 +108,7 @@ public class UserServiceImpl implements UserService {
             String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_IS_INCORRECT);
             return new ResponseEntity<>(new HttpResponse(NOT_ACCEPTABLE, responseMsg), NOT_ACCEPTABLE);
         }
-        User user = this.userRepository.findUserByUsername(username).orElseThrow(UserNotFoundException::new);
-        this.authorizationServerService.setNewPasswordForUser(user.getExternalId(), username,
+        this.authorizationServerService.setNewPasswordForUser(externalId, user.getUsername(),
                 passwordFormDto.getNewPassword(), adminAccessToken.get());
         String responseMsg = this.exceptionMessageService.getMessage(MessageConstants.USER_CONTROLLER_PASSWORD_CHANGED_SUCCESSFULLY);
         return new ResponseEntity<>(new HttpResponse(OK, responseMsg), OK);
