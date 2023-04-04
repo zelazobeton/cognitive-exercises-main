@@ -25,6 +25,7 @@ import com.zelazobeton.cognitiveexercises.exception.UsernameAlreadyExistsExcepti
 import com.zelazobeton.cognitiveexercises.model.AuthServerUserDto;
 import com.zelazobeton.cognitiveexercises.model.HttpResponse;
 import com.zelazobeton.cognitiveexercises.model.PasswordFormDto;
+import com.zelazobeton.cognitiveexercises.repository.UserDao;
 import com.zelazobeton.cognitiveexercises.repository.UserRepository;
 import com.zelazobeton.cognitiveexercises.service.AuthorizationServerService;
 import com.zelazobeton.cognitiveexercises.service.EmailService;
@@ -42,8 +43,9 @@ public class UserServiceImpl implements UserService {
     private PortfolioBuilderImpl portfolioBuilderImpl;
     private AuthorizationServerService authorizationServerService;
     private ExceptionMessageService exceptionMessageService;
+    private UserDao userDao;
 
-    public UserServiceImpl(UserRepository userRepository, EmailService emailService,
+    public UserServiceImpl(UserDao userDao, UserRepository userRepository, EmailService emailService,
             PortfolioBuilderImpl portfolioBuilderImpl, AuthorizationServerService keycloakServiceImpl,
             ExceptionMessageService exceptionMessageService) {
         this.userRepository = userRepository;
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
         this.portfolioBuilderImpl = portfolioBuilderImpl;
         this.authorizationServerService = keycloakServiceImpl;
         this.exceptionMessageService = exceptionMessageService;
+        this.userDao = userDao;
     }
 
     @Override
@@ -71,16 +74,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(String externalId, String newUsername, String newEmail) {
-        User currentUser = this.userRepository.findUserByExternalId(externalId)
-                .orElseThrow(UserNotFoundException::new);
+        User currentUser = this.userDao.findUserByExternalId(externalId);
         this.setNewUsername(currentUser, newUsername);
         this.setNewEmail(currentUser, newEmail);
         return this.userRepository.save(currentUser);
     }
 
     @Override
-    public User findUserByExternalId(String username) {
-        return this.userRepository.findUserByExternalId(username).orElseThrow(UserNotFoundException::new);
+    public User findUserByExternalId(String externalId) {
+        User user = this.userRepository.findUserByExternalIdWithJpql(externalId);
+        if (user == null) {
+            throw new UserNotFoundException("User with externalId: " + externalId + " does not exist");
+        }
+        return user;
     }
 
     private void validateNewUsernameAndEmail(String username, String email) {
