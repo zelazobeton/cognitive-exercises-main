@@ -1,7 +1,7 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.GAMES_DATA_FOLDER;
+import static com.zelazobeton.cognitiveexercises.shared.FileConstants.FORWARD_SLASH;
+import static com.zelazobeton.cognitiveexercises.shared.FileConstants.GAMES_DATA_FOLDER;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zelazobeton.cognitiveexercises.model.GameDataDto;
-import com.zelazobeton.cognitiveexercises.service.GameDataService;
-import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
-import com.zelazobeton.cognitiveexercises.service.ResourceService;
+import com.zelazobeton.cognitiveexercises.games.adapters.out.GameDataDto;
+import com.zelazobeton.cognitiveexercises.games.application.GameDataService;
+import com.zelazobeton.cognitiveexercises.exception.ExceptionMessageService;
+import com.zelazobeton.cognitiveexercises.resource.application.ResourceService;
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 
 import io.micrometer.core.instrument.Counter;

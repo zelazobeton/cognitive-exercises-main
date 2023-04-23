@@ -1,8 +1,8 @@
 package com.zelazobeton.cognitiveexercises.controllers;
 
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.AVATAR;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.FORWARD_SLASH;
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.USER_FOLDER;
+import static com.zelazobeton.cognitiveexercises.shared.FileConstants.AVATAR;
+import static com.zelazobeton.cognitiveexercises.shared.FileConstants.FORWARD_SLASH;
+import static com.zelazobeton.cognitiveexercises.shared.FileConstants.USER_FOLDER;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import java.io.IOException;
@@ -21,11 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
 import com.zelazobeton.cognitiveexercises.exception.NotAnImageFileException;
-import com.zelazobeton.cognitiveexercises.model.PortfolioDto;
-import com.zelazobeton.cognitiveexercises.model.ScoreboardPageDto;
-import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
-import com.zelazobeton.cognitiveexercises.service.PortfolioService;
-import com.zelazobeton.cognitiveexercises.service.ResourceService;
+import com.zelazobeton.cognitiveexercises.user.adapters.out.persistance.dto.PortfolioDto;
+import com.zelazobeton.cognitiveexercises.user.adapters.out.persistance.dto.ScoreboardPageDto;
+import com.zelazobeton.cognitiveexercises.exception.ExceptionMessageService;
+import com.zelazobeton.cognitiveexercises.user.application.PortfolioService;
+import com.zelazobeton.cognitiveexercises.resource.application.ResourceService;
 
 //@CrossOrigin("*")
 @RestController

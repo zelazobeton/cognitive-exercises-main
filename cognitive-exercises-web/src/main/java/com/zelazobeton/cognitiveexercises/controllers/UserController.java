@@ -18,14 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zelazobeton.cognitiveexercises.ExceptionHandling;
-import com.zelazobeton.cognitiveexercises.constant.MessageConstants;
-import com.zelazobeton.cognitiveexercises.domain.User;
-import com.zelazobeton.cognitiveexercises.model.EmailFormDto;
-import com.zelazobeton.cognitiveexercises.model.HttpResponse;
-import com.zelazobeton.cognitiveexercises.model.PasswordFormDto;
-import com.zelazobeton.cognitiveexercises.model.UserDto;
-import com.zelazobeton.cognitiveexercises.service.ExceptionMessageService;
-import com.zelazobeton.cognitiveexercises.service.UserService;
+import com.zelazobeton.cognitiveexercises.exception.MessageConstants;
+import com.zelazobeton.cognitiveexercises.user.domain.User;
+import com.zelazobeton.cognitiveexercises.shared.HttpResponse;
+import com.zelazobeton.cognitiveexercises.user.application.PasswordFormDto;
+import com.zelazobeton.cognitiveexercises.user.adapters.out.persistance.dto.UserDto;
+import com.zelazobeton.cognitiveexercises.exception.ExceptionMessageService;
+import com.zelazobeton.cognitiveexercises.user.application.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 

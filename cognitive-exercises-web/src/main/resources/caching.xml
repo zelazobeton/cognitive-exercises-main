@@ -50,10 +50,10 @@
 
     <aop:config>
         <aop:advisor advice-ref="cachingBehaviorForResourceServiceImpl"
-                     pointcut="execution(* com.zelazobeton.cognitiveexercises.service.impl.ResourceServiceImpl.*(..))"/>
+                     pointcut="execution(* com.zelazobeton.cognitiveexercises.resource.application.ResourceServiceImpl.*(..))"/>
         <aop:advisor advice-ref="cachingBehaviorForPortfolioServiceImpl"
-                     pointcut="execution(* com.zelazobeton.cognitiveexercises.service.impl.PortfolioServiceImpl.*(..))"/>
+                     pointcut="execution(* com.zelazobeton.cognitiveexercises.user.application.PortfolioServiceImpl.*(..))"/>
         <aop:advisor advice-ref="evictionBehaviorForPortfolioServiceImpl"
-                     pointcut="execution(* com.zelazobeton.cognitiveexercises.service.impl.PortfolioServiceImpl.*(..))"/>
+                     pointcut="execution(* com.zelazobeton.cognitiveexercises.user.application.PortfolioServiceImpl.*(..))"/>
     </aop:config>
 </beans>

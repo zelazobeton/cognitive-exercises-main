@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 //@ComponentScan(basePackages = {"com.zelazobeton"})
-@EntityScan(basePackages = {"com.zelazobeton.cognitiveexercises.domain"})
-@EnableJpaRepositories(basePackages = {"com.zelazobeton.cognitiveexercises.repository"})
+@EntityScan(basePackages = {"com.zelazobeton.cognitiveexercises"})
+@EnableJpaRepositories(basePackages = {"com.zelazobeton.cognitiveexercises"})
 @ImportResource("classpath:caching.xml")
 public class CognitiveExercisesApplication {
 

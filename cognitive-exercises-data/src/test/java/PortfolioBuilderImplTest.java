@@ -4,20 +4,24 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.zelazobeton.cognitiveexercises.domain.Portfolio;
-import com.zelazobeton.cognitiveexercises.domain.User;
-import com.zelazobeton.cognitiveexercises.service.PortfolioBuilder;
-import com.zelazobeton.cognitiveexercises.service.impl.PortfolioBuilderImpl;
-import com.zelazobeton.cognitiveexercises.service.impl.ResourceServiceImpl;
+import com.zelazobeton.cognitiveexercises.resource.application.ResourceService;
+import com.zelazobeton.cognitiveexercises.user.domain.Portfolio;
+import com.zelazobeton.cognitiveexercises.user.domain.PortfolioBuilder;
+import com.zelazobeton.cognitiveexercises.user.domain.PortfolioBuilderImpl;
+import com.zelazobeton.cognitiveexercises.user.domain.User;
 
 public class PortfolioBuilderImplTest {
 
     private PortfolioBuilder sut;
 
+    @Autowired
+    private ResourceService resourceService;
+
     @Before
     public void setUp() {
-        this.sut = new PortfolioBuilderImpl(new ResourceServiceImpl());
+        this.sut = new PortfolioBuilderImpl(this.resourceService);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.zelazobeton.cognitiveexercises.bootstrap;
 
-import static com.zelazobeton.cognitiveexercises.constant.FileConstants.EXAMPLE_USERNAMES_FILE;
+import static com.zelazobeton.cognitiveexercises.shared.FileConstants.EXAMPLE_USERNAMES_FILE;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,12 +16,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import com.zelazobeton.cognitiveexercises.domain.GameData;
-import com.zelazobeton.cognitiveexercises.domain.Portfolio;
-import com.zelazobeton.cognitiveexercises.domain.User;
-import com.zelazobeton.cognitiveexercises.repository.GameDataRepository;
-import com.zelazobeton.cognitiveexercises.repository.UserRepository;
-import com.zelazobeton.cognitiveexercises.service.PortfolioBuilder;
+import com.zelazobeton.cognitiveexercises.games.application.GameDataRepository;
+import com.zelazobeton.cognitiveexercises.games.domain.GameData;
+import com.zelazobeton.cognitiveexercises.user.application.UserRepository;
+import com.zelazobeton.cognitiveexercises.user.domain.Portfolio;
+import com.zelazobeton.cognitiveexercises.user.domain.PortfolioBuilder;
+import com.zelazobeton.cognitiveexercises.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
