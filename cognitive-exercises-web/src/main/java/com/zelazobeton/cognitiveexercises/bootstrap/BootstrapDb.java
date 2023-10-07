@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Profile({"dev-mysql-bootstrap", "dev-oracle-bootstrap"})
+@Profile({"dev-mysql-bootstrap", "dev-oracle-bootstrap", "dev-h2"})
 public class BootstrapDb implements CommandLineRunner {
     private final UserRepository userRepository;
     private final GameDataRepository gameDataRepository;

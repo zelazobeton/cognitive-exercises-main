@@ -11,9 +11,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = {"com.zelazobeton.cognitiveexercises"})
 @EnableJpaRepositories(basePackages = {"com.zelazobeton.cognitiveexercises"})
 @ImportResource("classpath:caching.xml")
-public class CognitiveExercisesApplication {
+public class CognitiveExercisesBasicService {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CognitiveExercisesApplication.class, args);
+		SpringApplication.run(CognitiveExercisesBasicService.class, args);
 	}
 }

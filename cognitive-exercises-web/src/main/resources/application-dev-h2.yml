@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    database: mysql
+#    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: update
+#              create-target: database_create.sql
+logging:
+  level:
+    com.zelazobeton.cognitiveexercises: DEBUG
+    org.springframework.transaction: DEBUG
+#    org.springframework.security.web.FilterChainProxy: DEBUG
